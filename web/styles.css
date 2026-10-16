@@ -499,6 +499,78 @@ section[id],
   letter-spacing: -.035em;
 }
 
+/* Шапка записи: и заголовок, и дата стоят по левому краю текста. */
+.post-head {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: clamp(1.1rem, 2vw, 1.6rem);
+}
+.post-date { margin-top: .8rem; }
+
+.cover {
+  margin-top: clamp(1.9rem, 3.5vw, 2.8rem);
+  max-width: 46rem;
+}
+.cover img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+}
+
+/* Оглавление записи — только когда есть место справа от текста. */
+.toc { display: none; }
+
+.prose h2[id],
+.prose h3[id],
+.prose h4[id] { scroll-margin-top: clamp(5rem, 13vh, 6.5rem); }
+
+@media (min-width: 1180px) {
+  .blog-post {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 14.5rem;
+    column-gap: clamp(2rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+  .blog-post > :not(.toc) { grid-column: 1; min-width: 0; }
+
+  .toc {
+    display: block;
+    grid-column: 2;
+    grid-row: 1 / -1;
+    position: sticky;
+    top: clamp(5rem, 13vh, 6.5rem);
+    max-height: calc(100vh - 7.5rem);
+    overflow: auto;
+    scrollbar-width: thin;
+    padding-left: 1rem;
+    border-left: 1px solid var(--rule-soft);
+    font-family: var(--serif);
+    font-size: .84rem;
+    line-height: 1.45;
+  }
+}
+
+.toc li { position: relative; }
+.toc li + li { margin-top: .55rem; }
+.toc .l3 { padding-left: .8rem; }
+.toc a {
+  display: block;
+  color: var(--ink-faint);
+  text-decoration: none;
+  transition: color .3s var(--ease);
+}
+.toc a:hover { color: var(--accent); }
+.toc li.is-active > a { color: var(--accent); }
+.toc li.is-active::before {
+  content: '';
+  position: absolute;
+  left: -1.05rem;
+  top: .3em;
+  width: 2px;
+  height: 1em;
+  background: var(--clay);
+}
+
 .entry {
   display: grid;
   grid-template-columns: var(--side) var(--main);

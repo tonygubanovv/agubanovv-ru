@@ -62,8 +62,12 @@ function assetName(url) {
 function pullImages(raw) {
   mkdirSync(join(SRC, 'assets'), { recursive: true });
 
-  for (const m of raw.matchAll(/!\[[^\]]*\]\((https?:\/\/[^)\s]+)\)/g)) {
-    const url = m[1];
+  const urls = new Set();
+  for (const m of raw.matchAll(/!\[[^\]]*\]\((https?:\/\/[^)\s]+)\)/g)) urls.add(m[1]);
+  const cover = /^cover:[ \t]*(https?:\/\/[^)\s]+)[ \t]*$/im.exec(raw);
+  if (cover) urls.add(cover[1]);
+
+  for (const url of urls) {
     if (IMAGES.has(url)) continue;
 
     const file = assetName(url);
@@ -78,6 +82,14 @@ function pullImages(raw) {
     IMAGES.set(url, existsSync(dest) && statSync(dest).size ? `/blog/assets/${file}` : url);
     if (IMAGES.get(url) === url) console.log(`не скачалось: ${url}`);
   }
+}
+
+/* Картинка по ссылке из markdown или из поля cover: → локальный путь и размеры. */
+function picture(url, alt) {
+  const src = safeUrl(url);
+  if (!src) return null;
+  const u = IMAGES.get(src) || src;
+  return { src: u, alt: alt || '', dims: dims(u) };
 }
 
 function inline(s) {
@@ -98,9 +110,20 @@ function inline(s) {
     });
 }
 
-function renderMarkdown(md) {
+/* Якорь заголовка: кириллица остаётся кириллицей, повторы получают -2, -3. */
+function anchor(text, used) {
+  const base = text.toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, '-')
+    .replace(/^-+|-+$/g, '') || 'razdel';
+  const n = (used.get(base) || 0) + 1;
+  used.set(base, n);
+  return n === 1 ? base : `${base}-${n}`;
+}
+
+function renderMarkdown(md, toc) {
   const lines = md.replace(/\r\n/g, '\n').split('\n');
   const out = [];
+  const used = new Map();
   let i = 0;
 
   while (i < lines.length) {
@@ -120,7 +143,11 @@ function renderMarkdown(md) {
     const heading = /^(#{1,4})\s+(.*)$/.exec(line);
     if (heading) {
       const level = Math.max(heading[1].length, 2);
-      out.push(`<h${level}>${inline(esc(heading[2]))}</h${level}>`);
+      const text = heading[2].trim();
+      const plain = text.replace(/[*_`]/g, '').trim();
+      const id = anchor(plain, used);
+      if (toc && level <= 3 && plain) toc.push({ level, id, text: esc(plain) });
+      out.push(`<h${level} id="${id}">${inline(esc(text))}</h${level}>`);
       i++;
       continue;
     }
@@ -169,7 +196,7 @@ function parseFile(name, raw, mtime) {
 
   if (fm) {
     for (const row of fm[1].split('\n')) {
-      const kv = /^([A-Za-z]+):[ \t]*(.*)$/.exec(row.trim());
+      const kv = /^([A-Za-z][A-Za-z0-9-]*):[ \t]*(.*)$/.exec(row.trim());
       if (kv) fields[kv[1]] = kv[2].trim();
     }
     body = raw.slice(fm[0].length).replace(/^[ \t]*\n/, '');
@@ -187,13 +214,16 @@ function parseFile(name, raw, mtime) {
 
   const slug = name.replace(/\.md$/, '');
   const [y, mo, d] = fields.date.split('-').map(Number);
+  const toc = [];
   return {
     slug,
     title: fields.title,
     lead: fields.lead || '',
     date: fields.date,
     dateHuman: `${d} ${MONTHS[mo - 1]} ${y}`,
-    body: renderMarkdown(body.trim()),
+    cover: fields.cover ? picture(fields.cover, fields['cover-alt']) : null,
+    toc,
+    body: renderMarkdown(body.trim(), toc),
   };
 }
 
@@ -286,15 +316,28 @@ ${rows}
 }
 
 function postPage(p) {
+  const cover = p.cover
+    ? `      <figure class="cover">
+        <img src="${esc(p.cover.src)}" alt="${esc(p.cover.alt)}" loading="lazy"${
+  p.cover.dims ? ` width="${p.cover.dims.w}" height="${p.cover.dims.h}"` : ''}>
+      </figure>`
+    : '';
+
+  // Навигация нужна, когда есть из чего выбирать: один раздел — не оглавление.
+  const toc = p.toc.length > 1
+    ? `      <nav class="toc" aria-label="Разделы записи">
+        <ul>
+${p.toc.map((t) => `          <li class="l${t.level}"><a href="#${t.id}">${t.text}</a></li>`).join('\n')}
+        </ul>
+      </nav>`
+    : '';
+
   return `    <article class="blog-post wrap" aria-labelledby="post-title">
-      <div class="sec-head">
-        <p class="sec-num">—</p>
-        <div class="sec-title">
-          <h1 id="post-title" class="page-title">${esc(p.title)}</h1>
-          <p class="sec-meta">${p.dateHuman}</p>
-        </div>
-      </div>
-      ${p.lead ? `<p class="lead big">${esc(p.lead)}</p>` : ''}
+      <header class="post-head">
+        <h1 id="post-title" class="page-title">${esc(p.title)}</h1>
+        <p class="sec-meta post-date">${p.dateHuman}</p>
+      </header>
+${[cover, toc, p.lead ? `      <p class="lead big">${esc(p.lead)}</p>` : ''].filter(Boolean).join('\n')}
       <div class="prose">
 ${p.body}
       </div>
