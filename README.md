@@ -1,47 +1,20 @@
 # t-gubanov.ru
 
-React + TypeScript static site for GitHub Pages.
+Одностраничное резюме + блог. Стек — обычный HTML, CSS и один скрипт сборки на Node без зависимостей.
 
-## Stack
+## Как добавить запись в блог
 
-- Vite
-- React 19
-- TypeScript
-- Static HTML generation on build
-- GitHub Pages deployment
+Положить markdown-файл в `blog/` и запушить в `main`. Файл править под сборку не нужно:
 
-## Local work
+- заголовок берётся из первой строки `# …`;
+- дата — из поля `date: YYYY-MM-DD`, если оно есть, иначе из даты последнего коммита этого файла;
+- картинки по внешним ссылкам скачиваются в `blog/assets/` и отдаются с сайта (повторное скачивание пропускается);
+- `_шаблон.md` и любые файлы с подчёркиванием в начале имени в блог не попадают.
 
-```powershell
-npm install
-npm run dev
-```
+Локально: `node build.mjs` → `web/blog.html` и `web/blog/<имя-файла>.html`.
 
-Open `http://127.0.0.1:5173`.
+## Публикация
 
-## Production build
+`.github/workflows/deploy.yml` собирает блог и публикует папку `web/` на GitHub Pages. Домен — `web/CNAME`.
 
-```powershell
-npm run build
-```
-
-The build creates static pages in `dist/`.
-
-## Project Structure
-
-- `src/app/` - app entry and route list.
-- `src/pages/` - pages where sections are connected.
-- `src/sections/` - large page sections with editable content.
-- `src/components/` - reusable layout and UI components.
-- `src/config/site.ts` - site name, contacts, navigation.
-- `src/styles/` - separated CSS files.
-- `src/injections/head.html` - global HTML before `</head>`.
-- `src/injections/body-start.html` - global HTML right after `<body>`.
-
-## Editing Content
-
-Main page content lives in `src/sections/home/`.
-
-Services page content lives in `src/pages/ServicesPage.tsx` and `src/sections/services/ServicesListSection.tsx`.
-
-There is no blog, admin panel, Markdown, JSON content, RSS, robots file, sitemap, or Open Graph image in the current base.
+Весь сайт закрыт от поисковиков (`noindex, nofollow` в каждой странице), sitemap нет.

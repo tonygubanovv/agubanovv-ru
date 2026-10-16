@@ -1,7 +1,12 @@
+# личные рабочие файлы — не для репозитория
+resume.txt
+rtf2txt.mjs
+live-probe.html
+server.log
+err.txt
+*.qoder.site
+
 node_modules/
 dist/
-.astro/
-.npm-cache/
 .env
 .env.*
-!.env.example
