@@ -28,6 +28,16 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  font-family: var(--font);
+  /* Один шрифт на весь сайт: косое начертание браузер не дорисовывает. */
+  font-synthesis: weight;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }
 
 body {
@@ -661,6 +671,11 @@ section[id],
   color: var(--accent);
 }
 
+.prose em {
+  font-style: normal;
+  font-weight: 500;
+}
+
 .prose blockquote {
   margin-block: 1.4em;
   padding-left: 1.4rem;
@@ -673,8 +688,9 @@ section[id],
 
 .prose code,
 .prose pre {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: .87em;
+  font-family: var(--font);
+  font-size: .9em;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 .prose code {
   padding: .1em .38em;
