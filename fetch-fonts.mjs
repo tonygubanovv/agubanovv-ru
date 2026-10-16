@@ -7,8 +7,6 @@ const KEEP = new Set(['cyrillic', 'cyrillic-ext', 'latin']);
 
 const families = [
   { query: 'Onest:wght@400..700', slug: 'onest' },
-  { query: 'Golos+Text:wght@400', slug: 'golos-text' },
-  { query: 'Lora:wght@400..600', slug: 'lora' },
 ];
 
 rmSync(OUT, { recursive: true, force: true });

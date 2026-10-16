@@ -12,9 +12,7 @@
   --ink-faint: color-mix(in oklab, var(--ink) 44%, var(--paper));
   --rule-soft: color-mix(in oklab, var(--rule) 55%, var(--paper));
 
-  --display: 'Onest', system-ui, sans-serif;
-  --text: 'Golos Text', 'Onest', system-ui, sans-serif;
-  --serif: 'Lora', Georgia, 'Times New Roman', serif;
+  --font: 'Onest', system-ui, sans-serif;
 
   --side: minmax(0, 1fr);
   --main: minmax(0, 2.25fr);
@@ -36,7 +34,7 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--text);
+  font-family: var(--font);
   font-size: 1rem;
   line-height: 1.62;
   -webkit-font-smoothing: antialiased;
@@ -65,7 +63,7 @@ section[id],
   padding: .7rem 1.1rem;
   background: var(--ink);
   color: var(--paper);
-  font-family: var(--serif);
+  font-family: var(--font);
   font-size: .86rem;
   text-decoration: none;
 }
@@ -85,7 +83,7 @@ section[id],
 .sec-num,
 .sec-meta,
 .title {
-  font-family: var(--serif);
+  font-family: var(--font);
   font-weight: 400;
 }
 
@@ -125,7 +123,7 @@ section[id],
 }
 
 .mark {
-  font-family: var(--display);
+  font-family: var(--font);
   font-weight: 500;
   font-size: .98rem;
   letter-spacing: -.01em;
@@ -138,7 +136,7 @@ section[id],
 .nav ul { display: flex; gap: clamp(1rem, 3vw, 2.25rem); }
 
 .nav a {
-  font-family: var(--serif);
+  font-family: var(--font);
   font-size: .95rem;
   color: var(--ink-soft);
   text-decoration: none;
@@ -160,7 +158,7 @@ section[id],
 }
 
 .name {
-  font-family: var(--display);
+  font-family: var(--font);
   font-weight: 600;
   font-size: clamp(3.4rem, 14vw, 10rem);
   line-height: .86;
@@ -178,7 +176,7 @@ section[id],
 }
 
 .role {
-  font-family: var(--display);
+  font-family: var(--font);
   font-weight: 500;
   font-size: clamp(1.2rem, 2.7vw, 2rem);
   line-height: 1.22;
@@ -199,7 +197,7 @@ section[id],
   gap: .5rem;
 }
 .hero-contacts a {
-  font-family: var(--serif);
+  font-family: var(--font);
   font-size: .98rem;
   color: var(--ink-soft);
   text-decoration: none;
@@ -249,7 +247,7 @@ section[id],
 }
 
 .sec-head h2 {
-  font-family: var(--display);
+  font-family: var(--font);
   font-weight: 500;
   font-size: clamp(1.9rem, 4.4vw, 3.3rem);
   line-height: 1;
@@ -282,7 +280,7 @@ section[id],
 }
 
 .company {
-  font-family: var(--display);
+  font-family: var(--font);
   font-weight: 600;
   font-size: clamp(1.45rem, 2.6vw, 2.1rem);
   line-height: 1.05;
@@ -319,7 +317,7 @@ section[id],
 .area:hover { background: color-mix(in oklab, var(--clay) 11%, transparent); }
 
 .area dt {
-  font-family: var(--display);
+  font-family: var(--font);
   font-weight: 600;
   font-size: .95rem;
   letter-spacing: -.012em;
@@ -349,7 +347,7 @@ section[id],
 .ct-list .label { margin-bottom: .2rem; color: var(--ink-faint); }
 
 .line-link {
-  font-family: var(--display);
+  font-family: var(--font);
   font-weight: 500;
   font-size: 1.15rem;
   letter-spacing: -.02em;
@@ -379,7 +377,7 @@ section[id],
   align-items: baseline;
   padding-block: 2rem clamp(2.5rem, 6vh, 4rem);
   border-top: 1px solid var(--rule);
-  font-family: var(--serif);
+  font-family: var(--font);
   font-size: .88rem;
   color: var(--ink-faint);
 }
@@ -492,7 +490,7 @@ section[id],
 }
 
 .page-title {
-  font-family: var(--display);
+  font-family: var(--font);
   font-weight: 500;
   font-size: clamp(1.9rem, 4.4vw, 3.3rem);
   line-height: 1;
@@ -544,7 +542,7 @@ section[id],
     scrollbar-width: thin;
     padding-left: 1rem;
     border-left: 1px solid var(--rule-soft);
-    font-family: var(--serif);
+    font-family: var(--font);
     font-size: .84rem;
     line-height: 1.45;
   }
@@ -582,7 +580,7 @@ section[id],
 .entry-side .when { margin-bottom: 0; }
 
 .entry-title {
-  font-family: var(--display);
+  font-family: var(--font);
   font-weight: 600;
   font-size: clamp(1.45rem, 2.7vw, 2.1rem);
   line-height: 1.12;
@@ -599,7 +597,7 @@ section[id],
 .empty {
   margin-top: clamp(2.2rem, 5vw, 3.4rem);
   max-width: 48ch;
-  font-family: var(--serif);
+  font-family: var(--font);
   font-size: 1.02rem;
   color: var(--ink-soft);
 }
@@ -615,7 +613,7 @@ section[id],
 .prose h2,
 .prose h3,
 .prose h4 {
-  font-family: var(--display);
+  font-family: var(--font);
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: -.022em;
@@ -658,7 +656,7 @@ section[id],
   content: counter(n) '.';
   position: absolute;
   left: 0;
-  font-family: var(--serif);
+  font-family: var(--font);
   font-size: .92em;
   color: var(--accent);
 }
@@ -667,7 +665,7 @@ section[id],
   margin-block: 1.4em;
   padding-left: 1.4rem;
   border-left: 2px solid var(--clay);
-  font-family: var(--serif);
+  font-family: var(--font);
   font-size: 1.08em;
   line-height: 1.62;
   color: var(--ink-soft);
@@ -704,7 +702,7 @@ section[id],
   border: 1px solid var(--rule);
 }
 .prose img + p {
-  font-family: var(--serif);
+  font-family: var(--font);
   font-size: .88rem;
   line-height: 1.5;
   color: var(--ink-faint);
@@ -717,7 +715,7 @@ section[id],
   border-top: 1px solid var(--rule-soft);
 }
 .back {
-  font-family: var(--serif);
+  font-family: var(--font);
   font-size: .95rem;
   color: var(--ink-soft);
   text-decoration: none;
