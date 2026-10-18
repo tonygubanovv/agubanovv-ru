@@ -1,7 +1,6 @@
 ---
 import Base from '@/layouts/Base.astro';
 import AdminPanel from '@/islands/AdminPanel.tsx';
-import { publish } from '@/lib/site-config';
 ---
 
 <Base
@@ -13,18 +12,15 @@ import { publish } from '@/lib/site-config';
   bodyClass="admin-body"
 >
   <div class="admin-shell shell">
-    <AdminPanel client:only="preact" />
-    <p class="admin-loading" data-nojs>Загружаю интерфейс публикации…</p>
+    <AdminPanel client:only="preact">
+      <p class="admin-loading" slot="fallback">Загружаю интерфейс публикации…</p>
+    </AdminPanel>
     <noscript>
       <p class="admin-loading">
         Для публикации нужен JavaScript: админка работает напрямую с GitHub Contents API из браузера и ничего не
         отправляет на третьи стороны.
       </p>
     </noscript>
-    <p class="admin-footnote">
-      Путь по умолчанию: <code>{publish.contentDir}</code> · ветка <code>{publish.branch}</code> · обложки
-      <code>{publish.coverDir}</code>. Значения берутся из переменных окружения сборки.
-    </p>
   </div>
 </Base>
 
@@ -41,13 +37,6 @@ import { publish } from '@/lib/site-config';
     color: var(--c-muted);
     font: var(--type-body-2);
     letter-spacing: var(--tracking-body-2);
-  }
-
-  .admin-footnote {
-    margin-block-start: 28px;
-    font: var(--type-body-3);
-    letter-spacing: var(--tracking-body-3);
-    color: var(--c-faint);
   }
 
   .admin {
