@@ -1,0 +1,112 @@
+---
+import Base from '@/layouts/Base.astro';
+import UtmBuilder from '@/islands/UtmBuilder.tsx';
+import { site } from '@/lib/site-config';
+import { tools } from '@/lib/tools';
+import { absolute, p } from '@/lib/utils';
+
+export function getStaticPaths() {
+  return tools.map((tool) => ({ params: { slug: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+const path = `/tools/${tool.slug}/`;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: tool.name,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Any (web)',
+    description: tool.description,
+    url: absolute(path),
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' },
+    featureList: [...tool.bullets],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: (tool.faq ?? []).map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  },
+];
+---
+
+<Base title={tool.name + ' — ' + site.wordmark} description={tool.description} path={path} jsonLd={jsonLd} wide>
+  <div class="shell tool-page">
+    <header class="tool-head">
+      <a class="back-link" href={p('/tools/')}>← Инструменты</a>
+      <h1>{tool.name}</h1><p>{tool.description}</p>
+    </header>
+    {
+      tool.slug === 'utm' && tool.status === 'live' ? (
+        <section class="tool-stage" aria-label="Конструктор ссылок">
+          <UtmBuilder client:idle />
+        </section>
+      ) : (
+        <p class="tool-soon">Инструмент пока в разработке.</p>
+      )
+    }
+    {
+      tool.faq?.length ? (
+        <div class="tool-faq">
+          {tool.faq.map((item) => (
+            <details>
+              <summary>{item.q}</summary>
+              <p>{item.a}</p>
+            </details>
+          ))}
+        </div>
+      ) : undefined
+    }
+  </div>
+</Base>
+<style>
+  .tool-page {
+    padding-block-start: var(--spacing-section);
+  }
+  .tool-head {
+    display: grid;
+    gap: 24px;
+    max-inline-size: 760px;
+  }
+  .back-link {
+    font: var(--type-body-3);
+    letter-spacing: var(--tracking-body-3);
+    color: var(--c-muted);
+    text-decoration: none;
+    margin-block-end: 8px;
+  }
+  .tool-head h1 {
+    font: var(--type-title-2);
+    letter-spacing: var(--tracking-title-2);
+  }
+  .tool-head > p {
+    color: var(--c-ink-soft);
+  }
+  .tool-stage,
+  .tool-soon {
+    margin-block-start: 48px;
+  }
+  .tool-faq {
+    max-inline-size: 760px;
+    margin-block-start: var(--spacing-section);
+  }
+  details {
+    border-block-end: 1px solid var(--c-line);
+    padding-block: 24px;
+  }
+  summary {
+    cursor: pointer;
+    font: var(--type-body-1);
+    letter-spacing: var(--tracking-body-1);
+  }
+  details p {
+    margin-block-start: 16px;
+    color: var(--c-ink-soft);
+  }
+</style>

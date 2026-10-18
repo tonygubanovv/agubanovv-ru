@@ -1,0 +1,60 @@
+---
+import { p } from '@/lib/utils';
+export interface Props {
+  title: string;
+  lead?: string;
+  more?: { href: string; label: string; hash?: string };
+  level?: 2 | 3;
+}
+const { title, lead, more, level = 2 } = Astro.props;
+const Heading = level === 2 ? 'h2' : 'h3';
+---
+
+<div class="section-head">
+  <div class="section-head-text">
+    <Heading>{title}</Heading>
+    {lead && <p>{lead}</p>}
+  </div>
+  {
+    more && (
+      <a class="section-more" href={`${p(more.href)}${more.hash ? `#${more.hash}` : ''}`}>
+        {more.label}
+        <span aria-hidden="true"> →</span>
+      </a>
+    )
+  }
+</div>
+<style>
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    margin-block-end: 32px;
+  }
+  .section-head-text {
+    display: grid;
+    gap: 16px;
+    max-inline-size: 60ch;
+  }
+  .section-head h2,
+  .section-head h3 {
+    font: var(--type-title-3);
+    letter-spacing: var(--tracking-title-3);
+  }
+  .section-head p {
+    font: var(--type-body-1);
+    letter-spacing: var(--tracking-body-1);
+    color: var(--c-muted);
+  }
+  .section-more {
+    font: var(--type-body-2);
+    letter-spacing: var(--tracking-body-2);
+    color: var(--c-accent);
+    text-decoration: none;
+  }
+  .section-more:hover {
+    color: var(--c-secondary-ink);
+  }
+</style>

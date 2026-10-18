@@ -1,6 +1,0 @@
-# Сайт закрыт от индексации через <meta name="robots" content="noindex, nofollow"> в index.html.
-# Обход намеренно не блокируется: роботы должны доходить до страницы и прочитать noindex.
-# Sitemap не публикуется.
-
-User-agent: *
-Disallow:

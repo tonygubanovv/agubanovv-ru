@@ -1,0 +1,23 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "verbatimModuleSyntax": true,
+    "allowSyntheticDefaultImports": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/components/*": ["src/components/*"],
+      "@/islands/*": ["src/islands/*"],
+      "@/lib/*": ["src/lib/*"]
+    }
+  },
+  "include": ["src/**/*", "scripts/**/*", "types/**/*", ".astro/types.d.ts", "astro.config.mjs"],
+  "exclude": ["dist", "node_modules"]
+}

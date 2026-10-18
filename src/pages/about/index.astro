@@ -1,0 +1,220 @@
+---
+import Base from '@/layouts/Base.astro';
+import SectionHead from '@/components/content/SectionHead.astro';
+import { faq, focus, formats, intro, working } from '@/lib/copy/about';
+import { site } from '@/lib/site-config';
+import { absolute } from '@/lib/utils';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.items.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    name: 'Подход к работе',
+    url: absolute('/about/'),
+    mainEntity: {
+      '@type': 'ProfessionalService',
+      name: site.wordmark,
+      areaServed: 'RU',
+      description: site.description,
+    },
+  },
+];
+---
+
+<Base
+  title={`Подход к работе — ${site.wordmark}`}
+  description="Как строится работа с ростом: диагностика, запуск, сопровождение. Форматы, стек инструментов и ответы на вопросы до старта."
+  path="/about/"
+  jsonLd={jsonLd}
+  wide
+>
+  <div class="shell about">
+    <header class="about-head">
+      <h1>{intro.title}</h1>
+      <p class="about-lead">{intro.lead}</p>
+    </header>
+
+    <section class="about-section" id="focus">
+      <SectionHead title={focus.title} />
+      <div class="focus-grid">
+        {
+          focus.items.map((item) => (
+            <article class="focus-card">
+              <h3 class="focus-title">{item.title}</h3>
+              <p class="focus-body">{item.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="about-section" id="formats">
+      <SectionHead title={formats.title} />
+      <div class="formats-grid">
+        {
+          formats.items.map((item) => (
+            <article class="format-card">
+              <h3 class="format-name">{item.name}</h3>
+              <p class="format-term">
+                {item.term} · {item.price}
+              </p>
+              <p class="format-body">{item.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="about-section" id="working">
+      <SectionHead title={working.title} />
+      <ul class="working-list">
+        {
+          working.items.map((item) => (
+            <li>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="about-section" id="faq">
+      <SectionHead title={faq.title} />
+      <div class="faq-list">
+        {
+          faq.items.map((item) => (
+            <details>
+              <summary>{item.q}</summary>
+              <p>{item.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="about-cta">
+      <h2>Начать с диагностики</h2>
+      <p>
+        Опишите продукт, текущие цифры и что не сходится. Отвечу в течение двух рабочих дней: подойду ли я для этой
+        задачи и какой формат имеет смысл.
+      </p>
+      <div class="about-cta-actions">
+        <a class="btn btn-primary" href={`mailto:${site.contact.email}`}>Письмо</a>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .about {
+    padding-block-start: var(--spacing-section);
+  }
+  .about-head {
+    display: grid;
+    gap: 24px;
+    max-inline-size: 760px;
+  }
+  .about-head h1 {
+    font: var(--type-title-2);
+    letter-spacing: var(--tracking-title-2);
+  }
+  .about-lead {
+    font: var(--type-subtitle-2);
+    letter-spacing: var(--tracking-subtitle-2);
+    color: var(--c-ink-soft);
+  }
+  .about-section,
+  .about-cta {
+    margin-block-start: var(--spacing-section);
+  }
+  .focus-grid,
+  .formats-grid {
+    display: grid;
+    gap: 40px 48px;
+  }
+  .focus-card,
+  .format-card {
+    display: grid;
+    align-content: start;
+    gap: 16px;
+    padding-block-start: 24px;
+    border-block-start: 1px solid var(--c-line);
+  }
+  .focus-title,
+  .format-name {
+    font: var(--type-title-4);
+    letter-spacing: var(--tracking-title-4);
+  }
+  .focus-body,
+  .format-body,
+  .working-list p {
+    color: var(--c-ink-soft);
+    font: var(--type-body-2);
+    letter-spacing: var(--tracking-body-2);
+    max-inline-size: 56ch;
+  }
+  .format-term {
+    color: var(--c-muted);
+    font: var(--type-body-3);
+    letter-spacing: var(--tracking-body-3);
+  }
+  .working-list {
+    display: grid;
+    gap: 32px 48px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .working-list li {
+    display: grid;
+    gap: 12px;
+  }
+  .working-list h3 {
+    font: var(--type-subtitle-1);
+    letter-spacing: var(--tracking-subtitle-1);
+  }
+  .faq-list {
+    max-inline-size: 760px;
+  }
+  .faq-list details {
+    border-block-end: 1px solid var(--c-line);
+    padding-block: 24px;
+  }
+  .faq-list summary {
+    cursor: pointer;
+    font: var(--type-body-1-accent);
+    letter-spacing: var(--tracking-body-1-accent);
+  }
+  .faq-list p {
+    margin-block-start: 16px;
+    color: var(--c-ink-soft);
+  }
+  .about-cta {
+    display: grid;
+    justify-items: start;
+    gap: 24px;
+    max-inline-size: 640px;
+  }
+  .about-cta p {
+    color: var(--c-ink-soft);
+  }
+  @media (min-width: 1280px) {
+    .focus-grid,
+    .working-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .formats-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

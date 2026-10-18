@@ -1,0 +1,407 @@
+---
+import Base from '@/layouts/Base.astro';
+import AdminPanel from '@/islands/AdminPanel.tsx';
+import { publish } from '@/lib/site-config';
+---
+
+<Base
+  title="Публикация материалов"
+  description="Админка для публикации статей и кейсов напрямую в репозиторий через GitHub Contents API."
+  path="/admin/"
+  noindex
+  wide
+  bodyClass="admin-body"
+>
+  <div class="admin-shell shell">
+    <AdminPanel client:only="preact" />
+    <p class="admin-loading" data-nojs>Загружаю интерфейс публикации…</p>
+    <noscript>
+      <p class="admin-loading">
+        Для публикации нужен JavaScript: админка работает напрямую с GitHub Contents API из браузера и ничего не
+        отправляет на третьи стороны.
+      </p>
+    </noscript>
+    <p class="admin-footnote">
+      Путь по умолчанию: <code>{publish.contentDir}</code> · ветка <code>{publish.branch}</code> · обложки
+      <code>{publish.coverDir}</code>. Значения берутся из переменных окружения сборки.
+    </p>
+  </div>
+</Base>
+
+<style is:global>
+  .admin-body .site-footer {
+    display: none;
+  }
+
+  .admin-shell {
+    padding-block: clamp(20px, 2.4vw, 40px) 80px;
+  }
+
+  .admin-loading {
+    color: var(--c-muted);
+    font: var(--type-body-2);
+    letter-spacing: var(--tracking-body-2);
+  }
+
+  .admin-footnote {
+    margin-block-start: 28px;
+    font: var(--type-body-3);
+    letter-spacing: var(--tracking-body-3);
+    color: var(--c-faint);
+  }
+
+  .admin {
+    display: grid;
+    gap: 18px;
+  }
+
+  .admin-bar {
+    padding: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .admin-h1 {
+    font: var(--type-title-3);
+    letter-spacing: var(--tracking-title-3);
+    margin-block: 6px 4px;
+  }
+
+  .admin-repo,
+  .admin-muted {
+    font: var(--type-body-4);
+    letter-spacing: var(--tracking-body-4);
+
+    color: var(--c-muted);
+  }
+
+  .admin-bar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .admin-notice {
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    font: var(--type-body-2);
+    letter-spacing: var(--tracking-body-2);
+    border: 1px solid var(--c-line);
+    background: var(--c-surface);
+  }
+
+  .admin-notice[data-level='ok'] {
+    border-color: var(--c-positive);
+    color: var(--c-positive);
+    background: var(--c-positive-soft);
+  }
+
+  .admin-notice[data-level='error'] {
+    border-color: var(--c-negative);
+    color: var(--c-negative);
+    background: var(--c-negative-soft);
+  }
+
+  .admin-issues {
+    list-style: none;
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--c-negative);
+    background: var(--c-negative-soft);
+    display: grid;
+    gap: 4px;
+    font: var(--type-body-3);
+    letter-spacing: var(--tracking-body-3);
+    color: var(--c-negative);
+  }
+
+  .admin-issues span {
+    font-family: var(--font-onest);
+    letter-spacing: 0.01em;
+    margin-inline-end: 6px;
+  }
+
+  .admin-deploy ul {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 6px;
+  }
+
+  .admin-deploy a {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font: var(--type-body-3);
+    letter-spacing: var(--tracking-body-3);
+    text-decoration: none;
+    color: var(--c-ink-soft);
+    padding: 8px 10px;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-sm);
+    background: var(--c-surface);
+  }
+
+  .admin-deploy span[data-state='completed'],
+  .admin-deploy span[data-state='success'] {
+    color: var(--c-positive);
+  }
+
+  .admin-deploy span[data-state='failure'] {
+    color: var(--c-negative);
+  }
+
+  .run-meta {
+    font-family: var(--font-onest);
+    color: var(--c-faint);
+  }
+
+  .admin-table {
+    inline-size: 100%;
+    border-collapse: collapse;
+    font: var(--type-body-2);
+    letter-spacing: var(--tracking-body-2);
+  }
+
+  .admin-table th {
+    text-align: start;
+    padding: 10px 12px;
+    border-block-end: 1px solid var(--c-line-strong);
+
+    font: var(--type-body-4);
+    letter-spacing: var(--tracking-body-4);
+
+    color: var(--c-muted);
+  }
+
+  .admin-table td {
+    padding: 12px;
+    border-block-end: 1px solid var(--c-line);
+    vertical-align: top;
+  }
+
+  .row-title {
+    display: block;
+
+    font: var(--type-subtitle-1);
+    letter-spacing: var(--tracking-subtitle-1);
+    color: var(--c-ink);
+  }
+
+  .row-path {
+    display: block;
+
+    font: var(--type-body-4);
+    letter-spacing: var(--tracking-body-4);
+    color: var(--c-faint);
+    margin-block-start: 2px;
+  }
+
+  .chip[data-state='draft'] {
+    border-color: var(--c-info);
+    color: var(--c-info);
+  }
+
+  .chip[data-state='live'] {
+    border-color: var(--c-positive);
+    color: var(--c-positive);
+  }
+
+  .row-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .login-grid {
+    display: grid;
+    gap: 20px;
+  }
+
+  .login-form {
+    padding: 20px;
+    display: grid;
+    gap: 14px;
+    align-content: start;
+  }
+
+  .login-row {
+    display: grid;
+    gap: 12px;
+  }
+
+  .login-notes {
+    padding: 20px;
+  }
+
+  .login-notes h2 {
+    font: var(--type-title-4);
+    letter-spacing: var(--tracking-title-4);
+    margin-block-end: 12px;
+  }
+
+  .login-notes ol {
+    margin: 0;
+    padding-inline-start: 1.2em;
+    display: grid;
+    gap: 10px;
+    font: var(--type-body-2);
+    letter-spacing: var(--tracking-body-2);
+    color: var(--c-ink-soft);
+  }
+
+  .login-warning {
+    margin-block-start: 14px;
+    padding: 12px;
+    border: 1px solid var(--c-negative);
+    border-radius: var(--radius-sm);
+    font: var(--type-body-3);
+    letter-spacing: var(--tracking-body-3);
+    color: var(--c-negative);
+  }
+
+  .editor-grid {
+    display: grid;
+    gap: 18px;
+    align-items: start;
+  }
+
+  .editor-form {
+    padding: 18px;
+    display: grid;
+    gap: 18px;
+  }
+
+  .editor-form fieldset {
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    display: grid;
+    gap: 12px;
+    margin: 0;
+  }
+
+  .editor-form legend {
+    font: var(--type-body-4);
+    letter-spacing: var(--tracking-body-4);
+
+    color: var(--c-muted);
+    padding-inline: 6px;
+  }
+
+  .editor-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .metrics-title {
+    font: var(--type-body-3);
+    letter-spacing: var(--tracking-body-3);
+
+    color: var(--c-ink-soft);
+  }
+
+  .metric-row {
+    display: grid;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-sm);
+    background: var(--c-bg-sunk);
+  }
+
+  .cover-row {
+    display: grid;
+    gap: 12px;
+  }
+
+  .cover-current {
+    font: var(--type-body-4);
+    letter-spacing: var(--tracking-body-4);
+    color: var(--c-muted);
+  }
+
+  .editor-body {
+    display: grid;
+    gap: 12px;
+  }
+
+  .editor-tabs {
+    justify-self: start;
+  }
+
+  .editor-help {
+    font: var(--type-body-3);
+    letter-spacing: var(--tracking-body-3);
+    color: var(--c-muted);
+    padding: 10px 12px;
+    border: 1px dashed var(--c-line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--c-bg-sunk);
+  }
+
+  .editor-help p {
+    margin-block-start: 8px;
+  }
+
+  .editor-shortcuts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chip-button {
+    font-family: var(--font-onest);
+    cursor: pointer;
+  }
+
+  .editor-textarea {
+    min-block-size: 60vh;
+    line-height: 1.75;
+  }
+
+  .editor-preview {
+    padding: 20px;
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-lg);
+    background: var(--c-surface);
+    min-block-size: 40vh;
+    max-inline-size: none;
+  }
+
+  @media (min-width: 1280px) {
+    .login-grid,
+    .editor-grid {
+      grid-template-columns: minmax(0, 0.62fr) minmax(0, 1fr);
+    }
+
+    .login-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    }
+
+    .editor-grid {
+      grid-template-columns: minmax(360px, 0.55fr) minmax(0, 1fr);
+    }
+
+    .metric-row {
+      grid-template-columns: 110px minmax(0, 1fr) minmax(0, 1fr) 150px auto;
+      align-items: center;
+    }
+
+    .cover-row,
+    .login-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .editor-body {
+      position: sticky;
+      inset-block-start: calc(var(--header-h) + 16px);
+    }
+  }
+</style>

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" width="1200" height="520" role="img" aria-labelledby="title desc">
+  <title id="title">Три слоя отчёта</title>
+  <desc id="desc">Схема: сверху вывод и решение, в середине разрезы по каналу, этапу воронки и когорте, внизу сырые выгрузки, методика и допущения.</desc>
+  <defs>
+    <style>
+      .h { font: 600 25px/1.2 system-ui, sans-serif; fill: #242729; }
+      .s { font: 400 19px/1.4 system-ui, sans-serif; fill: #4d5356; }
+      .k { font: 600 17px/1.2 system-ui, sans-serif; fill: #666d70; }
+      .n { font: 600 21px/1 system-ui, sans-serif; fill: #ffffff; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="520" rx="18" fill="#f5f5f4" />
+  <rect x="8.5" y="8.5" width="1183" height="503" rx="14" fill="none" stroke="#dedfdd" stroke-width="1.5" />
+
+  <text class="k" x="60" y="52">Отчёт читается сверху вниз</text>
+
+  <g>
+    <rect x="150" y="84" width="990" height="108" rx="12" fill="#fafaf9" stroke="#b8bfbe" />
+    <rect x="150" y="84" width="6" height="108" rx="3" fill="#04585a" />
+    <circle cx="104" cy="138" r="22" fill="#04585a" />
+    <text class="n" x="104" y="146" text-anchor="middle">1</text>
+    <text class="h" x="184" y="128">Вывод и решение</text>
+    <text class="s" x="184" y="162">Что изменилось, что делаем, сколько это стоит, до какой даты, по какому признаку сворачиваем</text>
+  </g>
+
+  <g>
+    <rect x="150" y="212" width="990" height="108" rx="12" fill="#fafaf9" stroke="#b8bfbe" />
+    <rect x="150" y="212" width="6" height="108" rx="3" fill="#34506b" />
+    <circle cx="104" cy="266" r="22" fill="#34506b" />
+    <text class="n" x="104" y="274" text-anchor="middle">2</text>
+    <text class="h" x="184" y="256">Разрезы</text>
+    <text class="s" x="184" y="290">Каналы и кампании, этапы воронки, когорты по месяцу первой оплаты — абсолютные числа рядом с долями</text>
+  </g>
+
+  <g>
+    <rect x="150" y="340" width="990" height="108" rx="12" fill="#eeeeed" stroke="#dedfdd" />
+    <rect x="150" y="340" width="6" height="108" rx="3" fill="#787f82" />
+    <circle cx="104" cy="394" r="22" fill="#666d70" />
+    <text class="n" x="104" y="402" text-anchor="middle">3</text>
+    <text class="h" x="184" y="384">Данные, методика, допущения</text>
+    <text class="s" x="184" y="418">Выгрузки из CRM и кабинетов, дата отсечения, правила склейки источников, история пересчётов</text>
+  </g>
+
+  <g stroke="#b8bfbe" stroke-width="1.5" fill="none">
+    <path d="M104 160v40" />
+    <path d="M104 288v40" />
+    <path d="M97 196l7 8 7-8" />
+    <path d="M97 324l7 8 7-8" />
+  </g>
+
+  <text class="s" x="60" y="486">Нижний слой открывают по запросу. Если вывод спорится, идут в разрезы, а не в выгрузки.</text>
+</svg>
