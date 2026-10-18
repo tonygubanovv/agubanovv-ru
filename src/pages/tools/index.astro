@@ -1,0 +1,98 @@
+---
+import Base from '@/layouts/Base.astro';
+import { site } from '@/lib/site-config';
+import { tools } from '@/lib/tools';
+import { absolute, p } from '@/lib/utils';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Инструменты маркетолога',
+  url: absolute('/tools/'),
+  hasPart: tools.map((tool) => ({
+    '@type': 'SoftwareApplication',
+    name: tool.name,
+    url: absolute(p(`/tools/${tool.slug}/`)),
+  })),
+};
+---
+
+<Base
+  title={'Инструменты — ' + site.wordmark}
+  description="Инструменты для ежедневной работы маркетолога. Без регистрации."
+  path="/tools/"
+  jsonLd={[jsonLd]}
+  wide
+>
+  <div class="shell tools-page">
+    <header class="page-head">
+      <h1>Инструменты</h1><p>Небольшие утилиты для ежедневных задач. Работают в браузере, без регистрации.</p>
+    </header>
+    <div class="tools-list">
+      {
+        tools
+          .filter((tool) => tool.status === 'live')
+          .map((tool) => (
+            <article>
+              <h2>
+                <a href={p('/tools/' + tool.slug + '/')}>{tool.name}</a>
+              </h2>
+              <p>{tool.tagline}</p>
+              <a class="tool-open" href={p('/tools/' + tool.slug + '/')}>
+                Открыть →
+              </a>
+            </article>
+          ))
+      }
+    </div>
+  </div>
+</Base>
+<style>
+  .tools-page {
+    padding-block-start: var(--spacing-section);
+  }
+  .page-head {
+    display: grid;
+    gap: 24px;
+    max-inline-size: 760px;
+    margin-block-end: 48px;
+  }
+  .page-head h1 {
+    font: var(--type-title-2);
+    letter-spacing: var(--tracking-title-2);
+  }
+  .page-head p {
+    font: var(--type-subtitle-2);
+    letter-spacing: var(--tracking-subtitle-2);
+    color: var(--c-ink-soft);
+  }
+  .tools-list {
+    max-inline-size: 760px;
+  }
+  article {
+    display: grid;
+    justify-items: start;
+    gap: 16px;
+    padding-block: 32px;
+    border-block: 1px solid var(--c-line);
+  }
+  h2 {
+    font: var(--type-title-4);
+    letter-spacing: var(--tracking-title-4);
+  }
+  article p {
+    color: var(--c-muted);
+  }
+  a {
+    text-decoration: none;
+  }
+  .tool-open {
+    color: var(--c-accent);
+    font: var(--type-body-2);
+    letter-spacing: var(--tracking-body-2);
+    margin-block-start: 8px;
+  }
+  a:hover {
+    color: var(--c-secondary-ink);
+  }
+</style>

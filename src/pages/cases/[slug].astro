@@ -1,0 +1,25 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Material from '@/layouts/Material.astro';
+
+export async function getStaticPaths() {
+  const cases = await getCollection('blog', ({ data }) => data.kind === 'case' && !data.draft);
+  return cases.map((entry) => ({ params: { slug: entry.id } }));
+}
+
+const slug = Astro.params.slug as string;
+const entry = (await getEntry('blog', slug))!;
+const rendered = await render(entry);
+
+const all = await getCollection('blog', ({ data }) => !data.draft);
+const related = all
+  .filter((item) => item.id !== slug && !entry.data.related.includes(item.id))
+  .filter((item) => item.data.kind === 'case' || item.data.topic === entry.data.topic)
+  .slice(0, 2);
+
+const extra = entry.data.related
+  .map((s) => all.find((item) => item.id === s))
+  .filter((item): item is (typeof all)[number] => Boolean(item));
+---
+
+<Material entry={entry} rendered={rendered} related={[...extra, ...related].slice(0, 3)} />

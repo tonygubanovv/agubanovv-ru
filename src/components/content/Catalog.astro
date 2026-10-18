@@ -1,0 +1,127 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import MaterialCard from './MaterialCard.astro';
+import SectionHead from './SectionHead.astro';
+export interface Props {
+  entries: CollectionEntry<'blog'>[];
+  title?: string;
+  lead?: string;
+  scope?: 'article' | 'case' | 'all';
+  limit?: number;
+  moreHref?: string;
+  moreLabel?: string;
+  filterable?: boolean;
+}
+const {
+  entries,
+  title,
+  lead,
+  scope = 'all',
+  limit,
+  moreHref,
+  moreLabel = 'Все материалы',
+  filterable = false,
+} = Astro.props;
+const matching = scope === 'all' ? entries : entries.filter(({ data }) => data.kind === scope);
+const shown = limit ? matching.slice(0, limit) : matching;
+---
+
+<div class="catalog" data-catalog>
+  {
+    title && (
+      <SectionHead title={title} lead={lead} more={moreHref ? { href: moreHref, label: moreLabel } : undefined} />
+    )
+  }
+  {
+    filterable && (
+      <div class="catalog-filters" role="group" aria-label="Тип материала">
+        <button type="button" data-kind-filter="" aria-pressed="true">
+          Все
+        </button>
+        <button type="button" data-kind-filter="case" aria-pressed="false">
+          Кейсы
+        </button>
+        <button type="button" data-kind-filter="article" aria-pressed="false">
+          Заметки
+        </button>
+      </div>
+    )
+  }
+  <div class="catalog-grid">
+    {
+      shown.map((entry) => (
+        <div data-entry-kind={entry.data.kind}>
+          <MaterialCard entry={entry} />
+        </div>
+      ))
+    }
+  </div>
+  <p class="catalog-empty" data-empty hidden>Материалов этого типа пока нет.</p>
+</div>
+<style>
+  .catalog-grid {
+    display: grid;
+    gap: 16px 48px;
+  }
+  .catalog-grid > * {
+    min-inline-size: 0;
+  }
+  .catalog-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-block-end: 24px;
+  }
+  .catalog-filters button {
+    padding: 8px 0;
+    border: 0;
+    border-block-end: 2px solid transparent;
+    background: none;
+    cursor: pointer;
+    color: var(--c-muted);
+    font: var(--type-button-sm);
+    letter-spacing: var(--tracking-button-sm);
+  }
+  .catalog-filters button[aria-pressed='true'] {
+    color: var(--c-accent);
+    border-color: currentColor;
+  }
+  .catalog-filters button:hover {
+    color: var(--c-secondary-ink);
+  }
+  .catalog-empty {
+    padding-block: 24px;
+    color: var(--c-muted);
+  }
+  @media (min-width: 1280px) {
+    .catalog-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-catalog]').forEach((catalog) => {
+    const buttons = [...catalog.querySelectorAll<HTMLButtonElement>('[data-kind-filter]')];
+    if (!buttons.length) return;
+    const entries = [...catalog.querySelectorAll<HTMLElement>('[data-entry-kind]')];
+    const apply = (kind: string) => {
+      let count = 0;
+      entries.forEach((entry) => {
+        entry.hidden = Boolean(kind && entry.dataset.entryKind !== kind);
+        if (!entry.hidden) count++;
+      });
+      buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.kindFilter === kind)));
+      const empty = catalog.querySelector<HTMLElement>('[data-empty]');
+      if (empty) empty.hidden = count > 0;
+    };
+    buttons.forEach((button) =>
+      button.addEventListener('click', () => {
+        const kind = button.dataset.kindFilter ?? '';
+        apply(kind);
+        history.replaceState(null, '', `${location.pathname}${kind ? `#kind=${kind}` : ''}`);
+      }),
+    );
+    const kind = new URLSearchParams(location.hash.slice(1)).get('kind');
+    if (kind === 'case' || kind === 'article') apply(kind);
+  });
+</script>

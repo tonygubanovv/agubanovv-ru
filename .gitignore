@@ -1,12 +1,14 @@
-# личные рабочие файлы — не для репозитория
-resume.txt
-rtf2txt.mjs
-live-probe.html
-server.log
-err.txt
-*.qoder.site
-
 node_modules/
 dist/
+.astro/
 .env
-.env.*
+.env.local
+.DS_Store
+*.log
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+coverage/
+.cache/
+# локальные заготовки и выгрузки админки не коммитим
+src/admin-drafts/

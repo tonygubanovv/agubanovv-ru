@@ -1,0 +1,89 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import { site } from '@/lib/site-config';
+import { catalogHref, p } from '@/lib/utils';
+
+const recent = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 4);
+---
+
+<Base
+  title={`Страница не найдена — ${site.wordmark}`}
+  description="Такой страницы нет: возможно, материал переехал или ссылка опечаталась."
+  path="/404.html"
+  noindex
+  wide
+>
+  <div class="shell not-found">
+    <p class="eyebrow">Ошибка 404</p>
+    <h1>Страница не найдена</h1>
+    <p>
+      Такое бывает, если ссылка устарела или в ней опечатка. Ниже — свежие материалы и разделы, где обычно живут нужные
+      страницы.
+    </p>
+
+    <nav class="not-found-links" aria-label="Разделы">
+      <a class="chip" href={p('/blog/')}>Разборы</a>
+      <a class="chip" href={catalogHref('case')}>Кейсы</a>
+      <a class="chip" href={p('/tools/')}>Инструменты</a>
+      <a class="chip" href={p('/about/')}>Подход</a>
+    </nav>
+
+    {
+      recent.length > 0 && (
+        <ul class="not-found-recent">
+          {recent.map((entry) => (
+            <li>
+              <a href={p(`${entry.data.kind === 'case' ? '/cases' : '/blog'}/${entry.id}/`)}>{entry.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  .not-found {
+    padding-block: clamp(48px, 6vw, 120px);
+    display: grid;
+    gap: 14px;
+    justify-items: start;
+  }
+
+  .not-found h1 {
+    font: var(--type-title-2);
+    letter-spacing: var(--tracking-title-2);
+  }
+
+  .not-found p {
+    font: var(--type-subtitle-2);
+    letter-spacing: var(--tracking-subtitle-2);
+    color: var(--c-muted);
+    max-inline-size: 62ch;
+  }
+
+  .not-found-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-block-start: 12px;
+  }
+
+  .not-found-recent {
+    list-style: none;
+    margin: 18px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+
+  .not-found-recent a {
+    font: var(--type-subtitle-1);
+    letter-spacing: var(--tracking-subtitle-1);
+    color: var(--c-ink);
+    text-decoration-color: var(--c-accent-tint);
+  }
+</style>

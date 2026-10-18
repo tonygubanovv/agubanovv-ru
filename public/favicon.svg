@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="digital/pmm">
+  <rect width="32" height="32" rx="8" fill="#04585a" />
+  <path d="M7 24V10.5A3.5 3.5 0 0 1 10.5 7H24" fill="none" stroke="#ecf4f1" stroke-width="2.4" stroke-linecap="round" />
+  <path d="M13 24v-7.5A3.5 3.5 0 0 1 16.5 13H24" fill="none" stroke="#c0724e" stroke-width="2.4" stroke-linecap="round" />
+</svg>
