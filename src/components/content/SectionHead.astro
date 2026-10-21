@@ -12,6 +12,7 @@ const Heading = level === 2 ? 'h2' : 'h3';
 
 <div class="section-head">
   <div class="section-head-text">
+    <span class="section-eyebrow" aria-hidden="true">—</span>
     <Heading>{title}</Heading>
     {lead && <p>{lead}</p>}
   </div>
@@ -32,6 +33,15 @@ const Heading = level === 2 ? 'h2' : 'h3';
     justify-content: space-between;
     gap: 24px;
     margin-block-end: 32px;
+    border-block-start: 1px solid var(--c-tech-line);
+    padding-block-start: 40px;
+  }
+  .section-eyebrow {
+    display: inline-block;
+    inline-size: 28px;
+    block-size: 1px;
+    background: var(--c-accent);
+    margin-block-end: 12px;
   }
   .section-head-text {
     display: grid;

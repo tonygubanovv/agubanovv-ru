@@ -32,8 +32,8 @@ const jsonLd = [
   jsonLd={jsonLd}
   wide
 >
-  <div class="shell">
-    <div class="catalog-intro">
+  <div class="shell catalog-page tech-grid">
+    <div class="catalog-intro glow-box">
       <h1>{intro.title}</h1>
       <p>{intro.lead}</p>
     </div>
@@ -42,21 +42,28 @@ const jsonLd = [
 </Base>
 
 <style>
+  .catalog-page {
+    position: relative;
+    isolation: isolate;
+  }
   .catalog-intro {
     padding-block: var(--spacing-section) 48px;
     display: grid;
     gap: 24px;
     max-inline-size: 74ch;
+    position: relative;
+    z-index: 1;
   }
 
   .catalog-intro h1 {
     font: var(--type-title-2);
     letter-spacing: var(--tracking-title-2);
+    line-height: 1.08;
   }
 
   .catalog-intro p:last-child {
     font: var(--type-subtitle-2);
     letter-spacing: var(--tracking-subtitle-2);
-    color: var(--c-muted);
+    color: var(--c-ink-soft);
   }
 </style>

@@ -46,19 +46,27 @@
   --c-info: #34506b;
   --c-info-soft: #dde6ee;
 
+  /* Техно-акценты: неоновое свечение и глубокие поверхности. */
+  --c-glow: #0e9aa3;
+  --c-glow-soft: rgba(14, 154, 163, 0.16);
+  --c-glow-line: rgba(14, 154, 163, 0.35);
+  --c-tech-line: rgba(4, 88, 90, 0.28);
+  --c-surface-tech: #f2f4f3;
+
   /* Liquid glass. */
   --glass-bg: rgba(250, 250, 249, 0.78);
   --glass-bg-strong: rgba(250, 250, 249, 0.94);
   --glass-border: rgba(36, 39, 41, 0.14);
   --glass-highlight: rgba(255, 255, 255, 0.72);
   --glass-shadow: 0 18px 48px -24px rgba(36, 39, 41, 0.24);
-  --glass-blur: 20px;
-  --glass-saturate: 150%;
+  --glass-blur: 24px;
+  --glass-saturate: 160%;
 
   /* Тени и зерно. */
   --sh-1: 0 1px 2px rgba(36, 39, 41, 0.05);
   --sh-2: 0 10px 28px -18px rgba(36, 39, 41, 0.22);
   --sh-3: 0 28px 60px -34px rgba(36, 39, 41, 0.3);
+  --sh-glow: 0 0 40px rgba(14, 154, 163, 0.18);
   --grain-opacity: 0.015;
 
   --theme-switch-ms: 260ms;
@@ -85,6 +93,13 @@
   --c-secondary: #c0724e;
   --c-secondary-ink: #dca383;
   --c-hover-ink: #201711;
+
+  /* Техно-акценты (тёмная тема). */
+  --c-glow: #5fd0d5;
+  --c-glow-soft: rgba(95, 208, 213, 0.14);
+  --c-glow-line: rgba(95, 208, 213, 0.28);
+  --c-tech-line: rgba(131, 186, 182, 0.32);
+  --c-surface-tech: #1e2223;
 
   --c-positive: #7fc0a0;
   --c-positive-soft: rgba(127, 192, 160, 0.16);
@@ -135,6 +150,12 @@
   --color-info: var(--c-info);
   --color-info-soft: var(--c-info-soft);
 
+  --color-glow: var(--c-glow);
+  --color-glow-soft: var(--c-glow-soft);
+  --color-glow-line: var(--c-glow-line);
+  --color-tech-line: var(--c-tech-line);
+  --color-surface-tech: var(--c-surface-tech);
+
   --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -159,6 +180,7 @@
   --shadow-1: var(--sh-1);
   --shadow-2: var(--sh-2);
   --shadow-3: var(--sh-3);
+  --shadow-glow: var(--sh-glow);
 }
 
 /* ------------------------------------------------------------ primitives -- */
@@ -602,7 +624,113 @@
   }
 }
 
-/* ------------------------------------------------------------------ prose -- */
+/* --------------------------------------------------------------- tech utils */
+.tech-grid {
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.45;
+  background-image: radial-gradient(var(--c-tech-line) 0.6px, transparent 0.6px),
+    radial-gradient(var(--c-tech-line) 0.6px, transparent 0.6px);
+  background-size: 24px 24px;
+  background-position: 0 0, 12px 12px;
+  mask-image: radial-gradient(circle at 50% 50%, black 35%, transparent 85%);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, black 35%, transparent 85%);
+}
+
+.glow-box {
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-box::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  z-index: -1;
+  background: radial-gradient(
+    600px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    var(--c-glow-soft),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity var(--duration-base) var(--ease-glide);
+}
+
+.glow-box:hover::after,
+.glow-box:focus-within::after {
+  opacity: 1;
+}
+
+.border-tech {
+  border: 1px solid var(--c-tech-line);
+}
+
+.badge-tech {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--c-glow-line);
+  background: var(--c-glow-soft);
+  color: var(--c-accent);
+  font: var(--type-body-4);
+  letter-spacing: var(--tracking-body-4);
+  text-decoration: none;
+}
+
+.badge-tech:hover {
+  background: var(--c-glow-line);
+  color: var(--c-accent-ink);
+}
+
+/* Радиальный градиент для hero-зоны — статичный, без keyframes. */
+.hero-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    900px circle at 10% 10%,
+    var(--c-glow-soft),
+    transparent 55%
+  );
+}
+
+/* Усиленное стекло для техно-панелей. */
+.glass-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-strong::before {
+  content: '';
+  position: absolute;
+  inset-inline: 10%;
+  inset-block-start: 0;
+  block-size: 1px;
+  background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+  pointer-events: none;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-strong {
+    background: var(--c-surface);
+  }
+}
+
+/* ---------------------------------------------------------------- prose -- */
 @layer prose {
   .prose {
     font: var(--type-body-1);

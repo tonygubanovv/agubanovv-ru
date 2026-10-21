@@ -9,9 +9,9 @@ const { data, id } = entry;
 const href = p(`${data.kind === 'case' ? '/cases' : '/blog'}/${id}/`);
 ---
 
-<article class="material-card">
+<article class="material-card glow-box">
   <a class="material-link" href={href}>
-    <span class="material-kind">{data.kind === 'case' ? 'Кейс' : 'Заметка'}</span>
+    <span class="material-kind badge-tech">{data.kind === 'case' ? 'Кейс' : 'Заметка'}</span>
     <h3>{data.title}</h3>
     <p>{data.dek}</p>
   </a>
@@ -19,20 +19,25 @@ const href = p(`${data.kind === 'case' ? '/cases' : '/blog'}/${id}/`);
 <style>
   .material-card {
     min-inline-size: 0;
-    border-block-start: 1px solid var(--c-line);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius-lg);
+    background: var(--c-surface);
+    transition:
+      border-color var(--duration-base) var(--ease-glide),
+      box-shadow var(--duration-base) var(--ease-glide);
   }
   .material-link {
     display: grid;
     align-content: start;
     gap: 12px;
     block-size: 100%;
-    padding-block: 24px;
+    padding: 24px;
     text-decoration: none;
   }
   .material-kind {
     font: var(--type-body-3);
     letter-spacing: var(--tracking-body-3);
-    color: var(--c-muted);
+    color: var(--c-accent);
   }
   .material-link h3 {
     font: var(--type-title-4);
@@ -48,5 +53,9 @@ const href = p(`${data.kind === 'case' ? '/cases' : '/blog'}/${id}/`);
   }
   .material-link:hover h3 {
     color: var(--c-secondary-ink);
+  }
+  .material-card:hover {
+    border-color: var(--c-glow-line);
+    box-shadow: var(--shadow-glow);
   }
 </style>

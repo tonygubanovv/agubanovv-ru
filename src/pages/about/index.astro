@@ -102,14 +102,14 @@ const jsonLd = [
       </div>
     </section>
 
-    <section class="about-cta">
+    <section class="about-cta glass-strong">
       <h2>Начать с диагностики</h2>
       <p>
         Опишите продукт, текущие цифры и что не сходится. Отвечу в течение двух рабочих дней: подойду ли я для этой
         задачи и какой формат имеет смысл.
       </p>
       <div class="about-cta-actions">
-        <a class="btn btn-primary" href={`mailto:${site.contact.email}`}>Письмо</a>
+        <a class="btn btn-primary glow-box" href={`mailto:${site.contact.email}`}>Письмо</a>
       </div>
     </section>
   </div>
@@ -148,7 +148,17 @@ const jsonLd = [
     align-content: start;
     gap: 16px;
     padding-block-start: 24px;
-    border-block-start: 1px solid var(--c-line);
+    border: 1px solid var(--c-tech-line);
+    border-radius: var(--radius-lg);
+    background: var(--c-surface);
+    transition:
+      border-color var(--duration-base) var(--ease-glide),
+      box-shadow var(--duration-base) var(--ease-glide);
+  }
+  .focus-card:hover,
+  .format-card:hover {
+    border-color: var(--c-glow-line);
+    box-shadow: var(--shadow-glow);
   }
   .focus-title,
   .format-name {

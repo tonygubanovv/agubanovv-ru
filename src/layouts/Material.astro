@@ -55,9 +55,9 @@ const jsonLd = [
 
     {
       isCase && (
-        <ul class="case-metrics" aria-label="Результаты проекта">
+        <ul class="case-metrics glow-box" aria-label="Результаты проекта">
           {data.metrics.slice(0, 2).map((metric) => (
-            <li>
+            <li class="metric-card">
               <span class="metric-value">{metric.value}</span>
               <span class="metric-label">{metric.label}</span>
             </li>
@@ -120,27 +120,44 @@ const jsonLd = [
   .material-title {
     font: var(--type-title-2);
     letter-spacing: var(--tracking-title-2);
+    line-height: 1.08;
   }
   .material-dek {
     font: var(--type-subtitle-2);
     letter-spacing: var(--tracking-subtitle-2);
     color: var(--c-ink-soft);
+    max-inline-size: 60ch;
   }
   .material-meta {
     font: var(--type-body-3);
     letter-spacing: var(--tracking-body-3);
     color: var(--c-muted);
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  .material-meta time {
+    padding: 4px 10px;
+    border: 1px solid var(--c-tech-line);
+    border-radius: var(--radius-pill);
+    background: var(--c-bg-sunk);
   }
   .material-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     margin-block-start: 48px;
+    border-block-start: 1px solid var(--c-tech-line);
+    padding-block-start: 40px;
   }
   .material-body {
     min-inline-size: 0;
   }
   .material-cover {
     margin: 0 0 32px;
+    border: 1px solid var(--c-tech-line);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--sh-3);
   }
   .case-metrics {
     display: grid;
@@ -154,6 +171,19 @@ const jsonLd = [
   .case-metrics li {
     display: grid;
     gap: 8px;
+  }
+  .metric-card {
+    padding: 20px;
+    border: 1px solid var(--c-tech-line);
+    border-radius: var(--radius-lg);
+    background: var(--c-surface);
+    transition:
+      border-color var(--duration-base) var(--ease-glide),
+      box-shadow var(--duration-base) var(--ease-glide);
+  }
+  .metric-card:hover {
+    border-color: var(--c-glow-line);
+    box-shadow: var(--shadow-glow);
   }
   .case-metrics .metric-value {
     color: var(--c-accent);
