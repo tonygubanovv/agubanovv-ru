@@ -1,14 +1,21 @@
+# Dependencies
 node_modules/
-dist/
-.astro/
-.env
-.env.local
+
+# Next.js
+.next/
+out/
+
+# Misc
 .DS_Store
 *.log
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.idea/
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
-coverage/
-.cache/
-# локальные заготовки и выгрузки админки не коммитим
-src/admin-drafts/

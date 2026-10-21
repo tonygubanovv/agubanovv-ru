@@ -1,0 +1,103 @@
+/* ============================================================================
+   AGUBANOVV.RU · дизайн-токены
+   Единый источник правды: цвета, размеры, отступы, радиусы, тени, анимация.
+   Любое изменение дизайна вносится только здесь.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  /* ------------------------------------------------------------ palette ---
+   * Темная технологическая база. Акцент — неоновый циан (fingerprint.com).
+   * Вторичный акцент — контрастный оранжевый (cloudflare.com).
+   */
+  --c-bg: #0a0b0f;
+  --c-bg-sunk: #111319;
+  --c-surface: #151922;
+  --c-surface-raised: #1c222e;
+  --c-ink: #f1f2f4;
+  --c-ink-soft: #a9b1bd;
+  --c-muted: #6b737f;
+  --c-faint: #424a57;
+  --c-line: #232a37;
+  --c-line-strong: #353f4e;
+
+  /* Акценты. */
+  --c-accent: #22d3ee;
+  --c-accent-ink: #05141a;
+  --c-accent-soft: #0b2a32;
+  --c-accent-tint: rgba(34, 211, 238, 0.10);
+
+  --c-secondary: #f97316;
+  --c-secondary-ink: #4d1a00;
+  --c-secondary-soft: #2c1204;
+
+  /* Семантические цвета данных. */
+  --c-positive: #34d399;
+  --c-positive-soft: #063e22;
+  --c-negative: #f87171;
+  --c-negative-soft: #3b1212;
+  --c-info: #60a5fa;
+  --c-info-soft: #11223a;
+
+  /* Техно-токены (свечение, сетка). */
+  --c-glow: #22d3ee;
+  --c-glow-soft: rgba(34, 211, 238, 0.12);
+  --c-glow-line: rgba(34, 211, 238, 0.35);
+  --c-tech-line: rgba(34, 211, 238, 0.18);
+  --c-surface-tech: #11151f;
+
+  /* Liquid glass. */
+  --glass-bg: rgba(21, 25, 34, 0.62);
+  --glass-bg-strong: rgba(21, 25, 34, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.14);
+  --glass-shadow: 0 24px 64px -20px rgba(0, 0, 0, 0.6);
+  --glass-blur: 28px;
+  --glass-saturate: 140%;
+
+  /* Тени. */
+  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --sh-2: 0 10px 28px -16px rgba(0, 0, 0, 0.5);
+  --sh-3: 0 30px 72px -30px rgba(0, 0, 0, 0.7);
+  --sh-glow: 0 0 48px rgba(34, 211, 238, 0.14);
+
+  /* Зерно на фоне. */
+  --grain-opacity: 0.02;
+
+  /* ------------------------------------------------------------- motion ---
+   * Только transition. Никаких @keyframes и animation.
+   */
+  --ease-glide: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 240ms;
+
+  /* -------------------------------------------------------------- radius ---
+   * Радиусы скругления. */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-pill: 999px;
+
+  /* ------------------------------------------------------------- rhythm ---
+   * Ритм сетки и контейнеры. */
+  --spacing-section: clamp(80px, 9vw, 140px);
+  --spacing-block: 40px;
+  --spacing-gutter: clamp(24px, 4vw, 64px);
+  --container-page: 1200px;
+  --container-read: 760px;
+  --container-narrow: 640px;
+
+  /* Высота шапки. */
+  --header-h: 68px;
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --header-h: 80px;
+  }
+}
