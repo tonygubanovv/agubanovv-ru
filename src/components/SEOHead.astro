@@ -1,0 +1,36 @@
+---
+import { site } from '../config/site';
+import { absoluteUrl, url } from '../utils/urls';
+interface Props { title: string; description: string; path?: string; noindex?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> }
+const { title, description, path = '', noindex = false, article = false, image, imageAlt, jsonLd } = Astro.props;
+const fullTitle = `${title} — ${site.name}`;
+const canonical = absoluteUrl(path);
+const ogImage = image ? new URL(image, import.meta.env.SITE).href : absoluteUrl('og.png');
+---
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light dark" />
+<meta name="description" content={description} />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>{fullTitle}</title>
+{noindex ? <meta name="robots" content="noindex, follow" /> : <link rel="canonical" href={canonical} />}
+<link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
+<meta property="og:locale" content="ru_RU" />
+<meta property="og:type" content={article ? 'article' : 'website'} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:alt" content={imageAlt ?? 'Маркетинг. С мыслью о главном.'} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+{jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
+<script is:inline>
+  try {
+    const theme = localStorage.getItem('theme');
+    if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+  } catch { /* System theme remains available without storage. */ }
+</script>

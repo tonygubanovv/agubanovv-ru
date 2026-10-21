@@ -1,0 +1,34 @@
+---
+import { site } from '../config/site';
+import { url } from '../utils/urls';
+import ThemeToggle from './ThemeToggle.astro';
+const current = Astro.url.pathname;
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href={url()} aria-label={`${site.name} — главная`}>
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="9" stroke="currentColor"/><path d="M8 22V10h4v7l8-7h4v12h-4v-7l-8 7Z" fill="currentColor"/></svg>
+      <span>{site.name}<span class="brand-dot">.</span></span>
+    </a>
+    <nav class="desktop-nav" aria-label="Основная навигация">
+      {site.navigation.map(item => <a href={url(item.path)} aria-current={!item.path.startsWith('#') && current.startsWith(url(item.path)) ? 'page' : undefined}>{item.label}</a>)}
+    </nav>
+    <div class="header-controls">
+      <ThemeToggle />
+      <details class="mobile-nav">
+        <summary aria-label="Открыть меню"><span class="menu-lines" aria-hidden="true"></span></summary>
+        <nav aria-label="Мобильная навигация">{site.navigation.map(item => <a href={url(item.path)}>{item.label}</a>)}</nav>
+      </details>
+    </div>
+  </div>
+</header>
+<script>
+  const menu = document.querySelector<HTMLDetailsElement>('.mobile-nav');
+  menu?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => { menu.open = false; }));
+  menu?.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      menu.open = false;
+      menu.querySelector('summary')?.focus();
+    }
+  });
+</script>

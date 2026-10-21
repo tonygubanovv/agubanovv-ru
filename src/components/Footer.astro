@@ -1,0 +1,11 @@
+---
+import { site } from '../config/site';
+import { url } from '../utils/urls';
+---
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div><a class="footer-name" href={url()}>{site.name}<span class="brand-dot">.</span></a><p>Маркетинг. Мысли. Практика.</p></div>
+    <nav aria-label="Ссылки в подвале">{site.social.map(link => <a href={link.url}>{link.label} <span aria-hidden="true">↗</span></a>)}<a href={url('blog/')}>Блог</a><a href={url('projects/')}>Проекты</a></nav>
+  </div>
+  <div class="container footer-bottom"><span>© {new Date().getFullYear()} {site.author ?? site.name}</span><span>С вниманием к деталям</span></div>
+</footer>

@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import EmptyState from '../components/EmptyState.astro';
+import ContentCard from '../components/ContentCard.astro';
+import { site } from '../config/site';
+import { url, absoluteUrl } from '../utils/urls';
+import { blogEntries, projectEntries } from '../utils/content';
+const posts = (await blogEntries()).slice(0, 3);
+const projects = await projectEntries();
+const featured = (projects.some(p => p.data.featured) ? projects.filter(p => p.data.featured) : projects).slice(0, 3);
+---
+<BaseLayout title="Маркетинг. С мыслью о главном." description={site.description} jsonLd={{ '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: absoluteUrl(), inLanguage: 'ru-RU' }}>
+  <section class="hero container">
+    <div class="hero-copy">
+      <p class="eyebrow hero-kicker"><span class="status-dot" aria-hidden="true"></span> {site.role} <span class="kicker-line" aria-hidden="true"></span> Личный взгляд</p>
+      <h1>{site.hero.title}<br /><span>{site.hero.accent}</span></h1>
+      <p class="hero-description">{site.hero.description}</p>
+      <div class="hero-actions"><a class="button primary" href={url('projects/')}>Смотреть проекты <span aria-hidden="true">↗</span></a><a class="button secondary" href={url('blog/')}>Читать блог <span aria-hidden="true">→</span></a></div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="art-coordinate">MARKETING × TECHNOLOGY</div>
+      <svg viewBox="0 0 440 440" fill="none">
+        <defs><linearGradient id="orbit" x1="60" y1="70" x2="380" y2="370" gradientUnits="userSpaceOnUse"><stop stop-color="currentColor" stop-opacity=".9"/><stop offset="1" stop-color="currentColor" stop-opacity=".12"/></linearGradient></defs>
+        <circle cx="220" cy="220" r="160" stroke="currentColor" stroke-opacity=".15"/><circle cx="220" cy="220" r="116" stroke="currentColor" stroke-opacity=".2"/>
+        <path d="M40 220h360M220 40v360" stroke="currentColor" stroke-opacity=".13" stroke-dasharray="3 7"/>
+        <ellipse cx="220" cy="220" rx="188" ry="74" transform="rotate(-35 220 220)" stroke="url(#orbit)" stroke-width="1.5"/>
+        <ellipse cx="220" cy="220" rx="162" ry="64" transform="rotate(42 220 220)" stroke="url(#orbit)" stroke-width="1.5"/>
+        <path d="M167 256V184h18v46l69-46h20v72h-18v-47l-70 47Z" fill="currentColor"/>
+        <circle cx="353" cy="119" r="7" fill="currentColor"/><circle cx="91" cy="116" r="4" fill="currentColor"/><circle cx="278" cy="368" r="4" fill="currentColor"/>
+        <path d="M48 65h20M58 55v20M370 332h20M380 322v20" stroke="currentColor" stroke-opacity=".6"/>
+      </svg>
+      <div class="art-caption"><span>Идея</span><span>Подход</span><span>Практика</span></div>
+    </div>
+    <div class="hero-bottom"><span>На пересечении идей и практики</span><a href={url('#about')}>Знакомиться дальше <span aria-hidden="true">↓</span></a></div>
+  </section>
+  <section id="about" class="about-section container section-space">
+    <div class="about-label"><span class="section-number" aria-hidden="true">01 /</span><h2>О пространстве</h2></div>
+    <div class="about-copy"><p class="large-text">Меньше общих слов.<br /><span>Больше смысла в деталях.</span></p><p>{site.about}</p><div class="tags">{site.topics.map(topic => <span class="tag">{topic}</span>)}</div></div>
+  </section>
+  <section class="container section-space">
+    <SectionHeader number="02 /" title="Проекты" href={url('projects/')} label="Все проекты" />
+    {featured.length ? <div class="card-grid">{featured.map(entry => <ContentCard entry={entry} heading="h3" />)}</div> : <EmptyState kind="projects" heading="h3" />}
+  </section>
+  <section class="container section-space">
+    <SectionHeader number="03 /" title="Заметки и идеи" href={url('blog/')} label="Весь блог" />
+    {posts.length ? <div class="card-grid">{posts.map(entry => <ContentCard entry={entry} heading="h3" />)}</div> : <EmptyState kind="blog" heading="h3" />}
+  </section>
+  <section class="container contact-section"><div><p class="eyebrow">Оставаться на связи</p><h2>Продолжим знакомство<span class="brand-dot">.</span></h2></div><div class="contact-links">{site.social.map(link => <a class="button secondary" href={link.url}>{link.label} <span aria-hidden="true">↗</span></a>)}</div></section>
+</BaseLayout>

@@ -1,0 +1,19 @@
+---
+import SEOHead from '../components/SEOHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Analytics from '../components/Analytics.astro';
+import '../styles/global.css';
+interface Props { title: string; description: string; path?: string; noindex?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> }
+---
+<!doctype html>
+<html lang="ru">
+  <head><SEOHead {...Astro.props} /></head>
+  <body>
+    <a href="#main" class="skip-link">К содержимому</a>
+    <Header />
+    <main id="main" tabindex="-1"><slot /></main>
+    <Footer />
+    <Analytics />
+  </body>
+</html>

@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContentCard from '../../components/ContentCard.astro';
+import EmptyState from '../../components/EmptyState.astro';
+import { blogEntries } from '../../utils/content';
+import { url, tagSlug } from '../../utils/urls';
+const posts = await blogEntries();
+const tags = [...new Set(posts.flatMap(post => post.data.tags))].sort((a, b) => a.localeCompare(b, 'ru'));
+---
+<BaseLayout title="Блог" description="Заметки о digital-маркетинге, аналитике и технологиях. Практические подходы и идеи — по мере появления новых материалов." path="blog/">
+  <div class="container page-content"><div class="page-heading"><p class="eyebrow">Мысли / Наблюдения / Практика</p><h1>Блог<span class="brand-dot">.</span></h1><p>Место для идей, которые хочется разобрать подробнее.</p></div>
+    {tags.length > 0 && <nav class="tags tag-filter" aria-label="Темы блога">{tags.map(tag => <a class="tag" href={url(`blog/tags/${tagSlug(tag)}/`)}>{tag}</a>)}</nav>}
+    {posts.length ? <div class="card-grid">{posts.map(entry => <ContentCard entry={entry} />)}</div> : <EmptyState kind="blog" />}
+    <div class="page-note"><span class="status-dot" aria-hidden="true"></span> Только опубликованные материалы. Без спешки, с вниманием к содержанию.</div>
+  </div>
+</BaseLayout>

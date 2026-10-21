@@ -1,0 +1,6 @@
+---
+import { url } from '../utils/urls';
+interface Props { section: 'blog' | 'projects'; label: string }
+const { section, label } = Astro.props;
+---
+<nav class="breadcrumbs" aria-label="Хлебные крошки"><a href={url()}>Главная</a><span aria-hidden="true">/</span><a href={url(`${section}/`)}>{label}</a></nav>

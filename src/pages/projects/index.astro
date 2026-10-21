@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContentCard from '../../components/ContentCard.astro';
+import EmptyState from '../../components/EmptyState.astro';
+import { projectEntries } from '../../utils/content';
+const projects = await projectEntries();
+---
+<BaseLayout title="Проекты" description="Проекты и кейсы в digital-маркетинге: контекст, задачи, подход к работе и подтверждённые результаты. Первые материалы готовятся." path="projects/">
+  <div class="container page-content"><div class="page-heading"><p class="eyebrow">Контекст / Подход / Выводы</p><h1>Проекты<span class="brand-dot">.</span></h1><p>Практика, за которой стоит история решений.</p></div>
+    {projects.length ? <div class="card-grid">{projects.map(entry => <ContentCard entry={entry} />)}</div> : <EmptyState kind="projects" />}
+    <div class="page-note"><span class="status-dot" aria-hidden="true"></span> Каждый кейс — с задачей, ходом работы и выводами.</div>
+  </div>
+</BaseLayout>

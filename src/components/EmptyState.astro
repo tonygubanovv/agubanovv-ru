@@ -1,0 +1,15 @@
+---
+interface Props { kind: 'projects' | 'blog' | 'tags'; heading?: 'h2' | 'h3' }
+const { kind, heading: Heading = 'h2' } = Astro.props;
+const states = {
+  projects: { title: 'Хорошим проектам нужен контекст', text: 'Пока готовлю первые кейсы. Здесь будут задачи, ход работы и выводы — с деталями, которые помогают понять результат.', label: 'Кейсы ещё впереди', icon: '↗' },
+  blog: { title: 'Здесь начнётся разговор', text: 'Пока готовлю первые материалы. Здесь появятся заметки о маркетинге, инструментах и практическом опыте.', label: 'Первая публикация впереди', icon: '≡' },
+  tags: { title: 'Темы появятся вместе со статьями', text: 'Когда выйдут первые публикации, здесь можно будет выбрать интересующую тему.', label: 'Пока без тегов', icon: '#' },
+};
+const state = states[kind];
+---
+<div class="empty-state">
+  <div class="empty-icon" aria-hidden="true">{state.icon}</div>
+  <div class="empty-copy"><p class="eyebrow">{state.label}</p><Heading>{state.title}</Heading><p>{state.text}</p></div>
+  <div class="empty-decoration" aria-hidden="true"><span></span><span></span><span></span></div>
+</div>
