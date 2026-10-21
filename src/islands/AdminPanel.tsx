@@ -401,7 +401,7 @@ function LoginScreen(props: {
             <summary>Настройки репозитория</summary>
             <label class="field">
               <span>Репозиторий</span>
-              <input class="input" value={session.repo} onInput={field('repo')} placeholder="owner/digital-marketer" />
+              <input class="input" value={session.repo} onInput={field('repo')} placeholder="owner/agubanovv-ru" />
             </label>
             <div class="login-row">
               <label class="field">
@@ -437,7 +437,7 @@ function LoginScreen(props: {
                 href={
                   'https://github.com/settings/personal-access-tokens/new?' +
                   new URLSearchParams({
-                    name: 't-gubanov.ru admin',
+                    name: 'agubanovv.ru admin',
                     target_name: publish.repo.split('/')[0],
                     expires_in: '90',
                     contents: 'write',
@@ -451,7 +451,7 @@ function LoginScreen(props: {
               </a>
               .
             </li>
-            <li>Выберите Only select repositories → tgbnv-ru и нажмите Generate token.</li>
+            <li>Выберите Only select repositories → agubanovv-ru и нажмите Generate token.</li>
             <li>Скопируйте токен в поле слева и нажмите «Подключить».</li>
           </ol>
           <p>

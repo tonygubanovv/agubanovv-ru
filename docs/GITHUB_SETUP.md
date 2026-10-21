@@ -1,26 +1,26 @@
-# Подключение сайта t-gubanov.ru
+# Подключение сайта agubanovv.ru
 
 Для вас уже настроены:
 
-- Репозиторий: [tonygubanovv/tgbnv-ru](https://github.com/tonygubanovv/tgbnv-ru).
-- Домен: [t-gubanov.ru](https://t-gubanov.ru).
+- Репозиторий: [tonygubanovv/agubanovv-ru](https://github.com/tonygubanovv/agubanovv-ru).
+- Домен: [agubanovv.ru](https://agubanovv.ru).
 - Почта: `tonygubanovv@yandex.ru`.
 - Telegram: [@tonygubanovv](https://t.me/tonygubanovv).
 - Автоматическая сборка сайта после публикации изменений.
 - Репозиторий, ветка и папки в админке.
 
 Ничего вставлять в файлы или запускать в терминале для подключения не нужно.
-В GitHub Pages оставьте Source → GitHub Actions и ваш домен t-gubanov.ru.
+В GitHub Pages оставьте Source → GitHub Actions и ваш домен agubanovv.ru.
 Дополнительные переменные и Secrets не требуются.
 
 ## Остался один ключ для админки
 
-1. [Откройте готовую форму создания токена](https://github.com/settings/personal-access-tokens/new?name=t-gubanov.ru%20admin&target_name=tonygubanovv&expires_in=90&contents=write&actions=read).
+1. [Откройте готовую форму создания токена](https://github.com/settings/personal-access-tokens/new?name=agubanovv.ru%20admin&target_name=tonygubanovv&expires_in=90&contents=write&actions=read).
 2. В блоке **Repository access** выберите **Only select repositories**.
-3. В списке **Select repositories** выберите **tgbnv-ru**.
+3. В списке **Select repositories** выберите **agubanovv-ru**.
 4. Внизу нажмите **Generate token**.
 5. GitHub покажет строку, начинающуюся с `github_pat_`. Нажмите значок копирования рядом с ней.
-6. Откройте [админку сайта](https://t-gubanov.ru/admin/).
+6. Откройте [админку сайта](https://agubanovv.ru/admin/).
 7. Вставьте скопированную строку в поле **Токен GitHub** и нажмите **Подключить**.
 
 Название, владелец, срок 90 дней и разрешения уже подставляются по ссылке.
@@ -38,7 +38,7 @@
 
 ## Как потом писать статьи
 
-1. Откройте [t-gubanov.ru/admin/](https://t-gubanov.ru/admin/).
+1. Откройте [agubanovv.ru/admin/](https://agubanovv.ru/admin/).
 2. Выберите новую заметку или кейс, заполните заголовок и текст.
 3. Посмотрите предпросмотр и нажмите публикацию.
 4. Дождитесь успешной сборки. Изменения появятся на сайте автоматически.
@@ -49,8 +49,8 @@
 ## Если не подключается
 
 - **401** — токен скопирован не полностью или истёк. Создайте новый по ссылке выше.
-- **403** — у токена не выбран tgbnv-ru или нет Contents → Read and write.
+- **403** — у токена не выбран agubanovv-ru или нет Contents → Read and write.
 - **404 в админке до обновления сайта** — новая версия ещё не опубликована. Используйте локальную ссылку.
-- **Статья сохранена, но ещё не появилась** — [проверьте сборку](https://github.com/tonygubanovv/tgbnv-ru/actions). Сначала она должна успешно завершиться.
+- **Статья сохранена, но ещё не появилась** — [проверьте сборку](https://github.com/tonygubanovv/agubanovv-ru/actions). Сначала она должна успешно завершиться.
 
 Если что-то не получится, пришлите текст ошибки. Сам токен присылать не нужно.
