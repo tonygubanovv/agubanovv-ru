@@ -6,7 +6,7 @@
 
 - [Как поручать изменения](guides/START_HERE.md).
 - [Как публикуется сайт](guides/PUBLISH.md).
-- [Как позже подключить домен](guides/DOMAIN_LATER.md).
+- [Домен и DNS](guides/DOMAIN_LATER.md).
 - [Отложенные изменения](guides/TODO.md).
 
 ## Утверждённые требования

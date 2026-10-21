@@ -11,7 +11,7 @@
 ## 2. Платформа и жизненный цикл
 
 - Существующий публичный репозиторий: `https://github.com/tonygubanovv/agubanovv-ru`.
-- Публикация пока по адресу: `https://tonygubanovv.github.io/agubanovv-ru/`.
+- Публикация по согласованному собственному адресу: `https://agubanovv.ru/`.
 - Исходники публичные, сайт собирается в статические файлы и публикуется через GitHub Actions (ветка `main`).
 - При первом запуске удалить ВСЕ старые файлы сайта, включая старые конфиги Next.js, assets, содержимое и прежние workflow. Не переносить существующий дизайн, копирайтинг, функциональность или страницы.
 - Не создавать backup и отдельную rollback-точку. Не удалять сам Git-репозиторий и не переписывать его историю. Не стирать папку `.git`.
@@ -74,7 +74,7 @@
 - Яндекс.Метрика: подготовить компонент/интеграцию с выключенным по умолчанию режимом, если ID не предоставлен. Не подставлять выдуманный ID. Включить после согласования номера счётчика, политики использования cookie и уведомления о приватности.
 - Заложить отсутствие внешнего JS, если он не нужен; не делать SPA-навигацию на старте.
 
-## 8. Временный URL GitHub Pages — критично
+## 8. Собственный домен GitHub Pages — критично
 
 В `astro.config.mjs`:
 
@@ -84,8 +84,8 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://tonygubanovv.github.io',
-  base: '/agubanovv-ru',
+  site: 'https://agubanovv.ru',
+  base: '/',
   trailingSlash: 'always',
   output: 'static',
   integrations: [sitemap()],
@@ -94,11 +94,11 @@ export default defineConfig({
 ```
 
 - Для всех внутренних ссылок использовать единый утилитарный метод, учитывающий `import.meta.env.BASE_URL` и окончательные слэши; не склеивать URL по-разному в компонентах.
-- Не использовать в браузерном коде `src="/images/..."`, `href="/blog/"`, `fetch('/data.json')` и другие абсолютные пути от корня домена без `/agubanovv-ru/`.
-- Canonical, OG URL, ссылки из sitemap и `robots.txt` должны включать `/agubanovv-ru/`.
+- Для локальных ссылок и ассетов использовать общую утилиту с `BASE_URL`. Текущий base `/`, префикса `/agubanovv-ru/` в новых URL нет.
+- Canonical, OG URL, ссылки из sitemap и `robots.txt` должны использовать `https://agubanovv.ru/`.
 - Для изображений/видео в `public` корректно учитывать базовый путь. Изображения из `src/assets` импортировать через Astro по правилам Astro assets.
 - `npm run dev` и `npm run preview` должны работать локально; итоговую сборку проверить smoke-тестом `scripts/check-dist.mjs`.
-- Не создавать `public/CNAME` до подключения собственного домена.
+- `public/CNAME` содержит согласованный домен `agubanovv.ru`. GitHub Pages использует GitHub Actions.
 
 ## 9. Публикация
 

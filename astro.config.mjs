@@ -4,8 +4,8 @@ import sitemap from '@astrojs/sitemap';
 import { copyFile } from 'node:fs/promises';
 
 export default defineConfig({
-  site: 'https://tonygubanovv.github.io',
-  base: '/agubanovv-ru',
+  site: 'https://agubanovv.ru',
+  base: '/',
   trailingSlash: 'always',
   output: 'static',
   integrations: [

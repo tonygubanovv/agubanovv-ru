@@ -1,7 +1,7 @@
 # Публикация первой версии и обновлений
 
 Репозиторий: [tonygubanovv/agubanovv-ru](https://github.com/tonygubanovv/agubanovv-ru).
-Сайт: [tonygubanovv.github.io/agubanovv-ru](https://tonygubanovv.github.io/agubanovv-ru/).
+Сайт: [agubanovv.ru](https://agubanovv.ru/).
 
 ## Порядок для любого агента
 
@@ -19,7 +19,7 @@
 
 ## Однократная настройка GitHub
 
-В Settings → Pages → Build and deployment выберите Source: GitHub Actions. Если уже выбран этот режим, ничего менять не нужно. Сайт остаётся на URL проекта с префиксом `/agubanovv-ru/`. Custom domain и CNAME пока не нужны.
+В Settings → Pages → Build and deployment выберите Source: GitHub Actions. Если уже выбран этот режим, ничего менять не нужно. Custom domain: `agubanovv.ru`. `public/CNAME` содержит этот же домен. После успешной проверки DNS и выпуска сертификата проверить Enforce HTTPS. DNS на Рег.ру владелец меняет самостоятельно.
 
 Если GitHub Settings недоступны агенту, он сообщает конкретное необходимое действие. Успешный push сам по себе не подтверждает публикацию.
 

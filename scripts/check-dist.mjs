@@ -1,12 +1,12 @@
-/** Simple zero-dependency smoke test for the GitHub Pages project path. */
+/** Checks the actual static output for the approved custom domain. */
 import { readFile, access, readdir } from 'node:fs/promises';
 import { site } from '../src/config/site.ts';
 import { runInNewContext } from 'node:vm';
 
 
 const dist = new URL('../dist/', import.meta.url);
-const expectedBase = '/agubanovv-ru/';
-const canonicalPrefix = 'https://tonygubanovv.github.io/agubanovv-ru/';
+const expectedBase = '/';
+const canonicalPrefix = 'https://agubanovv.ru/';
 const errors = [];
 
 // Execute the generated bootstrap code against a fake document, without a network.
@@ -126,7 +126,7 @@ if (await exists('sitemap.xml') && await exists('sitemap-index.xml')) {
     if (!match[1].startsWith(canonicalPrefix) || !await exists(match[1].slice(canonicalPrefix.length))) errors.push(`Broken sitemap reference: ${match[1]}`);
   }
 }
-if (await exists('CNAME')) errors.push('CNAME must not exist before a domain is approved');
+if (!await exists('CNAME') || (await readFile(new URL('CNAME', dist), 'utf8')).trim() !== new URL(canonicalPrefix).hostname) errors.push('CNAME does not match the approved custom domain');
 for (const name of await readdir(dist)) {
   if (/^\.env|\.(pem|key|p12|pfx)$/i.test(name)) errors.push(`Sensitive file in dist: ${name}`);
 }
