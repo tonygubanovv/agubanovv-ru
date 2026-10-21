@@ -8,5 +8,5 @@ import ThemeToggle from './ThemeToggle.astro';
     <div><a class="footer-name" href={url()}>{site.name}<span class="brand-dot">.</span></a><p>{site.role}. Статьи и проекты.</p></div>
     <nav aria-label="Ссылки в подвале">{contactLinks().map(link => <a href={link.url}>{link.label}</a>)}<a href={url('blog/')}>Блог</a><a href={url('projects/')}>Проекты</a></nav>
   </div>
-  <div class="container footer-bottom"><span>© {new Date().getFullYear()} {site.author ?? site.name}</span><div class="footer-tools"><a href={url('privacy/')}>Приватность</a><ThemeToggle /></div></div>
+  <div class="container footer-bottom"><span>© {new Date().getFullYear()} {site.author ?? site.name}</span><div class="footer-tools"><a href={url('privacy/')}>Политика</a><a href={url('cookies/')}>Cookie</a><button class="cookie-settings" data-cookie-settings type="button" hidden>Настроить cookie</button><ThemeToggle /></div></div>
 </footer>

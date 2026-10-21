@@ -2,6 +2,7 @@
 export const links = {
   telegram: 'https://t.me/tonygubanovv' as string | undefined,
   email: undefined as string | undefined,
+  privacyEmail: 'tonygubanovv@yandex.ru',
 };
 export const contactLinks = () => [
   ...(links.telegram ? [{ key: 'telegram', label: 'Telegram', url: links.telegram }] : []),
@@ -25,5 +26,12 @@ export const site = {
     { label: 'Блог', path: 'blog/' },
     { label: 'Обо мне', path: '#about' },
   ],
-  analytics: { yandexId: 113586660 as number | undefined, clarityId: 'z1f5krtm8c' as string | undefined, privacyApproved: true },
+  analytics: { yandexId: 113586660 as number | undefined, privacyApproved: true },
+  legal: {
+    operatorName: 'Губанов Антон Андреевич',
+    operatorStatus: 'самозанятый',
+    updated: '2026-10-22',
+    consentVersion: '2026-10-22.1',
+    consentDays: 180,
+  },
 } as const;

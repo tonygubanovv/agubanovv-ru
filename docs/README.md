@@ -7,6 +7,7 @@
 - [Как поручать изменения](guides/START_HERE.md).
 - [Как публикуется сайт](guides/PUBLISH.md).
 - [Домен и DNS](guides/DOMAIN_LATER.md).
+- [Приватность и аналитика](guides/PRIVACY.md).
 - [Отложенные изменения](guides/TODO.md).
 
 ## Утверждённые требования
