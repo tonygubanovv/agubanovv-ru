@@ -156,6 +156,8 @@ a.tag:hover { border-color: var(--accent); }
 .publication-header { margin-bottom: 32px; }
 .publication h1 { font-size: clamp(32px, 4.5vw, 56px); margin-top: 22px; overflow-wrap: anywhere; }
 .publication-summary { font-size: 20px; color: var(--muted); margin-top: 24px; }
+.publication-source { margin-top: 40px; font-size: 13px; color: var(--muted); }
+.publication-source a { text-decoration: underline; text-underline-offset: 3px; }
 .publication-header > p:not(.publication-summary) { margin-top: 14px; font-size: 14px; }
 .muted { color: var(--muted); }
 .publication-cover { width: 100%; border-radius: 8px; margin-bottom: 40px; }
@@ -172,7 +174,7 @@ a.tag:hover { border-color: var(--accent); }
 .prose a { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
 .prose ul, .prose ol { padding-left: 24px; list-style: revert; }
 .prose li + li { margin-top: 8px; }
-.prose blockquote { border-left: 3px solid var(--accent); padding-left: 24px; color: var(--muted); }
+.prose blockquote { border-left: 3px solid var(--accent); background: var(--surface); border-radius: 0 8px 8px 0; padding: 20px 24px; color: var(--foreground); }
 .prose pre { max-width: 100%; overflow-x: auto; padding: 20px; border-radius: 6px; font-size: 14px; }
 .prose :not(pre) > code { background: var(--elevated); padding: 2px 5px; border-radius: 3px; font-size: .9em; }
 .prose table { display: block; width: 100%; overflow-x: auto; border-collapse: collapse; }

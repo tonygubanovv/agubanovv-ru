@@ -7,10 +7,10 @@ import { url, tagSlug } from '../../utils/urls';
 const posts = await blogEntries();
 const tags = [...new Set(posts.flatMap(post => post.data.tags))].sort((a, b) => a.localeCompare(b, 'ru'));
 ---
-<BaseLayout title="Блог" description="Заметки о digital-маркетинге, аналитике и технологиях. Практические подходы и идеи — по мере появления новых материалов." path="blog/">
-  <div class="container page-content"><div class="page-heading"><p class="eyebrow">Мысли / Наблюдения / Практика</p><h1>Блог<span class="brand-dot">.</span></h1><p>Место для идей, которые хочется разобрать подробнее.</p></div>
+<BaseLayout title="Блог" description="Статьи Антона Губанова о digital-маркетинге, SEO, GEO и ИИ: эксперименты, разбор инструментов и выводы из практики." path="blog/">
+  <div class="container page-content"><div class="page-heading"><p class="eyebrow">Маркетинг / Поиск / Технологии</p><h1>Блог<span class="brand-dot">.</span></h1><p>Разбираю инструменты и проверяю гипотезы. Рассказываю, как устроен эксперимент и что получилось в результате.</p></div>
     {tags.length > 0 && <nav class="tags tag-filter" aria-label="Темы блога">{tags.map(tag => <a class="tag" href={url(`blog/tags/${tagSlug(tag)}/`)}>{tag}</a>)}</nav>}
     {posts.length ? <div class="card-grid">{posts.map(entry => <ContentCard entry={entry} />)}</div> : <EmptyState kind="blog" />}
-    <div class="page-note"><span class="status-dot" aria-hidden="true"></span> Только опубликованные материалы. Без спешки, с вниманием к содержанию.</div>
+    <div class="page-note"><span class="status-dot" aria-hidden="true"></span> Материалы можно обсудить со мной в Telegram.</div>
   </div>
 </BaseLayout>

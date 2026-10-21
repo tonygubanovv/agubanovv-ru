@@ -4,8 +4,8 @@ import { url } from '../utils/urls';
 ---
 <footer class="site-footer">
   <div class="container footer-inner">
-    <div><a class="footer-name" href={url()}>{site.name}<span class="brand-dot">.</span></a><p>Маркетинг. Мысли. Практика.</p></div>
+    <div><a class="footer-name" href={url()}>{site.name}<span class="brand-dot">.</span></a><p>{site.role}. Статьи и проекты.</p></div>
     <nav aria-label="Ссылки в подвале">{contactLinks().map(link => <a href={link.url}>{link.label}</a>)}<a href={url('blog/')}>Блог</a><a href={url('projects/')}>Проекты</a></nav>
   </div>
-  <div class="container footer-bottom"><span>© {new Date().getFullYear()} {site.author ?? site.name}</span><span>С вниманием к деталям</span></div>
+  <div class="container footer-bottom"><span>© {new Date().getFullYear()} {site.author ?? site.name}</span><span>Digital-маркетинг на практике</span></div>
 </footer>

@@ -52,3 +52,12 @@ test('Markdown contact references use one shared value and reject unset contacts
   assert.throws(() => typographHtml(source), /must be configured/);
   assert.throws(() => typographHtml(source, { telegram: 'javascript:alert(1)' }), /must be configured/);
 });
+
+test('Explicit verbatim text preserves punctuation and spaces while surrounding UI is formatted', () => {
+  const source = '<h1 data-preserve-text="true">Исходный "заголовок" - без правок...</h1><div data-preserve-text="true"><p>Текст  в блоге - <strong>"как есть"</strong>...</p><ul><li>В первом пункте</li></ul></div><footer>Текст в подвале - с обработкой...</footer>';
+  const before = nodes(source);
+  const after = nodes(typographHtml(source));
+  const text = node => node.nodeName === '#text' ? node.value : (node.childNodes ?? []).map(text).join('');
+  for (const tag of ['h1', 'p', 'li']) assert.equal(text(after.find(node => node.tagName === tag)), text(before.find(node => node.tagName === tag)));
+  assert.match(text(after.find(node => node.tagName === 'footer')), /в\u00a0подвале\u00a0—/u);
+});

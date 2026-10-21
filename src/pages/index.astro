@@ -11,7 +11,7 @@ const posts = (await blogEntries()).slice(0, 3);
 const projects = await projectEntries();
 const featured = (projects.some(p => p.data.featured) ? projects.filter(p => p.data.featured) : projects).slice(0, 3);
 ---
-<BaseLayout title="Маркетинг. С мыслью о главном." description={site.description} jsonLd={{ '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: absoluteUrl(), inLanguage: 'ru-RU' }}>
+<BaseLayout title="Digital-маркетинг: статьи и проекты" description={site.description} jsonLd={{ '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: absoluteUrl(), inLanguage: 'ru-RU' }}>
   <section class="hero container">
     <div class="hero-copy">
       <p class="eyebrow hero-kicker"><span class="status-dot" aria-hidden="true"></span> {site.role} <span class="kicker-line" aria-hidden="true"></span> Личный взгляд</p>
@@ -33,19 +33,19 @@ const featured = (projects.some(p => p.data.featured) ? projects.filter(p => p.d
       </svg>
       <div class="art-caption"><span>Идея</span><span>Подход</span><span>Практика</span></div>
     </div>
-    <div class="hero-bottom"><span>На пересечении идей и практики</span><a href={url('#about')}>Знакомиться дальше <Icon direction="down" /></a></div>
+    <div class="hero-bottom"><span>Эксперименты, наблюдения, выводы</span><a href={url('#about')}>Обо мне и сайте <Icon direction="down" /></a></div>
   </section>
   <section id="about" class="about-section container section-space">
-    <div class="about-label"><span class="section-number" aria-hidden="true">01 /</span><h2>О пространстве</h2></div>
-    <div class="about-copy"><p class="large-text">Меньше общих слов.<br /><span>Больше смысла в деталях.</span></p><p>{site.about}</p><div class="tags">{site.topics.map(topic => <span class="tag">{topic}</span>)}</div></div>
+    <div class="about-label"><span class="section-number" aria-hidden="true">01 /</span><h2>Обо мне и сайте</h2></div>
+    <div class="about-copy"><p class="large-text">Что работает в маркетинге?<br /><span>Проверим на практике.</span></p><p>{site.about}</p><div class="tags">{site.topics.map(topic => <span class="tag">{topic}</span>)}</div></div>
   </section>
   <section class="container section-space">
     <SectionHeader number="02 /" title="Проекты" href={url('projects/')} label="Все проекты" />
     {featured.length ? <div class="card-grid">{featured.map(entry => <ContentCard entry={entry} heading="h3" />)}</div> : <EmptyState kind="projects" heading="h3" />}
   </section>
   <section class="container section-space">
-    <SectionHeader number="03 /" title="Заметки и идеи" href={url('blog/')} label="Весь блог" />
+    <SectionHeader number="03 /" title="Статьи" href={url('blog/')} label="Весь блог" />
     {posts.length ? <div class="card-grid">{posts.map(entry => <ContentCard entry={entry} heading="h3" />)}</div> : <EmptyState kind="blog" heading="h3" />}
   </section>
-  {contactLinks().length > 0 && <section class="container contact-section"><div><p class="eyebrow">Оставаться на связи</p><h2>Продолжим знакомство<span class="brand-dot">.</span></h2></div><div class="contact-links">{contactLinks().map(link => <a class="button secondary" href={link.url}>{link.label} <Icon /></a>)}</div></section>}
+  {contactLinks().length > 0 && <section class="container contact-section"><div><p class="eyebrow">Есть вопрос или идея?</p><h2>Напишите мне<span class="brand-dot">.</span></h2></div><div class="contact-links">{contactLinks().map(link => <a class="button secondary" href={link.url}>{link.label} <Icon /></a>)}</div></section>}
 </BaseLayout>

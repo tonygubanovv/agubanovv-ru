@@ -27,6 +27,8 @@ const blog = defineCollection({
   loader: loader('./src/content/blog'),
   schema: ({ image }) => z.object({
     ...common, description: text, category: text, updated: date.optional(),
+    preserveText: z.boolean().default(false),
+    source: z.url().optional(),
     cover: z.object({ src: image(), alt: text }).optional(),
   }).refine(data => !data.updated || data.updated >= data.date, 'updated must not precede date'),
 });

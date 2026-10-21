@@ -23,9 +23,16 @@ function formatJson(value: unknown, key = ''): unknown {
 /** Runs during prerender and dev; no typography library is sent to the browser. */
 export function typographHtml(html: string, contacts: Record<string, string> = {}): string {
   const document = parse(html);
+  const preserved: string[] = [];
   function visit(node: DefaultTreeAdapterMap['node']): void {
     if ('tagName' in node) {
       const attribute = (name: string) => node.attrs.find(item => item.name === name)?.value;
+      // Explicit author request: keep imported wording, punctuation and spacing verbatim.
+      if (attribute('data-preserve-text') === 'true') {
+        const index = preserved.push(serialize(node)) - 1;
+        node.childNodes = [{ nodeName: '#text', value: `\uE000KEEP${index}\uE001`, parentNode: node }];
+        return;
+      }
       if (node.tagName === 'script' && attribute('type') === 'application/ld+json') {
         for (const child of node.childNodes) {
           if (child.nodeName === '#text' && 'value' in child) child.value = JSON.stringify(formatJson(JSON.parse(child.value))).replace(/</g, '\\u003c');
@@ -45,5 +52,5 @@ export function typographHtml(html: string, contacts: Record<string, string> = {
     if ('childNodes' in node) node.childNodes.forEach(visit);
   }
   visit(document);
-  return typograph(serialize(document));
+  return typograph(serialize(document)).replace(/\uE000KEEP(\d+)\uE001/g, (_token, index: string) => preserved[Number(index)]!);
 }
