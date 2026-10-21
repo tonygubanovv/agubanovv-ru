@@ -1,15 +1,30 @@
 ---
 import { site } from '../config/site';
-// Both a real counter ID and explicit privacy approval are required.
-const { yandexId, privacyApproved } = site.analytics;
-const enabled = privacyApproved && Number.isSafeInteger(yandexId) && Number(yandexId) > 0;
+const { yandexId, clarityId, privacyApproved } = site.analytics;
+const yandexEnabled = privacyApproved && Number.isSafeInteger(yandexId) && Number(yandexId) > 0;
+const clarityEnabled = privacyApproved && !!clarityId && /^[a-z0-9]+$/.test(clarityId);
+const publicHostname = new URL(import.meta.env.SITE!).hostname;
 ---
-{enabled && <script is:inline define:vars={{ counterId: yandexId }}>
-  window.ym = window.ym || ((...args) => { (window.ym.a = window.ym.a || []).push(args); });
-  window.ym.l = Date.now();
-  const script = document.createElement('script');
-  script.async = true;
-  script.src = 'https://mc.yandex.ru/metrika/tag.js';
-  document.head.append(script);
-  window.ym(counterId, 'init', { clickmap: false, trackLinks: true, accurateTrackBounce: true, webvisor: false });
+{yandexEnabled && <script is:inline define:vars={{ counterId: yandexId, publicHostname }}>
+  (function () {
+    if (location.hostname !== publicHostname) return;
+    (function(m,e,t,r,i,k,a){
+      m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      for (var j=0;j<document.scripts.length;j++) { if(document.scripts[j].src===r) return; }
+      k=e.createElement(t);a=e.getElementsByTagName(t)[0];k.async=1;k.src=r;a.parentNode.insertBefore(k,a);
+    })(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id='+counterId,'ym');
+    ym(counterId,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:'dataLayer',referrer:document.referrer,url:location.href,accurateTrackBounce:true,trackLinks:true});
+  })();
+</script>}
+{yandexEnabled && <noscript><div><img src={`https://mc.yandex.ru/watch/${yandexId}`} width="1" height="1" style="position:absolute;left:-9999px" alt="" /></div></noscript>}
+{clarityEnabled && <script is:inline define:vars={{ projectId: clarityId, publicHostname }}>
+  (function () {
+    if (location.hostname !== publicHostname) return;
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src='https://www.clarity.ms/tag/'+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window,document,'clarity','script',projectId);
+  })();
 </script>}

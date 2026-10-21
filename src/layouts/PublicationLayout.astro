@@ -30,17 +30,19 @@ const jsonLd = isArticle ? {
 ---
 <BaseLayout title={data.title} description={description} path={path} article={isArticle} image={data.cover?.src.src} imageAlt={data.cover?.alt} jsonLd={jsonLd}>
   <div class="container publication-wrap">
-    <Breadcrumbs section={collection} label={label} />
+    <div class:list={['publication-grid', { 'has-toc': toc.length >= 4 }]}>
+    {toc.length >= 4 && <aside class="publication-sidebar"><nav class="toc" aria-label="Оглавление"><h2>В этом материале</h2><ul>{toc.map(h => <li class:list={{ 'toc-sub': h.depth === 3 }}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul></nav></aside>}
     <article class="publication">
+      <Breadcrumbs section={collection} label={label} />
       <header class="publication-header"><div class="card-meta"><time datetime={data.date}>{dateLabel(data.date)}</time>{'category' in data && <span>{data.category}</span>}</div><h1 data-preserve-text={preserveText ? 'true' : undefined}>{data.title}</h1><p class="publication-summary">{description}</p>{'role' in data && data.role && <p>Роль: {data.role}</p>}{'updated' in data && data.updated && <p class="muted">Обновлено: <time datetime={data.updated}>{dateLabel(data.updated)}</time></p>}
         <div class="tags">{data.tags.map(tag => isArticle ? <a class="tag" href={url(`blog/tags/${tagSlug(tag)}/`)}>{tag}</a> : <span class="tag">{tag}</span>)}</div>
       </header>
       {data.cover && <Image class="publication-cover" src={data.cover.src} alt={data.cover.alt} width={Math.min(1440, data.cover.src.width)} widths={[360, 720, Math.min(1440, data.cover.src.width)].filter(width => width <= data.cover!.src.width)} sizes="(max-width: 760px) 100vw, 720px" format="webp" loading="eager" />}
-      {toc.length >= 4 && <nav class="toc" aria-label="Оглавление"><h2>В этом материале</h2><ul>{toc.map(h => <li class:list={{ 'toc-sub': h.depth === 3 }}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul></nav>}
       <div class="prose" data-preserve-text={preserveText ? 'true' : undefined}><Content /></div>
       {'source' in data && data.source && <p class="publication-source">Впервые опубликовано в <a href={data.source}>Teletype</a>.</p>}
       <a class="text-link publication-back" href={url(`${collection}/`)}><Icon direction="left" /> {isArticle ? 'Назад к статьям' : 'Назад к проектам'}</a>
     </article>
+    </div>
     {related.length > 0 && <section class="related"><h2>По соседству</h2><div class="card-grid">{related.map(entry => <ContentCard entry={entry} heading="h3" />)}</div></section>}
   </div>
 </BaseLayout>

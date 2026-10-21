@@ -25,5 +25,5 @@ export const site = {
     { label: 'Блог', path: 'blog/' },
     { label: 'Обо мне', path: '#about' },
   ],
-  analytics: { yandexId: undefined as number | undefined, privacyApproved: false },
+  analytics: { yandexId: 113586660 as number | undefined, clarityId: 'z1f5krtm8c' as string | undefined, privacyApproved: true },
 } as const;

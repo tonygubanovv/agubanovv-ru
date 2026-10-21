@@ -1,7 +1,6 @@
 ---
 import { site } from '../config/site';
 import { url } from '../utils/urls';
-import ThemeToggle from './ThemeToggle.astro';
 const current = Astro.url.pathname;
 ---
 <header class="site-header">
@@ -14,7 +13,6 @@ const current = Astro.url.pathname;
       {site.navigation.map(item => <a href={url(item.path)} aria-current={!item.path.startsWith('#') && current.startsWith(url(item.path)) ? 'page' : undefined}>{item.label}</a>)}
     </nav>
     <div class="header-controls">
-      <ThemeToggle />
       <details class="mobile-nav">
         <summary aria-label="Открыть меню"><span class="menu-lines" aria-hidden="true"></span></summary>
         <nav aria-label="Мобильная навигация">{site.navigation.map(item => <a href={url(item.path)}>{item.label}</a>)}</nav>
@@ -31,4 +29,29 @@ const current = Astro.url.pathname;
       menu.querySelector('summary')?.focus();
     }
   });
+  const header = document.querySelector<HTMLElement>('.site-header');
+  let lastY = window.scrollY;
+  let distance = 0;
+  let direction = 0;
+  let scheduled = false;
+  const updateHeader = () => {
+    const y = Math.max(0, window.scrollY);
+    const delta = y - lastY;
+    const nextDirection = Math.sign(delta);
+    if (nextDirection && nextDirection !== direction) distance = 0;
+    if (nextDirection) direction = nextDirection;
+    distance += delta;
+    if (y < 80 || menu?.open || header?.contains(document.activeElement)) {
+      header?.classList.remove('is-hidden');
+    } else if (Math.abs(distance) > 12) {
+      header?.classList.toggle('is-hidden', direction > 0);
+    }
+    lastY = y;
+    scheduled = false;
+  };
+  window.addEventListener('scroll', () => {
+    if (!scheduled) { scheduled = true; requestAnimationFrame(updateHeader); }
+  }, { passive: true });
+  header?.addEventListener('focusin', () => header.classList.remove('is-hidden'));
+  menu?.addEventListener('toggle', () => { if (menu.open) header?.classList.remove('is-hidden'); });
 </script>

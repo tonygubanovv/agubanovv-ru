@@ -8,7 +8,11 @@
   let preference: string | null = null;
   try { preference = localStorage.getItem('theme'); } catch { /* Storage is optional. */ }
   const isDark = () => document.documentElement.dataset.theme === 'dark' || (!document.documentElement.dataset.theme && media.matches);
-  const updateLabel = () => button?.setAttribute('aria-label', isDark() ? 'Включить светлую тему' : 'Включить тёмную тему');
+  const updateLabel = () => {
+    const label = isDark() ? 'Включить светлую тему' : 'Включить тёмную тему';
+    button?.setAttribute('aria-label', label);
+    if (button) button.title = label;
+  };
   if (button) {
     button.hidden = false;
     updateLabel();

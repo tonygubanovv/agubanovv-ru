@@ -1,11 +1,35 @@
 /** Simple zero-dependency smoke test for the GitHub Pages project path. */
 import { readFile, access, readdir } from 'node:fs/promises';
+import { site } from '../src/config/site.ts';
+import { runInNewContext } from 'node:vm';
 
 
 const dist = new URL('../dist/', import.meta.url);
 const expectedBase = '/agubanovv-ru/';
 const canonicalPrefix = 'https://tonygubanovv.github.io/agubanovv-ru/';
 const errors = [];
+
+// Execute the generated bootstrap code against a fake document, without a network.
+const home = await readFile(new URL('index.html', dist), 'utf8');
+const trackerScripts = [...home.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(match => match[1]).filter(code => /metrika\/tag\.js|www\.clarity\.ms\/tag\//.test(code));
+for (const hostname of ['127.0.0.1', new URL(canonicalPrefix).hostname]) {
+  const inserted = [];
+  const context = { location: { hostname, href: `${canonicalPrefix}blog/` }, document: {
+    scripts: [], referrer: '', createElement: () => ({}),
+    getElementsByTagName: () => [{ parentNode: { insertBefore: node => inserted.push(node.src) } }],
+  } };
+  context.window = context;
+  for (const code of trackerScripts) {
+    try { runInNewContext(code, context, { timeout: 1000 }); }
+    catch (error) { errors.push(`Analytics bootstrap failed: ${error.message}`); }
+  }
+  if (hostname === '127.0.0.1') {
+    if (inserted.length || context.ym || context.clarity) errors.push('Trackers initialize on localhost');
+  } else if (site.analytics.privacyApproved) {
+    if (site.analytics.yandexId && (!inserted.includes(`https://mc.yandex.ru/metrika/tag.js?id=${site.analytics.yandexId}`) || context.ym?.a?.[0]?.[0] !== site.analytics.yandexId || context.ym?.a?.[0]?.[1] !== 'init')) errors.push('Metrika does not initialize with the approved ID');
+    if (site.analytics.clarityId && (!inserted.includes(`https://www.clarity.ms/tag/${site.analytics.clarityId}`) || typeof context.clarity !== 'function')) errors.push('Clarity does not initialize with the approved ID');
+  }
+}
 
 async function exists(path) {
   try { await access(new URL(path, dist)); return true; }
@@ -37,7 +61,17 @@ for (const page of await walk(dist)) {
   if (!/<html\b[^>]*lang="ru"/i.test(html)) errors.push(`Missing Russian page language: ${path}`);
   if (!/<meta\b[^>]*name="description"[^>]*content="[^"]+"/i.test(html)) errors.push(`Missing description: ${path}`);
   if (/href=["']#["']/i.test(html)) errors.push(`Placeholder link: ${path}`);
-  if (/mc\.yandex\.ru|metrika\/tag\.js/.test(html)) errors.push(`Analytics must remain disabled until separately approved: ${path}`);
+  const analytics = site.analytics;
+  const yandexEnabled = analytics.privacyApproved && Number.isSafeInteger(analytics.yandexId) && Number(analytics.yandexId) > 0;
+  const clarityEnabled = analytics.privacyApproved && !!analytics.clarityId && /^[a-z0-9]+$/.test(analytics.clarityId);
+  if (yandexEnabled) {
+    if ((html.match(/metrika\/tag\.js/g) ?? []).length !== 1 || !html.includes(`const counterId = ${analytics.yandexId};`) || !html.includes(`https://mc.yandex.ru/watch/${analytics.yandexId}`)) errors.push(`Missing or duplicate approved Metrika counter: ${path}`);
+    if (!html.includes('webvisor:true') || !html.includes('clickmap:true')) errors.push(`Incorrect approved Metrika options: ${path}`);
+  } else if (/mc\.yandex\.ru/.test(html)) errors.push(`Unapproved Metrika counter: ${path}`);
+  if (clarityEnabled) {
+    if ((html.match(/www\.clarity\.ms\/tag\//g) ?? []).length !== 1 || !html.includes(`const projectId = "${analytics.clarityId}";`)) errors.push(`Missing or duplicate approved Clarity counter: ${path}`);
+  } else if (/www\.clarity\.ms/.test(html)) errors.push(`Unapproved Clarity counter: ${path}`);
+  if ((yandexEnabled || clarityEnabled) && !html.includes('location.hostname !== publicHostname')) errors.push(`Missing local analytics guard: ${path}`);
   // 404 may intentionally have no canonical because it must not be indexed.
   if (!path.endsWith('404.html')) {
     const canonical = html.match(/<link\b[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)/i)
