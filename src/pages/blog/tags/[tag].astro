@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ContentCard from '../../../components/ContentCard.astro';
+import Icon from '../../../components/Icon.astro';
 import { blogEntries } from '../../../utils/content';
 import { url, tagSlug } from '../../../utils/urls';
 export const getStaticPaths = (async () => {
@@ -11,5 +12,5 @@ export const getStaticPaths = (async () => {
 const { tag, posts } = Astro.props;
 ---
 <BaseLayout title={`Тема: ${tag}`} description={`Публикации по теме «${tag}»: заметки, идеи и практические подходы в блоге о digital-маркетинге.`} path={`blog/tags/${tagSlug(tag)}/`}>
-  <div class="container page-content"><a class="text-link" href={url('blog/')}>← Все статьи</a><div class="page-heading"><p class="eyebrow">Тема блога</p><h1>{tag}<span class="brand-dot">.</span></h1></div><div class="card-grid">{posts.map(entry => <ContentCard entry={entry} />)}</div></div>
+  <div class="container page-content"><a class="text-link" href={url('blog/')}><Icon direction="left" /> Все статьи</a><div class="page-heading"><p class="eyebrow">Тема блога</p><h1>{tag}<span class="brand-dot">.</span></h1></div><div class="card-grid">{posts.map(entry => <ContentCard entry={entry} />)}</div></div>
 </BaseLayout>

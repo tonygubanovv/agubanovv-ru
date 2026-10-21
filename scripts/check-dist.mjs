@@ -15,8 +15,8 @@ async function exists(path) {
 for (const path of ['index.html', 'blog/index.html', 'projects/index.html', '404.html', 'robots.txt']) {
   if (!await exists(path)) errors.push(`Missing dist/${path}`);
 }
-if (!await exists('sitemap-index.xml') && !await exists('sitemap.xml')) {
-  errors.push('Missing sitemap-index.xml or sitemap.xml');
+if (!await exists('sitemap-index.xml') || !await exists('sitemap.xml')) {
+  errors.push('Missing sitemap-index.xml or its sitemap.xml alias');
 }
 
 async function walk(dirUrl) {
@@ -83,7 +83,15 @@ for (const page of await walk(dist)) {
 }
 
 const robots = await readFile(new URL('robots.txt', dist), 'utf8');
-if (!robots.includes(`Sitemap: ${canonicalPrefix}sitemap-index.xml`)) errors.push('Incorrect robots sitemap URL');
+if (!robots.includes(`Sitemap: ${canonicalPrefix}sitemap.xml`)) errors.push('Incorrect robots sitemap URL');
+if (await exists('sitemap.xml') && await exists('sitemap-index.xml')) {
+  const index = await readFile(new URL('sitemap-index.xml', dist), 'utf8');
+  const alias = await readFile(new URL('sitemap.xml', dist), 'utf8');
+  if (index !== alias) errors.push('sitemap.xml differs from the generated sitemap index');
+  for (const match of index.matchAll(/<loc>([^<]+)<\/loc>/g)) {
+    if (!match[1].startsWith(canonicalPrefix) || !await exists(match[1].slice(canonicalPrefix.length))) errors.push(`Broken sitemap reference: ${match[1]}`);
+  }
+}
 if (await exists('CNAME')) errors.push('CNAME must not exist before a domain is approved');
 for (const name of await readdir(dist)) {
   if (/^\.env|\.(pem|key|p12|pfx)$/i.test(name)) errors.push(`Sensitive file in dist: ${name}`);

@@ -3,7 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import EmptyState from '../components/EmptyState.astro';
 import ContentCard from '../components/ContentCard.astro';
-import { site } from '../config/site';
+import { site, contactLinks } from '../config/site';
+import Icon from '../components/Icon.astro';
 import { url, absoluteUrl } from '../utils/urls';
 import { blogEntries, projectEntries } from '../utils/content';
 const posts = (await blogEntries()).slice(0, 3);
@@ -16,10 +17,10 @@ const featured = (projects.some(p => p.data.featured) ? projects.filter(p => p.d
       <p class="eyebrow hero-kicker"><span class="status-dot" aria-hidden="true"></span> {site.role} <span class="kicker-line" aria-hidden="true"></span> Личный взгляд</p>
       <h1>{site.hero.title}<br /><span>{site.hero.accent}</span></h1>
       <p class="hero-description">{site.hero.description}</p>
-      <div class="hero-actions"><a class="button primary" href={url('projects/')}>Смотреть проекты <span aria-hidden="true">↗</span></a><a class="button secondary" href={url('blog/')}>Читать блог <span aria-hidden="true">→</span></a></div>
+      <div class="hero-actions"><a class="button primary" href={url('projects/')}>Смотреть проекты <Icon /></a><a class="button secondary" href={url('blog/')}>Читать блог <Icon /></a></div>
     </div>
     <div class="hero-art" aria-hidden="true">
-      <div class="art-coordinate">MARKETING × TECHNOLOGY</div>
+      <div class="art-coordinate">Маркетинг и технологии</div>
       <svg viewBox="0 0 440 440" fill="none">
         <defs><linearGradient id="orbit" x1="60" y1="70" x2="380" y2="370" gradientUnits="userSpaceOnUse"><stop stop-color="currentColor" stop-opacity=".9"/><stop offset="1" stop-color="currentColor" stop-opacity=".12"/></linearGradient></defs>
         <circle cx="220" cy="220" r="160" stroke="currentColor" stroke-opacity=".15"/><circle cx="220" cy="220" r="116" stroke="currentColor" stroke-opacity=".2"/>
@@ -32,7 +33,7 @@ const featured = (projects.some(p => p.data.featured) ? projects.filter(p => p.d
       </svg>
       <div class="art-caption"><span>Идея</span><span>Подход</span><span>Практика</span></div>
     </div>
-    <div class="hero-bottom"><span>На пересечении идей и практики</span><a href={url('#about')}>Знакомиться дальше <span aria-hidden="true">↓</span></a></div>
+    <div class="hero-bottom"><span>На пересечении идей и практики</span><a href={url('#about')}>Знакомиться дальше <Icon direction="down" /></a></div>
   </section>
   <section id="about" class="about-section container section-space">
     <div class="about-label"><span class="section-number" aria-hidden="true">01 /</span><h2>О пространстве</h2></div>
@@ -46,5 +47,5 @@ const featured = (projects.some(p => p.data.featured) ? projects.filter(p => p.d
     <SectionHeader number="03 /" title="Заметки и идеи" href={url('blog/')} label="Весь блог" />
     {posts.length ? <div class="card-grid">{posts.map(entry => <ContentCard entry={entry} heading="h3" />)}</div> : <EmptyState kind="blog" heading="h3" />}
   </section>
-  <section class="container contact-section"><div><p class="eyebrow">Оставаться на связи</p><h2>Продолжим знакомство<span class="brand-dot">.</span></h2></div><div class="contact-links">{site.social.map(link => <a class="button secondary" href={link.url}>{link.label} <span aria-hidden="true">↗</span></a>)}</div></section>
+  {contactLinks().length > 0 && <section class="container contact-section"><div><p class="eyebrow">Оставаться на связи</p><h2>Продолжим знакомство<span class="brand-dot">.</span></h2></div><div class="contact-links">{contactLinks().map(link => <a class="button secondary" href={link.url}>{link.label} <Icon /></a>)}</div></section>}
 </BaseLayout>

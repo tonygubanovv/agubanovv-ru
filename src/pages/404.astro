@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { url } from '../utils/urls';
+import Icon from '../components/Icon.astro';
 ---
 <BaseLayout title="Страница не найдена" description="Этой страницы нет. Вернитесь на главную или загляните в блог и проекты." path="404.html" noindex>
-  <section class="container not-found"><p class="error-code" aria-hidden="true">404</p><p class="eyebrow">Кажется, мы свернули не туда</p><h1>Страница не найдена<span class="brand-dot">.</span></h1><p>Возможно, в адресе опечатка или страница была перемещена.<br />Начнём с главной?</p><a class="button primary" href={url()}>На главную <span aria-hidden="true">↗</span></a></section>
+  <section class="container not-found"><p class="error-code" aria-hidden="true">404</p><p class="eyebrow">Кажется, мы свернули не туда</p><h1>Страница не найдена<span class="brand-dot">.</span></h1><p>Возможно, в адресе опечатка или страница была перемещена.<br />Начнём с главной?</p><a class="button primary" href={url()}>На главную <Icon /></a></section>
 </BaseLayout>

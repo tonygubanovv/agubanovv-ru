@@ -1,3 +1,13 @@
+/** Set each public contact once. Missing values are not rendered anywhere. */
+export const links = {
+  telegram: 'https://t.me/tonygubanovv' as string | undefined,
+  email: undefined as string | undefined,
+};
+export const contactLinks = () => [
+  ...(links.telegram ? [{ key: 'telegram', label: 'Telegram', url: links.telegram }] : []),
+  ...(links.email ? [{ key: 'email', label: 'Почта', url: `mailto:${links.email}` }] : []),
+];
+
 export const site = {
   name: 'Личный сайт',
   author: undefined as string | undefined,
@@ -15,6 +25,5 @@ export const site = {
     { label: 'Блог', path: 'blog/' },
     { label: 'Обо мне', path: '#about' },
   ],
-  social: [{ label: 'GitHub', url: 'https://github.com/tonygubanovv' }],
   analytics: { yandexId: undefined as number | undefined, privacyApproved: false },
 } as const;

@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ContentCard from '../components/ContentCard.astro';
+import Icon from '../components/Icon.astro';
 import { site } from '../config/site';
 import { absoluteUrl, url, tagSlug } from '../utils/urls';
 import { dateLabel, blogEntries, projectEntries } from '../utils/content';
@@ -36,7 +37,7 @@ const jsonLd = isArticle ? {
       {data.cover && <Image class="publication-cover" src={data.cover.src} alt={data.cover.alt} width={1440} widths={[360, 720, 1440]} sizes="(max-width: 760px) 100vw, 720px" format="webp" loading="eager" />}
       {toc.length >= 4 && <nav class="toc" aria-label="Оглавление"><h2>В этом материале</h2><ul>{toc.map(h => <li class:list={{ 'toc-sub': h.depth === 3 }}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul></nav>}
       <div class="prose"><Content /></div>
-      <a class="text-link publication-back" href={url(`${collection}/`)}>← {isArticle ? 'Назад к статьям' : 'Назад к проектам'}</a>
+      <a class="text-link publication-back" href={url(`${collection}/`)}><Icon direction="left" /> {isArticle ? 'Назад к статьям' : 'Назад к проектам'}</a>
     </article>
     {related.length > 0 && <section class="related"><h2>По соседству</h2><div class="card-grid">{related.map(entry => <ContentCard entry={entry} heading="h3" />)}</div></section>}
   </div>

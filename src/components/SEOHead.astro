@@ -1,6 +1,8 @@
 ---
 import { site } from '../config/site';
 import { absoluteUrl, url } from '../utils/urls';
+import onestCyrillic from '@fontsource-variable/onest/files/onest-cyrillic-wght-normal.woff2?url';
+import onestLatin from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
 interface Props { title: string; description: string; path?: string; noindex?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> }
 const { title, description, path = '', noindex = false, article = false, image, imageAlt, jsonLd } = Astro.props;
 const fullTitle = `${title} — ${site.name}`;
@@ -8,6 +10,8 @@ const canonical = absoluteUrl(path);
 const ogImage = image ? new URL(image, import.meta.env.SITE).href : absoluteUrl('og.png');
 ---
 <meta charset="utf-8" />
+<link rel="preload" href={onestCyrillic} as="font" type="font/woff2" crossorigin />
+<link rel="preload" href={onestLatin} as="font" type="font/woff2" crossorigin />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="color-scheme" content="light dark" />
 <meta name="description" content={description} />
@@ -27,6 +31,7 @@ const ogImage = image ? new URL(image, import.meta.env.SITE).href : absoluteUrl(
 <meta name="twitter:title" content={fullTitle} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
+<meta name="twitter:image:alt" content={imageAlt ?? 'Маркетинг. С мыслью о главном.'} />
 {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
 <script is:inline>
   try {
