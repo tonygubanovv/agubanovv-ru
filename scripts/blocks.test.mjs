@@ -60,3 +60,45 @@ test('Only article content is rewritten, the rest of the page is untouched', () 
   assert.match(code, /:::цитата Кто-то\nТекст\.\n:::/u);
   assert.doesNotMatch(code, /blockquote/u);
 });
+
+test('A marker after a word hides the note in a card', () => {
+  const result = render('<p>Мы меряем UTM{{метка в адресе ссылки}} в кампаниях.</p>');
+  assert.match(result, /Мы меряем <span class="tip"><span tabindex="0" aria-describedby="tip-1" class="tip-term">UTM<\/span><span class="tip-bubble" role="tooltip" id="tip-1">метка в адресе ссылки<\/span>/u);
+  assert.match(result, /<\/span> в кампаниях\.<\/p>/u);
+  assert.doesNotMatch(result, /\{\{/u);
+  // The card is not part of the sentence: with the hidden card taken away the words read in their own order.
+  const visible = result.replace(/<span class="tip-bubble"[\s\S]*?<\/span>/gu, '').replace(/<[^>]+>/gu, '');
+  assert.match(visible, /Мы меряем UTM в кампаниях\./u);
+});
+
+test('The dot after the word stays in the sentence, a marked-up word becomes the hint itself', () => {
+  const fullStop = render('<p>Метрика.{{счётник на сайте}}</p>');
+  assert.match(fullStop, /<span tabindex="0" aria-describedby="tip-1" class="tip-term">Метрика<\/span><span class="tip-bubble" role="tooltip" id="tip-1">счётник на сайте<\/span><span class="tip-caret" aria-hidden="true"><\/span><\/span>\./u);
+  const bold = render('<p>Про <strong>лид</strong>{{клик по объявлению}}</p>');
+  assert.match(bold, /<span class="tip"><strong tabindex="0" aria-describedby="tip-1" class="tip-term">лид<\/strong>/u);
+});
+
+test('Two markers on one line get their own cards, and each card is numbered', () => {
+  const result = render('<p>Лид{{кто оставил заявку}} и UTM{{метка в ссылке}}</p>');
+  assert.equal(result.match(/class="tip-bubble"/gu)?.length, 2);
+  assert.match(result, /aria-describedby="tip-2"/u);
+});
+
+test('A marker with nothing to hide, no word before it, or no closing brace stays as written', () => {
+  assert.match(render('<p>Пусто {{}} тут.</p>'), /<p>Пусто \{\{\}\} тут\.<\/p>/u);
+  assert.match(render('<p>{{пояснение}} в начале строки.</p>'), /<p>\{\{пояснение\}\} в начале строки\.<\/p>/u);
+  assert.match(render('<p>Сломанное {{пояснение</p>'), /\{\{пояснение<\/p>/u);
+});
+
+test('Headings, code and links never take the marker, and the page gets the tap script once', () => {
+  const page = parse('<html><body><div class="prose"><h2>Заголовок{{пояс}}</h2><p><code>UTM{{пояс}}</code></p><p><a href="https://example.com">ссылка{{пояс}}</a></p><p>Обычный термин{{пояс}}</p></div></body></html>');
+  applyBlocks(page);
+  const html = serialize(page);
+  assert.match(html, /<h2>Заголовок\{\{пояс\}\}<\/h2>/u);
+  assert.match(html, /<code>UTM\{\{пояс\}\}<\/code>/u);
+  assert.match(html, /<a href="https:\/\/example\.com">ссылка\{\{пояс\}\}<\/a>/u);
+  assert.equal(html.match(/class="tip-term"/gu)?.length, 1);
+  // The script travels with the marker, keeps its own text intact and appears once per page.
+  assert.equal(html.match(/querySelectorAll\('\.tip'\)/gu)?.length, 1);
+  assert.doesNotMatch(html, /&lt;/u);
+});

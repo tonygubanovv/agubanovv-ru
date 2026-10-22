@@ -27,6 +27,8 @@ function elements(root) {
 function textChunks(node) {
   if (node.nodeName === '#text') return [node.value];
   if (['svg', 'script', 'style', 'sup', 'sub'].includes(node.tagName)) return [];
+  // A closed tooltip card is invisible and never copied with the sentence, so its words are not part of the text.
+  if (node.attrs?.some(attr => attr.name === 'role' && attr.value === 'tooltip')) return [];
   return (node.childNodes ?? []).flatMap(textChunks);
 }
 const normalizeText = value => value.replace(/\s+/gu, ' ').trim();
