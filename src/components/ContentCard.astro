@@ -11,8 +11,10 @@ const summary = data.description;
 ---
 <article class="content-card">
   {data.cover && <Image src={data.cover.src} alt={data.cover.alt} width={720} widths={[360, 720]} sizes="(max-width: 700px) 100vw, (max-width: 1000px) 50vw, 33vw" format="webp" loading="lazy" />}
-  <div class="card-meta"><time datetime={data.date}>{dateLabel(data.date)}</time>{'category' in data && <span>{data.category}</span>}</div>
-  <Heading><a href={url(publicationPath(entry))}>{data.title} <Icon /></a></Heading>
-  <p>{summary}</p>
-  <div class="tags">{data.tags.map(tag => <span class="tag">{tag}</span>)}</div>
+  <div class="card-body">
+    <div class="card-meta"><time datetime={data.date}>{dateLabel(data.date)}</time>{'category' in data && <span>{data.category}</span>}</div>
+    <Heading><a href={url(publicationPath(entry))}>{data.title} <Icon /></a></Heading>
+    <p>{summary}</p>
+    {data.tags.length > 0 && <div class="tags">{data.tags.map(tag => <span class="tag">{tag}</span>)}</div>}
+  </div>
 </article>

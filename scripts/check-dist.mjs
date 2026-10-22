@@ -42,7 +42,7 @@ async function exists(path) {
 
 const countMatches = (text, line) => text.split('\n').filter(entry => entry === line).length;
 
-for (const path of ['index.html', 'blog/index.html', '404.html', 'robots.txt', 'robots-yandex.txt', 'privacy/index.html', 'cookies/index.html', 'consent/index.html', 'legal/index.html', 'legal/privacy/index.html', 'legal/cookies/index.html', 'legal/consent/index.html', 'sitemap-0.xml']) {
+for (const path of ['index.html', 'blog/index.html', '404.html', 'robots.txt', 'robots-yandex.txt', '4705095550820effb099a08c420e8464.txt', 'privacy/index.html', 'cookies/index.html', 'consent/index.html', 'legal/index.html', 'legal/privacy/index.html', 'legal/cookies/index.html', 'legal/consent/index.html', 'sitemap-0.xml']) {
   if (!await exists(path)) errors.push(`Missing dist/${path}`);
 }
 

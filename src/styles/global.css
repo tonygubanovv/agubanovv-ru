@@ -176,13 +176,15 @@ a.tag:hover { border-color: var(--accent); }
 .page-note { color: var(--muted); display: flex; gap: 12px; align-items: baseline; margin-top: 24px; font-size: 12px; }
 .tag-filter { margin-block: -16px 32px; }
 .card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
-.content-card { padding: 22px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
-.content-card > img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 5px; margin-bottom: 20px; }
+.content-card { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+.content-card > img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+.card-body { display: flex; flex: 1; flex-direction: column; padding: 20px 22px 22px; }
 .card-meta { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; color: var(--muted); }
 .card-meta > span { color: var(--accent); }
-.content-card :is(h2, h3) { margin-top: 14px; font-size: 21px; overflow-wrap: anywhere; }
-.content-card > p { margin-top: 12px; color: var(--muted); font-size: 14px; line-height: 1.6; }
-.content-card .tags { margin-top: 18px; }
+/* A row of cards shares one level per element kind, so both text blocks reserve their full line box. */
+.content-card :is(h2, h3) { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; min-height: 5.12em; margin-top: 14px; font-size: 21px; line-height: 1.28; overflow-wrap: anywhere; }
+.card-body > p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; min-height: 6.4em; margin-top: 12px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+.content-card .tags { margin-top: auto; padding-top: 18px; }
 .not-found { padding-block: 64px 96px; text-align: center; }
 .error-code { font-size: clamp(110px, 20vw, 220px); color: var(--accent); line-height: 1; font-weight: 600; letter-spacing: -.07em; margin-bottom: 24px; }
 .not-found h1 { margin-top: 16px; font-size: clamp(30px, 4vw, 48px); }
@@ -295,7 +297,9 @@ a.tag:hover { border-color: var(--accent); }
   .page-heading { margin-bottom: 32px; }
   .page-heading h1 { font-size: 52px; }
   .card-grid { grid-template-columns: 1fr; }
-  .content-card { padding: 24px; }
+  .card-body { padding-inline: 24px; }
+  /* One card per row has nothing to line up with, so the title and the summary are shown in full. */
+  .content-card :is(h2, h3), .card-body > p { display: block; -webkit-line-clamp: unset; min-height: 0; }
   .publication-wrap { padding-top: 24px; }
   .breadcrumbs { padding-top: 16px; }
   .breadcrumbs-current { max-width: 26ch; }
