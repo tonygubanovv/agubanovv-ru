@@ -317,13 +317,17 @@ body:has(.cookie-notice:not([hidden])) { padding-bottom: calc(var(--cookie-notic
 
 /* Header contacts share the site's quiet controls and remain usable without JS. */
 .header-contacts { display: flex; align-items: center; gap: 16px; }
-.email-contact { min-width: 0; }
-.email-contact-label { display: block; font-size: 11px; line-height: 1.4; color: var(--muted); }
-.email-contact > a { font-size: 13px; font-weight: 500; line-height: 1.4; overflow-wrap: anywhere; }
-.telegram-contact { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--muted); }
+.email-contact { position: relative; display: grid; gap: 2px; min-width: 0; }
+.email-contact-label { display: block; font-size: 11px; line-height: 1.2; color: var(--muted); }
+.header-contacts .email-contact-label { position: absolute; left: 0; bottom: calc(100% + 2px); }
+.email-contact-row { display: flex; align-items: center; gap: 6px; min-height: 22px; }
+.email-contact-row > a { display: block; font-size: 13px; font-weight: 500; line-height: 1.25; overflow-wrap: anywhere; }
+.copy-email { display: grid; place-items: center; flex: 0 0 22px; width: 22px; height: 22px; min-height: 0; padding: 0; border: 0; background: transparent; color: var(--muted); transition: color 180ms; }
+.copy-email:hover { color: var(--accent); }
+.telegram-contact { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; color: var(--muted); }
 .telegram-contact:hover { color: var(--accent); }
 .mobile-contacts { border-top: 1px solid var(--border); margin-top: 8px; padding: 16px 12px 0; }
-.mobile-nav nav .email-contact > a { padding: 8px 0; font-size: 12px; }
+.mobile-nav nav .email-contact-row > a { padding: 0; font-size: 12px; line-height: 1.25; }
 .mobile-nav nav .mobile-telegram { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 8px 0; font-size: 13px; }
 .mobile-nav nav { width: min(320px, calc(100vw - 40px)); min-width: 0; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }

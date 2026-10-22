@@ -1,7 +1,28 @@
 ---
 import { links } from '../config/site';
+import Icon from './Icon.astro';
 ---
 {links.email && <div class="email-contact">
   <span class="email-contact-label">Эл. почта:</span>
-  <a href={`mailto:${links.email}`}>{links.email}</a>
+  <div class="email-contact-row">
+    <a href={`mailto:${links.email}`}>{links.email}</a>
+    <button class="copy-email" type="button" data-copy-email={links.email} aria-label="Скопировать адрес электронной почты" title="Скопировать адрес" hidden><Icon name="copy" size={14} /></button>
+  </div>
+  <span class="sr-only" data-email-copy-status role="status" aria-live="polite"></span>
 </div>}
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-email]').forEach(button => {
+    if (!navigator.clipboard?.writeText) return;
+    button.hidden = false;
+    button.addEventListener('click', async () => {
+      const status = button.closest('.email-contact')?.querySelector('[data-email-copy-status]');
+      try {
+        await navigator.clipboard.writeText(button.dataset.copyEmail!);
+        if (status) status.textContent = 'Адрес скопирован';
+        button.title = 'Адрес скопирован';
+      } catch {
+        if (status) status.textContent = 'Не удалось скопировать адрес';
+      }
+    });
+  });
+</script>
