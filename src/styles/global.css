@@ -265,15 +265,15 @@ a.tag:hover { border-color: var(--accent); }
 /* The contents column is desktop only: phones and tablets, including 10.9—11" in landscape, keep the plain article. */
 @media (min-width: 1200px) {
   /* The article holds the middle of the screen; the contents hang in the left gutter and an empty right gutter keeps them balanced. */
-  .publication-grid.has-toc { display: grid; grid-template-columns: 168px minmax(0, 720px) 168px; gap: 24px; max-width: 1104px; }
+  .publication-grid.has-toc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 720px) minmax(0, 1fr); gap: 24px; max-width: none; }
   .publication-sidebar { display: block; padding-top: 10px; }
 }
 
 /* Optional analytics stays off until an explicit choice. */
 .cookie-notice { position: fixed; z-index: 20; inset: auto 0 0; padding-bottom: env(safe-area-inset-bottom); border-top: 1px solid var(--border); background: var(--background); color: var(--muted); font-size: 12px; line-height: 1.3; }
 .cookie-notice[hidden] { display: none; }
-body:has(.cookie-notice:not([hidden])) { padding-bottom: calc(48px + env(safe-area-inset-bottom)); }
-.cookie-notice-inner { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 47px; padding: 1px 12px 2px; }
+body:has(.cookie-notice:not([hidden])) { padding-bottom: calc(var(--cookie-notice-height, 48px) + env(safe-area-inset-bottom)); }
+.cookie-notice-inner { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px 12px; min-height: 47px; padding-block: 1px 2px; }
 .cookie-notice-inner > p { white-space: nowrap; }
 .cookie-terms { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; text-underline-offset: 2px; }
 .cookie-notice-actions { display: flex; align-items: center; gap: 6px; }

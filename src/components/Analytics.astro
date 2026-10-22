@@ -7,9 +7,9 @@ const publicHostname = new URL(import.meta.env.SITE!).hostname;
 const { consentVersion, consentDays } = site.legal;
 ---
 {enabled && <aside class="cookie-notice" data-cookie-notice role="region" aria-label="Настройки cookie" hidden>
-  <div class="cookie-notice-inner">
-  <p>Cookie для аналитики?</p><a class="cookie-terms" href={url('consent/')}>Условия</a>
-  <div class="cookie-notice-actions"><button class="button primary" type="button" data-cookie-accept aria-label="Разрешить аналитику">Да</button><button class="button secondary" type="button" data-cookie-decline aria-label="Отказаться от аналитики">Нет</button></div>
+  <div class="container cookie-notice-inner">
+  <p>На сайте используются куки.</p><a class="cookie-terms" href={url('consent/')}>Подробнее</a>
+  <div class="cookie-notice-actions"><button class="button primary" type="button" data-cookie-accept aria-label="Разрешить аналитику">Окей</button><button class="button secondary" type="button" data-cookie-decline aria-label="Отказаться от аналитики">Отказаться</button></div>
   </div>
 </aside>}
 {enabled && <script is:inline define:vars={{ counterId: yandexId, publicHostname, consentVersion, consentDays }}>
@@ -20,6 +20,12 @@ const { consentVersion, consentDays } = site.legal;
     const settings = document.querySelectorAll('[data-cookie-settings]');
     let loaded = false;
     let returnFocus = null;
+    // The band wraps on narrow screens, so the space under the footer follows its real height.
+    function reserveSpace() {
+      if (!notice || notice.hidden || !notice.offsetHeight) return;
+      document.body.style.setProperty('--cookie-notice-height', notice.offsetHeight + 'px');
+    }
+    if (notice && window.ResizeObserver) new ResizeObserver(reserveSpace).observe(notice);
     function readChoice() {
       try {
         const choice = JSON.parse(localStorage.getItem(storageKey));
@@ -59,6 +65,7 @@ const { consentVersion, consentDays } = site.legal;
     }
     function apply(choice) {
       if (notice) notice.hidden = !!choice;
+      reserveSpace();
       if (choice && choice.accepted) startAnalytics(choice);
       else stopAnalytics();
     }
@@ -75,6 +82,7 @@ const { consentVersion, consentDays } = site.legal;
       button.addEventListener('click', () => {
         returnFocus = button;
         if (notice) notice.hidden = false;
+        reserveSpace();
         document.querySelector('[data-cookie-accept]')?.focus();
       });
     });
