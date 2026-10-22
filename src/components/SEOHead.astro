@@ -3,8 +3,9 @@ import { site } from '../config/site';
 import { absoluteUrl, url } from '../utils/urls';
 import onestCyrillic from '@fontsource-variable/onest/files/onest-cyrillic-wght-normal.woff2?url';
 import onestLatin from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
-interface Props { title: string; description: string; path?: string; noindex?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> }
+interface Props { title: string; description: string; path?: string; noindex?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> | Record<string, unknown>[] }
 const { title, description, path = '', noindex = false, article = false, image, imageAlt, jsonLd } = Astro.props;
+const graphs = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 const fullTitle = `${title} — ${site.name}`;
 const canonical = absoluteUrl(path);
 const ogImage = image ? new URL(image, import.meta.env.SITE).href : absoluteUrl('og.png');
@@ -35,7 +36,7 @@ const ogImage = image ? new URL(image, import.meta.env.SITE).href : absoluteUrl(
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={ogImage} />
 <meta name="twitter:image:alt" content={imageAlt ?? 'Маркетинг. С мыслью о главном.'} />
-{jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />}
+{graphs.map(graph => <script is:inline type="application/ld+json" set:html={JSON.stringify(graph).replace(/</g, '\\u003c')} />)}
 <script is:inline>
   try {
     const theme = localStorage.getItem('theme');

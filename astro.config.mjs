@@ -2,6 +2,8 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import { copyFile } from 'node:fs/promises';
+import { sitemapMeta } from './src/utils/sitemapMeta.ts';
+import { isHiddenPath } from './src/utils/routes.ts';
 
 export default defineConfig({
   site: 'https://agubanovv.ru',
@@ -9,7 +11,10 @@ export default defineConfig({
   trailingSlash: 'always',
   output: 'static',
   integrations: [
-    sitemap({ filter: (page) => !page.endsWith('/404/') && !page.endsWith('/404.html') }),
+    sitemap({
+      filter: (page) => !isHiddenPath(new URL(page).pathname) && !page.endsWith('/404/') && !page.endsWith('/404.html'),
+      serialize: (item) => ({ ...item, ...sitemapMeta(new URL(item.url).pathname) }),
+    }),
     {
       name: 'sitemap-public-alias',
       hooks: {

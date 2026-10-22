@@ -11,6 +11,6 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 const { tag, posts } = Astro.props;
 ---
-<BaseLayout title={`Тема: ${tag}`} description={`Публикации по теме «${tag}»: заметки, идеи и практические подходы в блоге о digital-маркетинге.`} path={`blog/tags/${tagSlug(tag)}/`}>
+<BaseLayout title={`Тема: ${tag}`} crumb={tag} description={`Публикации по теме «${tag}»: заметки, идеи и практические подходы в блоге о digital-маркетинге.`} path={`blog/tags/${tagSlug(tag)}/`}>
   <div class="container page-content"><a class="text-link" href={url('blog/')}><Icon direction="left" /> Все статьи</a><div class="page-heading"><p class="eyebrow">Тема блога</p><h1>{tag}<span class="brand-dot">.</span></h1></div><div class="card-grid">{posts.map(entry => <ContentCard entry={entry} />)}</div></div>
 </BaseLayout>

@@ -1,18 +1,23 @@
 ---
 import SEOHead from '../components/SEOHead.astro';
 import Header from '../components/Header.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
 import Footer from '../components/Footer.astro';
 import Analytics from '../components/Analytics.astro';
+import { breadcrumbGraph, trail } from '../utils/crumbs';
 import '../styles/global.css';
-interface Props { title: string; description: string; path?: string; noindex?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> }
+interface Props { title: string; description: string; path?: string; crumb?: string; noindex?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> }
+const { crumb, path = '', noindex = false, jsonLd, ...rest } = Astro.props;
+const crumbs = noindex ? [] : trail(path, crumb);
+const graphs = [jsonLd, ...(crumbs.length > 1 ? [breadcrumbGraph(crumbs)] : [])].filter((graph): graph is Record<string, unknown> => Boolean(graph));
 ---
 <!doctype html>
 <html lang="ru">
-  <head><SEOHead {...Astro.props} /></head>
+  <head><SEOHead {...rest} path={path} noindex={noindex} jsonLd={graphs.length ? graphs : undefined} /></head>
   <body>
     <a href="#main" class="skip-link">К содержимому</a>
     <Header />
-    <main id="main" tabindex="-1"><slot /></main>
+    <main id="main" tabindex="-1"><Breadcrumbs crumbs={crumbs} /><slot /></main>
     <Footer />
     <Analytics />
   </body>

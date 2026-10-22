@@ -1,6 +1,7 @@
 /** Checks the actual static output for the approved custom domain. */
 import { readFile, access, readdir } from 'node:fs/promises';
 import { site } from '../src/config/site.ts';
+import { hiddenPaths } from '../src/utils/routes.ts';
 import { checkAnalytics } from './check-analytics.mjs';
 
 
@@ -17,7 +18,9 @@ async function exists(path) {
   catch { return false; }
 }
 
-for (const path of ['index.html', 'blog/index.html', 'projects/index.html', '404.html', 'robots.txt', 'privacy/index.html', 'cookies/index.html', 'consent/index.html']) {
+const countMatches = (text, line) => text.split('\n').filter(entry => entry === line).length;
+
+for (const path of ['index.html', 'blog/index.html', 'projects/index.html', '404.html', 'robots.txt', 'robots-yandex.txt', 'privacy/index.html', 'cookies/index.html', 'consent/index.html', 'sitemap-0.xml']) {
   if (!await exists(path)) errors.push(`Missing dist/${path}`);
 }
 if (!await exists('sitemap-index.xml') || !await exists('sitemap.xml')) {
@@ -38,6 +41,7 @@ async function walk(dirUrl) {
 for (const page of await walk(dist)) {
   const html = await readFile(page, 'utf8');
   const path = page.pathname.split('/dist/').at(-1) ?? page.pathname;
+  const isNoindex = /<meta\b[^>]*name="robots"[^>]*content="noindex/i.test(html);
   if ((html.match(/<h1\b/gi) ?? []).length !== 1) errors.push(`Expected exactly one H1: ${path}`);
   if (!/<html\b[^>]*lang="ru"/i.test(html)) errors.push(`Missing Russian page language: ${path}`);
   if (!/<meta\b[^>]*name="description"[^>]*content="[^"]+"/i.test(html)) errors.push(`Missing description: ${path}`);
@@ -49,14 +53,36 @@ for (const page of await walk(dist)) {
     if (!html.includes('startAnalytics(choice)') || !html.includes('location.hostname !== publicHostname')) errors.push(`Missing consent/host analytics guard: ${path}`);
   } else if (/mc\.yandex\.ru/.test(html)) errors.push(`Unapproved Metrika counter: ${path}`);
   if (/mc\.yandex\.ru\/watch\/|clarity\.ms/i.test(html)) errors.push(`Unconditional pixel or removed tracker found: ${path}`);
-  // 404 may intentionally have no canonical because it must not be indexed.
-  if (!path.endsWith('404.html')) {
+  // Pages closed from indexing carry noindex instead of a canonical.
+  if (!isNoindex && !path.endsWith('404.html')) {
     const canonical = html.match(/<link\b[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)/i)
       ?? html.match(/<link\b[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["']/i);
     if (!canonical || !canonical[1].startsWith(canonicalPrefix)) {
       errors.push(`Missing/incorrect canonical: ${path}`);
     }
   }
+  const expectCrumbs = !isNoindex && path !== 'index.html' && !path.endsWith('404.html');
+  const hasCrumbs = /<nav class="breadcrumbs"/i.test(html);
+  if (expectCrumbs !== hasCrumbs) errors.push(`Breadcrumbs ${hasCrumbs ? 'rendered where they should not be' : 'missing'}: ${path}`);
+  const pagePath = path.replace(/index\.html$/, '');
+  if (isNoindex && !pagePath.endsWith('404.html') && !hiddenPaths.includes(pagePath)) errors.push(`Page is noindex but not listed as closed: ${path}`);
+  if (!isNoindex && hiddenPaths.includes(pagePath)) errors.push(`Closed page lost its noindex mark: ${path}`);
+  const graphs = html.match(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi) ?? [];
+  for (const script of graphs) {
+    const json = JSON.parse(script.replace(/^<script[^>]*>/i, '').replace(/<\/script>$/i, '').replace(/\\u003c/g, '<'));
+    if (json['@type'] !== 'BreadcrumbList') continue;
+    const items = json.itemListElement ?? [];
+    const nav = html.match(/<nav class="breadcrumbs"[\s\S]*?<\/nav>/i);
+    if (!nav || items.length !== (nav[0].match(/<a\b/gi) ?? []).length + 1) errors.push(`BreadcrumbList does not match the visible trail: ${path}`);
+    if (items[0]?.name !== 'Главная' || items[0]?.item !== 'https://agubanovv.ru/') errors.push(`Breadcrumb trail must start with the home page: ${path}`);
+    items.forEach((item, index) => {
+      if (item.position !== index + 1) errors.push(`Breadcrumb position drift: ${path}`);
+      const isLast = index === items.length - 1;
+      if (isLast === Boolean(item.item)) errors.push(`Breadcrumb link handling is wrong: ${path} -> ${item.name}`);
+      if (item.item && !item.item.startsWith(canonicalPrefix)) errors.push(`Breadcrumb URL outside the approved domain: ${path} -> ${item.item}`);
+    });
+  }
+
   const re = /\b(?:href|src)=["'](\/[^"']*)["']/g;
   for (const match of html.matchAll(re)) {
     const value = match[1];
@@ -95,6 +121,54 @@ for (const page of await walk(dist)) {
 
 const robots = await readFile(new URL('robots.txt', dist), 'utf8');
 if (!robots.includes(`Sitemap: ${canonicalPrefix}sitemap.xml`)) errors.push('Incorrect robots sitemap URL');
+if (!/^User-agent: \*$/m.test(robots)) errors.push('robots.txt has no universal group');
+if (!/^User-agent: Yandex$/m.test(robots)) errors.push('robots.txt has no Yandex group');
+for (const cancelled of ['Host:', 'Noindex:', 'Crawl-delay:']) {
+  if (robots.includes(cancelled)) errors.push(`robots.txt uses the unsupported directive ${cancelled}`);
+}
+const cleanParams = [...robots.matchAll(/^Clean-param: (\S+) (\/\S*)$/gm)];
+if (!cleanParams.length) errors.push('robots.txt has no Clean-param for Yandex');
+const ignored = new Set(cleanParams.flatMap(([, params]) => params.split('&')));
+for (const required of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'msclkid', 'fbclid', 'yclid']) {
+  if (!ignored.has(required)) errors.push(`Clean-param does not ignore ${required}`);
+}
+for (const [, params] of cleanParams) {
+  if (params.length > 500) errors.push(`Clean-param exceeds the 500 character limit: ${params.slice(0, 40)}…`);
+  for (const name of params.split('&')) if (!/^[a-z0-9_-]+$/.test(name)) errors.push(`Clean-param name is not a lowercase token: ${name}`);
+}
+const yandexFile = await readFile(new URL('robots-yandex.txt', dist), 'utf8');
+if (!robots.includes(yandexFile.split('\n\n').at(-2))) errors.push('robots-yandex.txt drifts from the Yandex group in robots.txt');
+for (const path of hiddenPaths) {
+  if (countMatches(robots, `Disallow: /${path}`) !== 2) errors.push(`Closed page is not disallowed in both robot groups: /${path}`);
+  if (countMatches(yandexFile, `Disallow: /${path}`) !== 1) errors.push(`Closed page is missing from the Yandex file: /${path}`);
+}
+
+// Publication dates must come from the content, never from the build clock.
+const sourceDates = new Set([site.legal.updated]);
+for (const collection of ['blog', 'projects']) {
+  for (const name of await readdir(new URL(`../src/content/${collection}/`, import.meta.url))) {
+    if (!name.endsWith('.md')) continue;
+    const block = await readFile(new URL(`../src/content/${collection}/${name}`, import.meta.url), 'utf8');
+    for (const match of block.matchAll(/^(?:date|updated):\s*"?(\d{4}-\d{2}-\d{2})"?/gm)) sourceDates.add(match[1]);
+  }
+}
+
+const sitemapPart = await readFile(new URL('sitemap-0.xml', dist), 'utf8');
+const entries = [...sitemapPart.matchAll(/<url>([\s\S]*?)<\/url>/g)];
+if (entries.length < 7) errors.push(`Sitemap lost pages: ${entries.length} URLs`);
+for (const path of hiddenPaths) {
+  if (sitemapPart.includes(`<loc>${canonicalPrefix}${path}</loc>`)) errors.push(`Closed page is still in the sitemap: /${path}`);
+}
+for (const [, body] of entries) {
+  const loc = body.match(/<loc>([^<]+)<\/loc>/)?.[1] ?? '';
+  if (!loc.startsWith(canonicalPrefix)) errors.push(`Sitemap URL outside the approved domain: ${loc}`);
+  if (!/<priority>/.test(body)) errors.push(`Sitemap URL without priority: ${loc}`);
+  const lastmod = body.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1];
+  if (!lastmod) continue;
+  if (!sourceDates.has(lastmod.slice(0, 10))) errors.push(`Sitemap lastmod is not a real publication date: ${loc} -> ${lastmod}`);
+  if (Date.parse(lastmod) > Date.now() + 86_400_000) errors.push(`Sitemap lastmod is in the future: ${loc} -> ${lastmod}`);
+}
+
 if (await exists('sitemap.xml') && await exists('sitemap-index.xml')) {
   const index = await readFile(new URL('sitemap-index.xml', dist), 'utf8');
   const alias = await readFile(new URL('sitemap.xml', dist), 'utf8');

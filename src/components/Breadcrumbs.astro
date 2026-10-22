@@ -1,6 +1,15 @@
 ---
 import { url } from '../utils/urls';
-interface Props { section: 'blog' | 'projects'; label: string }
-const { section, label } = Astro.props;
+import type { Crumb } from '../utils/crumbs';
+interface Props { crumbs: Crumb[] }
+const { crumbs } = Astro.props;
+const last = crumbs.length - 1;
 ---
-<nav class="breadcrumbs" aria-label="Хлебные крошки"><a href={url()}>Главная</a><span aria-hidden="true">/</span><a href={url(`${section}/`)}>{label}</a></nav>
+{crumbs.length > 1 && <nav class="breadcrumbs" aria-label="Хлебные крошки">
+  <div class="container breadcrumbs-inner">
+    {crumbs.map((crumb, index) => <span class="breadcrumb-item">
+      {index > 0 && <span aria-hidden="true">/</span>}
+      {index === last ? <span class="breadcrumbs-current" aria-current="page">{crumb.label}</span> : <a href={url(crumb.path)}>{crumb.label}</a>}
+    </span>)}
+  </div>
+</nav>}

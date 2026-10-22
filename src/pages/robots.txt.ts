@@ -1,2 +1,3 @@
-import { absoluteUrl } from '../utils/urls';
-export const GET = () => new Response(`User-agent: *\nAllow: /\n\nSitemap: ${absoluteUrl('sitemap.xml')}\n`, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+import { robotsTxt } from '../utils/robots';
+const headers = { 'Content-Type': 'text/plain; charset=utf-8' };
+export const GET = () => new Response(robotsTxt(), { headers });

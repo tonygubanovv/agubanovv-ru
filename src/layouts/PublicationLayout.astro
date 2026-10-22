@@ -2,7 +2,6 @@
 import { render, type CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
-import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ContentCard from '../components/ContentCard.astro';
 import Icon from '../components/Icon.astro';
 import { site } from '../config/site';
@@ -15,25 +14,23 @@ const { Content, headings } = await render(entry);
 const isArticle = collection === 'blog';
 const preserveText = 'preserveText' in data && data.preserveText;
 const description = 'description' in data ? data.description : data.summary;
-const label = isArticle ? 'Блог' : 'Проекты';
 const path = `${collection}/${entry.id}/`;
 const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
 const related = (isArticle ? await blogEntries() : await projectEntries()).filter(other => other.id !== entry.id && other.data.tags.some(tag => data.tags.includes(tag))).slice(0, 2);
-const jsonLd = isArticle ? {
-  '@context': 'https://schema.org', '@type': 'BlogPosting', headline: data.title, description,
+const jsonLd = {
+  '@context': 'https://schema.org', '@type': isArticle ? 'BlogPosting' : 'Article', headline: data.title, description,
   datePublished: `${data.date}T12:00:00+03:00`,
   ...('updated' in data && data.updated ? { dateModified: `${data.updated}T12:00:00+03:00` } : {}),
   ...(site.author ? { author: { '@type': 'Person', name: site.author } } : {}),
   ...(data.cover ? { image: new URL(data.cover.src.src, import.meta.env.SITE).href } : {}),
   mainEntityOfPage: absoluteUrl(path), inLanguage: 'ru-RU',
-} : undefined;
+};
 ---
-<BaseLayout title={data.title} description={description} path={path} article={isArticle} image={data.cover?.src.src} imageAlt={data.cover?.alt} jsonLd={jsonLd}>
+<BaseLayout title={data.title} description={description} path={path} crumb={data.title} article={isArticle} image={data.cover?.src.src} imageAlt={data.cover?.alt} jsonLd={jsonLd}>
   <div class="container publication-wrap">
     <div class:list={['publication-grid', { 'has-toc': toc.length >= 4 }]}>
     {toc.length >= 4 && <aside class="publication-sidebar"><nav class="toc" aria-label="Оглавление"><h2>В этом материале</h2><ul>{toc.map(h => <li class:list={{ 'toc-sub': h.depth === 3 }}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul></nav></aside>}
     <article class="publication">
-      <Breadcrumbs section={collection} label={label} />
       <header class="publication-header"><div class="card-meta"><time datetime={data.date}>{dateLabel(data.date)}</time>{'category' in data && <span>{data.category}</span>}</div><h1 data-preserve-text={preserveText ? 'true' : undefined}>{data.title}</h1><p class="publication-summary">{description}</p>{'role' in data && data.role && <p>Роль: {data.role}</p>}{'updated' in data && data.updated && <p class="muted">Обновлено: <time datetime={data.updated}>{dateLabel(data.updated)}</time></p>}
         <div class="tags">{data.tags.map(tag => isArticle ? <a class="tag" href={url(`blog/tags/${tagSlug(tag)}/`)}>{tag}</a> : <span class="tag">{tag}</span>)}</div>
       </header>

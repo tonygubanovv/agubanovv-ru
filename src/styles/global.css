@@ -152,9 +152,11 @@ a.tag:hover { border-color: var(--accent); }
 .not-found h1 { margin-top: 16px; font-size: clamp(30px, 4vw, 48px); }
 .not-found > p:not(.error-code, .eyebrow) { color: var(--muted); margin-block: 24px 32px; }
 .publication-wrap { padding-block: 40px 80px; }
-.breadcrumbs { display: flex; flex-wrap: wrap; gap: 12px; color: var(--muted); font-size: 12px; margin-bottom: 28px; }
+.breadcrumbs { padding-top: 22px; color: var(--muted); font-size: 12px; }
+.breadcrumbs-inner { display: flex; flex-wrap: wrap; gap: 12px; }
+.breadcrumb-item { display: inline-flex; align-items: center; gap: 12px; min-width: 0; }
 .breadcrumbs a { min-height: 44px; display: inline-flex; align-items: center; }
-.breadcrumbs > span { align-self: center; }
+.breadcrumbs-current { max-width: 46ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; align-self: center; }
 .publication-grid { max-width: 720px; margin-inline: auto; }
 .publication { min-width: 0; }
 .publication-sidebar { display: none; }
@@ -245,7 +247,8 @@ a.tag:hover { border-color: var(--accent); }
   .card-grid { grid-template-columns: 1fr; }
   .content-card { padding: 24px; }
   .publication-wrap { padding-top: 24px; }
-  .breadcrumbs { margin-bottom: 28px; }
+  .breadcrumbs { padding-top: 16px; }
+  .breadcrumbs-current { max-width: 26ch; }
   .publication-summary { font-size: 18px; }
   .prose { font-size: 16px; }
   .prose h2 { font-size: 27px; }
