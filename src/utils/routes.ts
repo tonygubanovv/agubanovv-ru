@@ -1,7 +1,25 @@
-/** Legal pages the owner keeps out of search results: closed in robots, marked noindex, absent from the sitemap. */
-export const hiddenPaths = ['legal/', 'legal/consent/', 'legal/cookies/', 'legal/privacy/', 'consent/', 'cookies/', 'privacy/'] as const;
+// The extension is required: `npm run smoke` loads this file through Node, not through Vite.
+import { site } from '../config/site.ts';
 
-export const isHiddenPath = (path: string) => (hiddenPaths as readonly string[]).includes(path.replace(/^\/+/, ''));
+/**
+ * Любой адрес приводится к пути внутри сайта: https://agubanovv.ru/blog/slug/, /blog/slug/ и blog/slug/
+ * дают одно и то же. Главная — пустая строка.
+ */
+const toPath = (address: string) => {
+  const trimmed = address.replace(/^https?:\/\/[^/]+/i, '').replace(/^\/+/, '').replace(/\/+$/, '');
+  return trimmed === '' ? '' : `${trimmed}/`;
+};
+
+/** Страницы документов закрыты от поиска всегда: `noindex`, вне sitemap и запрещены директивой Disallow в robots.txt. */
+export const legalPaths = ['legal/', 'legal/consent/', 'legal/cookies/', 'legal/privacy/', 'consent/', 'cookies/', 'privacy/'];
+
+/**
+ * Всё, что поисковики не должны показывать: страницы документов плюс список владельца `site.search.closed`.
+ * Закрытая страница получает `noindex, follow`, теряет canonical и исчезает из карты сайта.
+ */
+export const closedPaths = [...legalPaths, ...site.search.closed.map(toPath)];
+
+export const isClosedPath = (path: string) => closedPaths.includes(toPath(path));
 
 /**
  * Addresses of publications the owner moved under /blog/. The build leaves only a redirect page

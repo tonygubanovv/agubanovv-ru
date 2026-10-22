@@ -1,7 +1,7 @@
 /** Checks the actual static output for the approved custom domain. */
 import { readFile, access, readdir } from 'node:fs/promises';
 import { site } from '../src/config/site.ts';
-import { hiddenPaths, movedPaths } from '../src/utils/routes.ts';
+import { closedPaths, legalPaths, movedPaths } from '../src/utils/routes.ts';
 import { checkAnalytics } from './check-analytics.mjs';
 import { parse } from 'parse5';
 
@@ -44,6 +44,11 @@ const countMatches = (text, line) => text.split('\n').filter(entry => entry === 
 
 for (const path of ['index.html', 'blog/index.html', '404.html', 'robots.txt', 'robots-yandex.txt', '4705095550820effb099a08c420e8464.txt', 'privacy/index.html', 'cookies/index.html', 'consent/index.html', 'legal/index.html', 'legal/privacy/index.html', 'legal/cookies/index.html', 'legal/consent/index.html', 'sitemap-0.xml']) {
   if (!await exists(path)) errors.push(`Missing dist/${path}`);
+}
+
+// A mistyped address in the owner's list must never leave a page silently open.
+for (const path of closedPaths) {
+  if (!await exists(`${path}index.html`)) errors.push(`Closed address has no page in this build: /${path}`);
 }
 
 // The owner publishes every text material only under /blog/; the site root may hold a redirect stub alone.
@@ -100,7 +105,8 @@ for (const page of await walk(dist)) {
     }
   }
   const pagePath = path.replace(/index\.html$/, '');
-  const isPrivatePage = hiddenPaths.includes(pagePath) || path.endsWith('404.html');
+  const isClosedPage = closedPaths.includes(pagePath) || path.endsWith('404.html');
+  const isDocumentPage = legalPaths.includes(pagePath) || path.endsWith('404.html');
   const isNoindex = /<meta\b[^>]*name="robots"[^>]*content="noindex/i.test(html);
   if ((html.match(/<h1\b/gi) ?? []).length !== 1) errors.push(`Expected exactly one H1: ${path}`);
   if (!/<html\b[^>]*lang="ru"/i.test(html)) errors.push(`Missing Russian page language: ${path}`);
@@ -114,19 +120,19 @@ for (const page of await walk(dist)) {
   } else if (/mc\.yandex\.ru/.test(html)) errors.push(`Unapproved Metrika counter: ${path}`);
   if (/mc\.yandex\.ru\/watch\/|clarity\.ms/i.test(html)) errors.push(`Unconditional pixel or removed tracker found: ${path}`);
   // Pages closed from indexing carry noindex instead of a canonical.
-  if (!isPrivatePage) {
+  if (!isClosedPage) {
     const canonical = html.match(/<link\b[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)/i)
       ?? html.match(/<link\b[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["']/i);
     if (!canonical || !canonical[1].startsWith(canonicalPrefix)) {
       errors.push(`Missing/incorrect canonical: ${path}`);
     }
   }
-  const expectCrumbs = !isPrivatePage && path !== 'index.html';
+  const expectCrumbs = !isDocumentPage && path !== 'index.html';
   const hasCrumbs = /<nav class="breadcrumbs"/i.test(html);
   if (expectCrumbs !== hasCrumbs) errors.push(`Breadcrumbs ${hasCrumbs ? 'rendered where they should not be' : 'missing'}: ${path}`);
   if (!site.search.indexingEnabled && !isNoindex) errors.push(`Global indexing lock missing: ${path}`);
-  if (site.search.indexingEnabled && isNoindex && !pagePath.endsWith('404.html') && !hiddenPaths.includes(pagePath)) errors.push(`Page is noindex but not listed as closed: ${path}`);
-  if (!isNoindex && hiddenPaths.includes(pagePath)) errors.push(`Closed page lost its noindex mark: ${path}`);
+  if (site.search.indexingEnabled && isNoindex && !isClosedPage) errors.push(`Page is noindex but not listed as closed: ${path}`);
+  if (!isNoindex && closedPaths.includes(pagePath)) errors.push(`Closed page lost its noindex mark: ${path}`);
   const graphs = html.match(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi) ?? [];
   for (const script of graphs) {
     const json = JSON.parse(script.replace(/^<script[^>]*>/i, '').replace(/<\/script>$/i, '').replace(/\\u003c/g, '<'));
@@ -198,9 +204,9 @@ for (const [, params] of cleanParams) {
 }
 const yandexFile = await readFile(new URL('robots-yandex.txt', dist), 'utf8');
 if (!robots.includes(yandexFile.split('\n\n').at(-2))) errors.push('robots-yandex.txt drifts from the Yandex group in robots.txt');
-for (const path of site.search.indexingEnabled ? hiddenPaths : []) {
-  if (countMatches(robots, `Disallow: /${path}`) !== 2) errors.push(`Closed page is not disallowed in both robot groups: /${path}`);
-  if (countMatches(yandexFile, `Disallow: /${path}`) !== 1) errors.push(`Closed page is missing from the Yandex file: /${path}`);
+for (const path of site.search.indexingEnabled ? legalPaths : []) {
+  if (countMatches(robots, `Disallow: /${path}`) !== 2) errors.push(`Document page is not disallowed in both robot groups: /${path}`);
+  if (countMatches(yandexFile, `Disallow: /${path}`) !== 1) errors.push(`Document page is missing from the Yandex file: /${path}`);
 }
 
 // Publication dates must come from the content, never from the build clock.
@@ -217,8 +223,8 @@ const sitemapPart = await readFile(new URL('sitemap-0.xml', dist), 'utf8');
 const entries = [...sitemapPart.matchAll(/<url>([\s\S]*?)<\/url>/g)];
 if (!site.search.indexingEnabled && entries.length) errors.push('Disabled indexing must have an empty sitemap');
 if (!site.search.indexingEnabled && /^Disallow:/m.test(robots)) errors.push('Crawlers must be able to read the global noindex');
-if (site.search.indexingEnabled && entries.length < 7) errors.push(`Sitemap lost pages: ${entries.length} URLs`);
-for (const path of hiddenPaths) {
+if (site.search.indexingEnabled && !entries.length) errors.push('The sitemap is empty while indexing is enabled');
+for (const path of closedPaths) {
   if (sitemapPart.includes(`<loc>${canonicalPrefix}${path}</loc>`)) errors.push(`Closed page is still in the sitemap: /${path}`);
 }
 for (const [, body] of entries) {
@@ -242,8 +248,12 @@ for (const page of await walk(dist)) {
   if (/<meta\b[^>]*name="robots"[^>]*content="noindex/i.test(await readFile(page, 'utf8'))) continue;
   indexedPages.push(path.replace(/index\.html$/, ''));
 }
+const listed = new Set(entries.map(([, body]) => body.match(/<loc>([^<]+)<\/loc>/)?.[1] ?? ''));
 for (const path of indexedPages) {
-  if (!sitemap.includes(`<loc>${canonicalPrefix}${path}</loc>`)) errors.push(`Indexed page is missing from the sitemap: /${path}`);
+  if (!listed.has(canonicalPrefix + path)) errors.push(`Indexed page is missing from the sitemap: /${path}`);
+}
+for (const loc of listed) {
+  if (!indexedPages.includes(loc.slice(canonicalPrefix.length))) errors.push(`Sitemap offers a page that is not indexable in this build: ${loc}`);
 }
 
 if (await exists('sitemap-index.xml')) {

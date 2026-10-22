@@ -274,11 +274,12 @@ a.tag:hover { border-color: var(--accent); }
   .hero-bottom a { gap: 8px; }
   .section-space { padding-top: 56px; }
   .about-section { display: block; }
-  .about-copy { grid-template-columns: 80px minmax(0, 1fr); column-gap: 16px; margin-top: 28px; }
-  .about-portrait { width: 80px; height: 80px; }
-  .about-more { grid-column: 2; }
+  /* The portrait sits above the text so both paragraphs use the full container width. */
+  .about-copy { display: block; margin-top: 28px; font-size: 15px; }
+  .about-portrait { width: 80px; height: 80px; margin-bottom: 20px; }
+  .about-copy > p, .about-more { max-width: none; }
+  .about-more { margin-top: 16px; }
   .large-text { font-size: 29px; }
-  .about-copy { font-size: 15px; }
   .section-title { gap: 10px; font-size: 25px; }
 
   .section-heading .text-link { font-size: 12px; gap: 8px; white-space: nowrap; }

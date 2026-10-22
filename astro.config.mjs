@@ -3,7 +3,7 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import { copyFile, mkdir, writeFile } from 'node:fs/promises';
 import { sitemapMeta } from './src/utils/sitemapMeta.ts';
-import { isHiddenPath, movedPaths } from './src/utils/routes.ts';
+import { isClosedPath, movedPaths } from './src/utils/routes.ts';
 import { site } from './src/config/site.ts';
 
 const origin = 'https://agubanovv.ru';
@@ -15,7 +15,7 @@ export default defineConfig({
   output: 'static',
   integrations: [
     ...(site.search.indexingEnabled ? [sitemap({
-      filter: (page) => !isHiddenPath(new URL(page).pathname) && !page.endsWith('/404/') && !page.endsWith('/404.html'),
+      filter: (page) => !isClosedPath(new URL(page).pathname) && !page.endsWith('/404/') && !page.endsWith('/404.html'),
       serialize: (item) => ({ ...item, ...sitemapMeta(new URL(item.url).pathname) }),
     })] : []),
     {

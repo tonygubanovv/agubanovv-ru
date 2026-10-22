@@ -32,8 +32,14 @@ export const site = {
   navigation: [
     { label: 'Блог', path: 'blog/' },
   ],
-  // Temporarily disabled by the owner; re-enable only on an explicit request.
-  search: { indexingEnabled: false as boolean },
+  // Индексация сайтом владеет этот блок. indexingEnabled: false закрывает весь сайт сразу.
+  // closed — отдельные страницы: впиши адрес как в браузере, и он закроется от поисковика
+  // (страница получит noindex и исчезнет из карты сайта). Для посетителя она останется открытой.
+  // Страницы документов закрыты всегда, их сюда вписывать не нужно — список в src/utils/routes.ts.
+  search: {
+    indexingEnabled: true as boolean,
+    closed: ['https://agubanovv.ru/blog/telegram-ads-ib-vendor/'],
+  },
   analytics: { yandexId: 113586660 as number | undefined, privacyApproved: true },
   /** Public ownership tokens for search engines; rendered in every page <head>. */
   verification: {

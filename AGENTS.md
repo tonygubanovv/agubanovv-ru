@@ -25,6 +25,7 @@
 - Markdown для блога и кейсов, MDX только для реально необходимой интерактивной публикации, Astro Content Collections с типизированной схемой.
 - Любой опубликованный текстовый материал доступен только по адресу `https://agubanovv.ru/blog/<slug>/`. Адреса от корня сайта запрещены: поле `permalink` и корневой маршрут `src/pages/[slug].astro` удалены по прямому решению владельца, возвращать их нельзя. `npm run smoke` не пропустит публикацию вне `/blog/`.
 - Сменить адрес уже опубликованной статьи можно только вместе с перенаправлением со старого адреса (`movedPaths` в `src/utils/routes.ts`); серверного 301 на GitHub Pages нет.
+- Индексацией владеет владелец: общий переключатель `site.search.indexingEnabled` и список закрытых страниц `site.search.closed` в `src/config/site.ts`. Менять их и `legalPaths` можно только по его прямому слову. Закрытая страница остаётся доступной посетителю и в лентах: она получает `noindex, follow`, теряет canonical и исчезает из sitemap, но обход ей не запрещается — иначе робот не увидит `noindex`.
 - `npm` и коммит `package-lock.json`. Не вводи другие пакетные менеджеры.
 - GitHub Pages через GitHub Actions; публикация из `main` после успешных проверок.
 - Текущий URL `https://agubanovv.ru/`. В `astro.config.mjs`: `site: 'https://agubanovv.ru'`, `base: '/'`, `trailingSlash: 'always'`.

@@ -1,5 +1,6 @@
 ---
 import { site } from '../config/site';
+import { isClosedPath } from '../utils/routes';
 import { absoluteUrl, url } from '../utils/urls';
 import onestCyrillic from '@fontsource-variable/onest/files/onest-cyrillic-wght-normal.woff2?url';
 import onestLatin from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
@@ -8,6 +9,9 @@ const { title, seoTitle, description, path = '', noindex = false, article = fals
 const graphs = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 const fullTitle = seoTitle ?? `${title} — ${site.name}`;
 const canonical = absoluteUrl(path);
+// A page the owner closed keeps no canonical at all; a temporarily locked site only loses noindex.
+const closed = noindex || isClosedPath(path);
+const hidden = closed || !site.search.indexingEnabled;
 const ogImage = image ? new URL(image, import.meta.env.SITE).href : absoluteUrl('og.png');
 ---
 <meta charset="utf-8" />
@@ -21,8 +25,8 @@ const ogImage = image ? new URL(image, import.meta.env.SITE).href : absoluteUrl(
 <meta name="description" content={description} />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>{fullTitle}</title>
-{(noindex || !site.search.indexingEnabled) && <meta name="robots" content="noindex, follow" />}
-{!noindex && <link rel="canonical" href={canonical} />}
+{hidden && <meta name="robots" content="noindex, follow" />}
+{!closed && <link rel="canonical" href={canonical} />}
 <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
 <meta property="og:locale" content="ru_RU" />
 <meta property="og:type" content={article ? 'article' : 'website'} />
