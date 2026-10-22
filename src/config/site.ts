@@ -26,7 +26,6 @@ export const site = {
   topics: ['Digital-маркетинг', 'SEO и GEO', 'ИИ'],
   navigation: [
     { label: 'Блог', path: 'blog/' },
-    { label: 'Обо мне', path: '#about' },
   ],
   // Temporarily disabled by the owner; re-enable only on an explicit request.
   search: { indexingEnabled: false as boolean },

@@ -7,7 +7,7 @@ tags: ["Нейросети", "SEO & GEO"]
 featured: true
 preserveText: true
 source: "https://teletype.in/@tonygubanovv/llms-txt-useless"
-cover: {"src":"../../assets/blog/llms-txt-useless.png","alt":"Роботы проходят мимо терминала llms.txt к входу robots.txt"}
+cover: {"src":"../../assets/blog/llms-txt-useless-green.png","alt":"Роботы проходят мимо терминала llms.txt к входу robots.txt"}
 ---
 
 Тема с llms.txt и llms-full.txt давно и активно форсится. Рынок преподносит это как обязательный этап для качественного GEO, агентства продают настройку клиентам, а Тильда даже выкатила под это отдельную кнопку в админке.

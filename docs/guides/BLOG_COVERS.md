@@ -1,5 +1,16 @@
 # Обложки блога
 
+## Зелёная версия llms.txt
+
+В статье и карточках используется `src/assets/blog/llms-txt-useless-green.png`. Исходный файл `llms-txt-useless.png` сохранён как референс. Встроенным image_gen изменена палитра существующей сцены: зелёные неон, подсветка и отражения вместо оранжевых.
+
+Промпт редактирования:
+
+```text
+Edit image 1 ONLY by changing its color palette. Image 1 is the edit target, NOT a composition reference. Preserve exactly its original composition, framing, dimensions/aspect ratio approximately 1.9:1, all characters and their positions and poses, all robot and drone shapes, architecture, rainfall, wet asphalt, smoke, reflections, movement, detail and camera perspective. Preserve the exact typography and text: "ROBOTS.TXT" above the gateway and the existing small llms.txt display text. Do NOT create a new scene or change any objects.
+Recolor the dominant orange neon sign, gateway trim, orange lighting, robot glows, sparks and corresponding wet pavement reflections into luminous emerald and lime-green tones matching #7cff5a highlights. Shift most cyan hologram and neon accents toward emerald/green as well, while keeping restrained cool teal shadows. Keep the environment and metallic robots dark charcoal/gunmetal with realistic material detail, natural neutral highlights and cinematic contrast. Match the green family of the site's other cyberpunk covers. The result must read as the SAME original image with a greener cinematic grade, not a uniform flat green tint. No added text or new objects. Opaque background.
+```
+
 ## Обложка статьи Salesbot
 
 Файл: `src/assets/blog/salesbot-utm-amocrm-cover.png`. Встроенный image_gen, два референса стиля. Новая композиция: крупная прозрачная UTM-метка в металлическом оптическом сканере, слева модуль сообщений, справа стеклянные карточки CRM. Световые линии показывают сохранение источника сообщения. Мокрый технический стол и размытые огни города на заднем плане. Иллюстрация темы, а не снимок реальной интеграции.
