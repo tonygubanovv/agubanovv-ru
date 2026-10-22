@@ -22,7 +22,7 @@
 
 - Astro, актуальная стабильная совместимая версия; `output: 'static'`.
 - TypeScript, строгая конфигурация, `astro check`.
-- Tailwind CSS 4 с Vite-плагином. Для тем, дизайн-токенов, состояния компонентов — CSS custom properties.
+- Tailwind CSS 4 с Vite-плагином. Для тем, дизайн-токенов, состояния компонентов — CSS custom properties. Каталог `docs/` исключён из сканера классов (`@source not` в `src/styles/global.css`): без этого одно слово в спецификации добавляет utility-класс в CSS всех страниц.
 - Astro Content Collections с `glob` loader и схемой Zod для `blog` и `projects`. `.md` по умолчанию, `.mdx` только для публикаций со специальными компонентами.
 - Официальные интеграции `@astrojs/sitemap` и (при необходимости MDX) `@astrojs/mdx`.
 - Статическая генерация, без React/Vue/Svelte на старте. Для переключения темы — небольшой клиентский скрипт.

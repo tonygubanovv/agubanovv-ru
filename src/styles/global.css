@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "@fontsource-variable/onest";
 @import "@fontsource-variable/jetbrains-mono/wght.css";
+/* The specs folder holds prose, not markup: left in the scan, a word typed in a document can pull a utility class
+   into the shipped CSS of every page. */
+@source not "../../docs";
 
 @theme {
   --font-sans: "Onest Variable", "Segoe UI", sans-serif;
