@@ -2,10 +2,12 @@
 import { render, type CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ContentCard from '../components/ContentCard.astro';
 import Icon from '../components/Icon.astro';
 import { site } from '../config/site';
 import { absoluteUrl, url, tagSlug } from '../utils/urls';
+import { trail } from '../utils/crumbs';
 import { dateLabel, blogEntries, projectEntries } from '../utils/content';
 interface Props { entry: CollectionEntry<'blog'> | CollectionEntry<'projects'> }
 const { entry } = Astro.props;
@@ -26,11 +28,12 @@ const jsonLd = {
   mainEntityOfPage: absoluteUrl(path), inLanguage: 'ru-RU',
 };
 ---
-<BaseLayout title={data.title} description={description} path={path} crumb={data.title} article={isArticle} image={data.cover?.src.src} imageAlt={data.cover?.alt} jsonLd={jsonLd}>
+<BaseLayout title={data.title} description={description} path={path} crumb={data.title} breadcrumbs={false} article={isArticle} image={data.cover?.src.src} imageAlt={data.cover?.alt} jsonLd={jsonLd}>
   <div class="container publication-wrap">
     <div class:list={['publication-grid', { 'has-toc': toc.length >= 4 }]}>
-    {toc.length >= 4 && <aside class="publication-sidebar"><nav class="toc" aria-label="Оглавление"><h2>В этом материале</h2><ul>{toc.map(h => <li class:list={{ 'toc-sub': h.depth === 3 }}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul></nav></aside>}
+    {toc.length >= 4 && <aside class="publication-sidebar"><nav class="toc" aria-label="Содержание"><h2>Содержание</h2><ul>{toc.map(h => <li class:list={{ 'toc-sub': h.depth === 3 }}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul></nav></aside>}
     <article class="publication">
+      <Breadcrumbs crumbs={trail(path, data.title)} bare />
       <header class="publication-header"><div class="card-meta"><time datetime={data.date}>{dateLabel(data.date)}</time>{'category' in data && <span>{data.category}</span>}</div><h1 data-preserve-text={preserveText ? 'true' : undefined}>{data.title}</h1><p class="publication-summary">{description}</p>{'role' in data && data.role && <p>Роль: {data.role}</p>}{'updated' in data && data.updated && <p class="muted">Обновлено: <time datetime={data.updated}>{dateLabel(data.updated)}</time></p>}
         <div class="tags">{data.tags.map(tag => isArticle ? <a class="tag" href={url(`blog/tags/${tagSlug(tag)}/`)}>{tag}</a> : <span class="tag">{tag}</span>)}</div>
       </header>
@@ -42,4 +45,31 @@ const jsonLd = {
     </div>
     {related.length > 0 && <section class="related"><h2>По соседству</h2><div class="card-grid">{related.map(entry => <ContentCard entry={entry} heading="h3" />)}</div></section>}
   </div>
+  {toc.length >= 4 && <script is:inline>
+    (() => {
+      const links = new Map([...document.querySelectorAll('.toc a[href^="#"]')].map(link => [link.getAttribute('href').slice(1), link]));
+      const heads = [...document.querySelectorAll('.prose h2[id], .prose h3[id]')].filter(heading => links.has(heading.id));
+      if (!heads.length) return;
+      const mark = () => {
+        const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+        let active = heads[heads.length - 1];
+        if (!atBottom) {
+          active = heads[0];
+          for (const heading of heads) {
+            if (heading.getBoundingClientRect().top > 140) break;
+            active = heading;
+          }
+        }
+        for (const [id, link] of links) {
+          const isCurrent = id === active.id;
+          link.classList.toggle('is-active', isCurrent);
+          if (isCurrent) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        }
+      };
+      window.addEventListener('scroll', mark, { passive: true });
+      window.addEventListener('resize', mark);
+      mark();
+    })();
+  </script>}
 </BaseLayout>

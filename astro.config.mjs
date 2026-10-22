@@ -19,8 +19,9 @@ export default defineConfig({
       name: 'sitemap-public-alias',
       hooks: {
         'astro:build:done': async ({ dir }) => {
-          // Keep the official integration's generated index and expose the conventional URL.
-          await copyFile(new URL('sitemap-index.xml', dir), new URL('sitemap.xml', dir));
+          // The owner reads /sitemap.xml in the webmaster consoles, so it must list the pages themselves,
+          // not an index with one link to a second file.
+          await copyFile(new URL('sitemap-0.xml', dir), new URL('sitemap.xml', dir));
         },
       },
     },

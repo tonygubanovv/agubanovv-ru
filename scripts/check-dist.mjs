@@ -169,11 +169,23 @@ for (const [, body] of entries) {
   if (Date.parse(lastmod) > Date.now() + 86_400_000) errors.push(`Sitemap lastmod is in the future: ${loc} -> ${lastmod}`);
 }
 
-if (await exists('sitemap.xml') && await exists('sitemap-index.xml')) {
-  const index = await readFile(new URL('sitemap-index.xml', dist), 'utf8');
-  const alias = await readFile(new URL('sitemap.xml', dist), 'utf8');
-  if (index !== alias) errors.push('sitemap.xml differs from the generated sitemap index');
-  for (const match of index.matchAll(/<loc>([^<]+)<\/loc>/g)) {
+const sitemap = await exists('sitemap.xml') ? await readFile(new URL('sitemap.xml', dist), 'utf8') : '';
+if (sitemap !== sitemapPart) errors.push('sitemap.xml is not the page list of this build');
+if (!sitemap.includes('<urlset')) errors.push('sitemap.xml must list the pages themselves, not an index of files');
+
+const indexedPages = [];
+for (const page of await walk(dist)) {
+  const path = page.pathname.split('/dist/').at(-1) ?? page.pathname;
+  if (path.endsWith('404.html')) continue;
+  if (/<meta\b[^>]*name="robots"[^>]*content="noindex/i.test(await readFile(page, 'utf8'))) continue;
+  indexedPages.push(path.replace(/index\.html$/, ''));
+}
+for (const path of indexedPages) {
+  if (!sitemap.includes(`<loc>${canonicalPrefix}${path}</loc>`)) errors.push(`Indexed page is missing from the sitemap: /${path}`);
+}
+
+if (await exists('sitemap-index.xml')) {
+  for (const match of (await readFile(new URL('sitemap-index.xml', dist), 'utf8')).matchAll(/<loc>([^<]+)<\/loc>/g)) {
     if (!match[1].startsWith(canonicalPrefix) || !await exists(match[1].slice(canonicalPrefix.length))) errors.push(`Broken sitemap reference: ${match[1]}`);
   }
 }

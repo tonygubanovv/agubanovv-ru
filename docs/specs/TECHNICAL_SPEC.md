@@ -92,7 +92,7 @@ export default defineConfig({
   output: 'static',
   // sitemap(): filter убирает 404 и закрытые от индексации страницы,
   // serialize добавляет реальные lastmod и приоритеты из src/utils/sitemapMeta.ts.
-  // Отдельный плагин sitemap-public-alias копирует sitemap-index.xml в sitemap.xml.
+  // Плагин sitemap-public-alias записывает в sitemap.xml список страниц, а не индекс.
   integrations: [sitemap({ filter, serialize })],
   vite: { plugins: [tailwindcss()] },
 });

@@ -70,7 +70,7 @@ Collection `projects`, источники `src/content/projects/*.md` / `*.mdx`:
 
 ### Карта сайта
 
-`@astrojs/sitemap` создаёт `sitemap-index.xml`, а плагин `sitemap-public-alias` в `astro.config.mjs` копирует его в привычный `sitemap.xml`; оба файла остаются в сборке, ссылка в robots ведёт на `sitemap.xml`.
+`@astrojs/sitemap` создаёт `sitemap-index.xml` и `sitemap-0.xml`, а плагин `sitemap-public-alias` в `astro.config.mjs` кладёт в привычный `sitemap.xml` список страниц, а не индекс: в вебмастерских панелях владелец видит сразу все адреса с датами и приоритетами, а не одну ссылку на второй файл. Ссылка в `robots.txt` ведёт на `sitemap.xml`.
 
 `src/utils/sitemapMeta.ts` берёт даты из frontmatter и задаёт один scheme приоритетов:
 
@@ -96,7 +96,7 @@ Collection `projects`, источники `src/content/projects/*.md` / `*.mdx`:
 
 ### Хлебные крошки и разметка материалов
 
-- `src/utils/crumbs.ts` строит цепочку «Главная → раздел → страница» с короткими русскими названиями и из неё же собирает `BreadcrumbList`. Видимые крошки рисует `src/components/Breadcrumbs.astro` внутри `<main>` (`src/layouts/BaseLayout.astro:20`), поэтому цепочка видна и при прямом открытии вложенного URL.
+- `src/utils/crumbs.ts` строит цепочку «Главная → раздел → страница» с короткими русскими названиями и из неё же собирает `BreadcrumbList`. Видимые крошки рисует `src/components/Breadcrumbs.astro`: на обычных страницах — внутри `<main>` по ширине контейнера (`src/layouts/BaseLayout.astro:20`), на странице публикации — в начале колонки статьи (`src/layouts/PublicationLayout.astro:36`, `breadcrumbs={false}` в оболочке). Цепочка видна и при прямом открытии вложенного URL.
 - Крошек нет на главной, на 404 и на закрытых от индексации страницах. У последнего элемента ссылки нет — так требует схема; раздел остаётся единственной ссылкой кроме главной.
 - Статья получает `BlogPosting`, кейс — `Article` (`src/layouts/PublicationLayout.astro:21`): реальные заголовок, описание, дата публикации и обновления (полдень по московскому времени), автор только когда он задан в `site.author`, изображение только когда есть обложка. Никаких вымышленных сущностей.
 - `src/components/SEOHead.astro:39` печатает несколько JSON-LD блоков, поэтому `BlogPosting`/`Article` и `BreadcrumbList` сосуществуют на одной странице.
