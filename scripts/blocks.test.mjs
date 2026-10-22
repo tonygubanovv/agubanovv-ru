@@ -119,8 +119,15 @@ test('A card opened by a tap goes away as soon as the page scrolls', () => {
   const page = parse('<html><body><div class="prose"><p>Термин{{пояс}}</p></div></body></html>');
   applyBlocks(page);
   const html = serialize(page);
-  assert.match(html, /addEventListener\('scroll', close/u);
+  assert.match(html, /addEventListener\('scroll', closeOnScroll/u);
   assert.match(html, /passive: true, capture: true/u);
+  // Hover survives the scroll on both a cursor and a finger, so the close stows every card and only a new
+  // pointer, keyboard or tap wakes it again; the word the keyboard reader sits on keeps its card.
+  assert.match(html, /setAttribute\('data-tip-stowed'/u);
+  assert.match(html, /removeAttribute\('data-tip-stowed'/u);
+  assert.match(html, /addEventListener\('pointermove'/u);
+  assert.match(html, /pointerType === 'mouse'/u);
+  assert.match(html, /activeElement[\s\S]*closest\('\.tip'\)/u);
 });
 
 test('Headings, code and links never take the marker, and the page gets the tap script once', () => {

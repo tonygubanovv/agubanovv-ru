@@ -289,12 +289,19 @@ body:has(.site-header.is-hidden:not(:focus-within)) .toc { top: var(--toc-gap); 
 .prose a { color: var(--accent); text-decoration: underline; text-underline-offset: var(--space-1); }
 /* A hidden note the owner marks with {{ ... }} after a word: the word keeps its place in the line,
    the card is a quiet surface panel above it, and nothing about it moves the text.
-   The closed card takes no space at all: an absolutely positioned box would still widen the page on a phone. */
+   The closed card takes no space at all: an absolutely positioned box would still widen the page on a phone.
+   The light fade needs both halves: a card that was display: none has no starting values to transition from,
+   so the keyframe paints its arrival and the transition, which keeps the box painted for its own length, its exit. */
 .tip { position: relative; display: inline; }
 .tip-term { cursor: help; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: var(--border); text-decoration-thickness: from-font; text-underline-offset: var(--space-1); transition: color 150ms, text-decoration-color 150ms; }
 .tip:hover > .tip-term, .tip:focus-within > .tip-term, .tip[data-tip-open] > .tip-term { color: var(--accent); text-decoration-color: var(--accent); }
-.tip-bubble { position: absolute; z-index: 10; bottom: calc(100% + var(--space-2)); left: 50%; display: none; width: max-content; max-width: min(var(--tip-measure), calc(100vw - var(--gutter) * 2)); margin-left: var(--tip-shift, 0px); padding: var(--space-2) var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--foreground); font-size: var(--text-2); line-height: 1.5; text-align: start; text-decoration: none; white-space: normal; box-shadow: 0 12px 30px rgb(0 0 0 / 10%); transform: translateX(-50%); }
-.tip:hover > .tip-bubble, .tip:focus-within > .tip-bubble, .tip[data-tip-open] > .tip-bubble { display: block; }
+.tip-bubble { position: absolute; z-index: 10; bottom: calc(100% + var(--space-2)); left: 50%; display: none; width: max-content; max-width: min(var(--tip-measure), calc(100vw - var(--gutter) * 2)); margin-left: var(--tip-shift, 0px); padding: var(--space-2) var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--foreground); font-size: var(--text-2); line-height: 1.5; text-align: start; text-decoration: none; white-space: normal; box-shadow: 0 12px 30px rgb(0 0 0 / 10%); opacity: 0; transform: translateX(-50%) translateY(var(--space-1)); transition: opacity 150ms ease-out, transform 150ms ease-out, display 150ms allow-discrete; }
+.tip:hover > .tip-bubble, .tip:focus-within > .tip-bubble, .tip[data-tip-open] > .tip-bubble { display: block; opacity: 1; transform: translateX(-50%); animation: tip-show 150ms ease-out; }
+@keyframes tip-show { from { opacity: 0; transform: translateX(-50%) translateY(var(--space-1)); } }
+/* A scroll hides the card the pointer is still holding: this stands after the rules above and carries the same
+   weight, so a stowed card stays away no matter whether hover, focus or a click was what opened it. */
+.tip[data-tip-stowed] > .tip-bubble { display: none; opacity: 0; transform: translateX(-50%) translateY(var(--space-1)); }
+.tip[data-tip-stowed] > .tip-term { color: inherit; text-decoration-color: var(--border); }
 /* The air between the word and the card belongs to the card: without this bridge the mouse drops the hint on its way up.
    One step wider than the gap, because the card's own border eats a pixel of it. */
 .tip-bubble::after { position: absolute; top: 100%; left: 0; width: 100%; height: var(--space-3); content: ''; }

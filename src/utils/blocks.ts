@@ -318,7 +318,12 @@ function walk(node: Node): number {
 const TIP_SCRIPT = `(function () {
   var tips = [].slice.call(document.querySelectorAll('.tip'));
   var edge = 8;
-  function close() { tips.forEach(function (tip) { tip.removeAttribute('data-tip-open'); }); }
+  // A card that a pointer holds open does not go away when the page moves: under a finger the hover sticks, on a
+  // computer the cursor simply still sits on the word. So closing stows every card, and only a pointer or keyboard
+  // that comes back to the word — or a new tap — clears the stow.
+  function stow(tip) { tip.removeAttribute('data-tip-open'); tip.setAttribute('data-tip-stowed', 'true'); }
+  function close() { tips.forEach(stow); }
+  function release(tip) { tip.removeAttribute('data-tip-stowed'); }
   function place(tip) {
     var bubble = tip.querySelector('.tip-bubble');
     bubble.style.removeProperty('--tip-shift');
@@ -334,15 +339,22 @@ const TIP_SCRIPT = `(function () {
     if (edge > box.top) tip.setAttribute('data-tip-below', 'true');
   }
   tips.forEach(function (tip) {
-    tip.addEventListener('pointerenter', function () { place(tip); });
-    tip.addEventListener('focusin', function () { place(tip); });
+    function show() { release(tip); place(tip); }
+    tip.addEventListener('pointerenter', show);
+    // After a scroll-close the cursor never left the word, so pointerenter will not come again: the first mouse
+    // move over it wakes the card. A touch scroll also moves the pointer, so touches are deliberately left out.
+    tip.addEventListener('pointermove', function (event) { if (event.pointerType === 'mouse') show(); });
+    tip.addEventListener('focusin', show);
     tip.addEventListener('click', function (event) {
       // A link written inside the hidden text stays a link: the tap that already opened the card must not eat it.
       if (event.target instanceof Element && event.target.closest('.tip-bubble')) return;
       event.preventDefault();
       var opened = tip.hasAttribute('data-tip-open');
       close();
-      if (!opened) { tip.setAttribute('data-tip-open', 'true'); place(tip); }
+      if (opened) return;
+      release(tip);
+      tip.setAttribute('data-tip-open', 'true');
+      place(tip);
     });
   });
   document.addEventListener('click', function (event) {
@@ -351,7 +363,12 @@ const TIP_SCRIPT = `(function () {
   document.addEventListener('keydown', function (event) { if (event.key === 'Escape') close(); });
   // A card belongs to the moment it was opened: once the page moves, it hangs over the wrong line, so it goes away.
   // Capture sees every scroller on the page, because a scroll event does not bubble.
-  window.addEventListener('scroll', close, { passive: true, capture: true });
+  // A keyboard reader keeps the focus while the page moves under them, so the card of the focused word is left alone.
+  function closeOnScroll() {
+    var held = document.activeElement instanceof Element ? document.activeElement.closest('.tip') : null;
+    tips.forEach(function (tip) { if (tip !== held) stow(tip); });
+  }
+  window.addEventListener('scroll', closeOnScroll, { passive: true, capture: true });
 })()`;
 
 function findByTag(node: Node, tagName: string): Element | null {
