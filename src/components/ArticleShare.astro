@@ -8,22 +8,21 @@ const { path, title } = Astro.props;
 const address = absoluteUrl(path);
 const destinations = shareServices.map(service => {
   const target = new URL(service.endpoint);
-  if (service.urlParam) target.searchParams.set(service.urlParam, address);
-  target.searchParams.set(service.titleParam, service.urlParam ? typograph(title) : `${typograph(title)}\n${address}`);
-  return { label: service.label, href: target.href };
+  target.searchParams.set(service.urlParam, address);
+  target.searchParams.set(service.titleParam, typograph(title));
+  return { label: service.label, icon: service.icon, href: target.href };
 });
 ---
 <div class="article-share" data-article-share>
-  <div class="article-share-actions">
-    <button class="button secondary" type="button" data-copy-article={address} hidden><span data-copy-icon><Icon name="copy" size={16} /></span><span data-copy-check hidden><Icon name="check" size={16} /></span><span>Скопировать ссылку</span></button>
-    <details class="article-share-options">
-      <summary class="button secondary"><Icon name="share" size={16} /><span>Поделиться</span></summary>
-      <nav class="article-share-links" aria-label="Поделиться статьёй">{destinations.map(destination => <a href={destination.href} target="_blank" rel="noopener noreferrer">{destination.label}<Icon size={16} /></a>)}</nav>
-    </details>
-  </div>
-  <p class="article-share-status" role="status" aria-live="polite" aria-atomic="true" data-share-status></p>
+  <span class="article-share-label">Поделиться</span>
+  <nav class="article-share-actions" aria-label="Поделиться статьёй">
+    {destinations.map(destination => <a class="article-share-control" href={destination.href} target="_blank" rel="noopener noreferrer" aria-label={`Поделиться в ${destination.label}`} aria-describedby={`share-${destination.icon}`}><Icon name={destination.icon} /><span class="article-share-tooltip" role="tooltip" id={`share-${destination.icon}`}>{destination.label}</span></a>)}
+    <button class="article-share-control" type="button" data-copy-article={address} aria-label="Скопировать ссылку на статью" aria-describedby="share-copy" hidden><span data-copy-icon><Icon name="link" /></span><span data-copy-check hidden><Icon name="check" /></span><span class="article-share-tooltip" role="tooltip" id="share-copy" data-copy-feedback>Скопировать ссылку</span></button>
+  </nav>
+  <span class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-share-status></span>
+  <template data-share-default>Скопировать ссылку</template>
   <template data-share-success>Ссылка скопирована</template>
-  <template data-share-error>Не удалось скопировать. Скопируйте ссылку из адресной строки.</template>
+  <template data-share-error>Не удалось скопировать</template>
 </div>
 <script>
   import { copyText } from '../utils/clipboard';
@@ -32,9 +31,8 @@ const destinations = shareServices.map(service => {
     const status = root.querySelector<HTMLElement>('[data-share-status]');
     const icon = root.querySelector<HTMLElement>('[data-copy-icon]');
     const check = root.querySelector<HTMLElement>('[data-copy-check]');
-    const details = root.querySelector<HTMLDetailsElement>('details');
-    const summary = details?.querySelector('summary');
-    if (!button || !status || !icon || !check) return;
+    const feedback = root.querySelector<HTMLElement>('[data-copy-feedback]');
+    if (!button || !status || !icon || !check || !feedback) return;
     button.hidden = false;
     let busy = false;
     let timer: number | undefined;
@@ -45,6 +43,7 @@ const destinations = shareServices.map(service => {
       status.textContent = '';
       icon.hidden = false;
       check.hidden = true;
+      delete button.dataset.copyState;
       try {
         await copyText(button.dataset.copyArticle!);
         icon.hidden = true;
@@ -55,20 +54,20 @@ const destinations = shareServices.map(service => {
       } finally {
         busy = false;
       }
+      feedback.textContent = status.textContent;
+      button.dataset.copyState = 'feedback';
       timer = window.setTimeout(() => {
         icon.hidden = false;
         check.hidden = true;
         status.textContent = '';
-      }, 5000);
+        feedback.textContent = root.querySelector<HTMLTemplateElement>('[data-share-default]')!.content.textContent;
+        delete button.dataset.copyState;
+      }, 2600);
     });
     root.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && details?.open) {
-        details.open = false;
-        summary?.focus();
-      }
+      if (event.key === 'Escape') root.dataset.tooltipDismissed = 'true';
     });
-    document.addEventListener('click', event => {
-      if (details?.open && event.target instanceof Node && !details.contains(event.target)) details.open = false;
-    });
+    root.addEventListener('pointerover', () => { delete root.dataset.tooltipDismissed; });
+    root.addEventListener('focusin', () => { delete root.dataset.tooltipDismissed; });
   });
 </script>

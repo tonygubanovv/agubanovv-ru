@@ -103,12 +103,12 @@ for (const page of await walk(dist)) {
     const copy = share && elements(share).find(node => node.attrs.some(attr => attr.name === 'data-copy-article' && attr.value === address));
     if (!copy) errors.push(`Missing clean article copy address: ${path}`);
     const links = share ? elements(share).filter(node => node.tagName === 'a') : [];
-    const expectedShares = ['https://t.me/share/url', 'https://vk.com/share.php', 'https://connect.ok.ru/offer', 'https://wa.me/'];
-    if (links.length !== expectedShares.length) errors.push(`Expected four article sharing destinations: ${path}`);
+    const expectedShares = ['https://t.me/share/url', 'https://vk.com/share.php'];
+    if (links.length !== expectedShares.length) errors.push(`Expected only Telegram and VK article sharing destinations: ${path}`);
     for (const endpoint of expectedShares) {
       const href = links.map(node => node.attrs.find(attr => attr.name === 'href')?.value).find(value => value?.split('?')[0] === endpoint);
       const target = href && new URL(href);
-      if (!target || (endpoint === 'https://wa.me/' ? !target.searchParams.get('text')?.endsWith(`\n${address}`) : target.searchParams.get('url') !== address)) {
+      if (!target || target.searchParams.get('url') !== address) {
         errors.push(`Share destination has an incorrect article address: ${path} -> ${endpoint}`);
       }
     }

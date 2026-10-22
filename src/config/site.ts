@@ -11,10 +11,8 @@ export const blogTagSlugs: Record<(typeof blogTags)[number], string> = {
 
 /** Share destinations use ordinary links; no third-party widgets are loaded. */
 export const shareServices = [
-  { label: 'Telegram', endpoint: 'https://t.me/share/url', urlParam: 'url', titleParam: 'text' },
-  { label: 'ВКонтакте', endpoint: 'https://vk.com/share.php', urlParam: 'url', titleParam: 'title' },
-  { label: 'Одноклассники', endpoint: 'https://connect.ok.ru/offer', urlParam: 'url', titleParam: 'title' },
-  { label: 'WhatsApp', endpoint: 'https://wa.me/', urlParam: undefined, titleParam: 'text' },
+  { label: 'Telegram', icon: 'telegram', endpoint: 'https://t.me/share/url', urlParam: 'url', titleParam: 'text' },
+  { label: 'ВКонтакте', icon: 'vk', endpoint: 'https://vk.com/share.php', urlParam: 'url', titleParam: 'title' },
 ] as const;
 
 /** Set each public contact once. Missing values are not rendered anywhere. */
