@@ -8,6 +8,7 @@
 - [Как публикуется сайт](guides/PUBLISH.md).
 - [Домен и DNS](guides/DOMAIN_LATER.md).
 - [Приватность и аналитика](guides/PRIVACY.md).
+- [Поиск: Яндекс, Google и Bing](guides/SEARCH_ENGINES.md).
 - [Отложенные изменения](guides/TODO.md).
 
 ## Утверждённые требования
@@ -34,7 +35,7 @@ src/                  исходники сайта
   content/            опубликованные статьи и кейсы
   config/site.ts      сведения о владельце и настройки
   styles/             общие стили и темы
-  utils/              ссылки, даты и коллекции
+  utils/              ссылки, даты, коллекции, robots, sitemap и крошки
 public/               общие изображения и favicon
 docs/                 вся документация
   specs/              утверждённые требования
