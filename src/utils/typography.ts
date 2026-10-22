@@ -46,6 +46,9 @@ export function typographHtml(html: string, contacts: Record<string, string> = {
           if (!target || !/^(https:\/\/|mailto:)/.test(target)) throw new Error(`Contact "${key}" must be configured in src/config/site.ts before publishing.`);
           attr.value = target;
         }
+        if (node.tagName === 'a' && attr.name === 'href' && attr.value.startsWith('mailto:')) {
+          node.childNodes = [{ nodeName: '#text', value: decodeURIComponent(attr.value.slice(7).split('?')[0]!), parentNode: node }];
+        }
         if (readableAttributes.has(attr.name) || (node.tagName === 'meta' && attr.name === 'content' && metadata.has(attribute('name') ?? attribute('property') ?? ''))) attr.value = typograph(attr.value);
       }
     }

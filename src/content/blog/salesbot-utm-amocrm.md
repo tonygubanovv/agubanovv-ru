@@ -6,6 +6,7 @@ date: "2026-10-22"
 category: "Инструкции"
 tags: []
 permalink: "salesbot-utm-amocrm"
+cover: {"src":"../../assets/blog/salesbot-utm-amocrm-cover.png","alt":"Механический манипулятор переносит светящийся блок данных из канала Telegram в хранилище записей CRM"}
 ---
 
 Если вы используете amoCRM и Telegram-бота, созданного на базе Salesbot, то наверняка сталкивались с проблемой: как понять, из какого источника пришёл клиент в бота? По умолчанию Telegram-бот на базе Salesbot не передаёт в amoCRM никакие UTM-метки, из-за этого источники лидов теряются, и связать заявку с рекламной кампанией невозможно.
@@ -36,4 +37,4 @@ permalink: "salesbot-utm-amocrm"
 ## Связаться со мной
 
 - Telegram: [@tonygubanovv](contact:telegram)
-- Эл. почта: [Написать на почту](contact:email)
+- Эл. почта: [Эл. почта](contact:email)

@@ -61,3 +61,10 @@ test('Explicit verbatim text preserves punctuation and spaces while surrounding 
   for (const tag of ['h1', 'p', 'li']) assert.equal(text(after.find(node => node.tagName === tag)), text(before.find(node => node.tagName === tag)));
   assert.match(text(after.find(node => node.tagName === 'footer')), /в\u00a0подвале\u00a0—/u);
 });
+
+test('Email links show the configured address instead of a generic label', () => {
+  const result = typographHtml('<p><a href="contact:email">Написать на почту</a></p><a href="mailto:owner@example.com?subject=Hello">Почта</a>', { email: 'mailto:owner@example.com' });
+  const links = nodes(result).filter(node => node.tagName === 'a');
+  assert.deepEqual(links.map(node => node.childNodes.map(child => child.value ?? '').join('')), ['owner@example.com', 'owner@example.com']);
+  assert.deepEqual(links.map(node => attr(node, 'href')), ['mailto:owner@example.com', 'mailto:owner@example.com?subject=Hello']);
+});

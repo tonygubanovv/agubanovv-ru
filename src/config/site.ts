@@ -9,7 +9,7 @@ export const links = {
 };
 export const contactLinks = () => [
   ...(links.telegram ? [{ key: 'telegram', label: 'Telegram', url: links.telegram }] : []),
-  ...(links.email ? [{ key: 'email', label: 'Почта', url: `mailto:${links.email}` }] : []),
+  ...(links.email ? [{ key: 'email', label: links.email, url: `mailto:${links.email}` }] : []),
 ];
 
 export const site = {

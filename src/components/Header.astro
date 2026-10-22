@@ -1,6 +1,8 @@
 ---
-import { site } from '../config/site';
+import { site, links } from '../config/site';
 import { url } from '../utils/urls';
+import EmailContact from './EmailContact.astro';
+import Icon from './Icon.astro';
 const current = Astro.url.pathname;
 ---
 <header class="site-header">
@@ -11,10 +13,14 @@ const current = Astro.url.pathname;
     <nav class="desktop-nav" aria-label="Основная навигация">
       {site.navigation.map(item => <a href={url(item.path)} aria-current={!item.path.startsWith('#') && current.startsWith(url(item.path)) ? 'page' : undefined}>{item.label}</a>)}
     </nav>
+    <div class="header-contacts">
+      <EmailContact />
+      {links.telegram && <a class="telegram-contact" href={links.telegram} aria-label="Telegram Антона Губанова"><Icon name="telegram" size={28} /></a>}
+    </div>
     <div class="header-controls">
       <details class="mobile-nav">
         <summary aria-label="Открыть меню"><span class="menu-lines" aria-hidden="true"></span></summary>
-        <nav aria-label="Мобильная навигация">{site.navigation.map(item => <a href={url(item.path)}>{item.label}</a>)}</nav>
+        <nav aria-label="Мобильная навигация">{site.navigation.map(item => <a href={url(item.path)}>{item.label}</a>)}<div class="mobile-contacts"><EmailContact />{links.telegram && <a class="mobile-telegram" href={links.telegram}>Telegram <Icon name="telegram" size={22} /></a>}</div></nav>
       </details>
     </div>
   </div>
