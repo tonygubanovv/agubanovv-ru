@@ -3,7 +3,6 @@ import { links } from '../config/site';
 import Icon from './Icon.astro';
 ---
 {links.email && <div class="email-contact">
-  <span class="email-contact-label">Эл. почта:</span>
   <div class="email-contact-row">
     <a href={`mailto:${links.email}`}>{links.email}</a>
     <button class="copy-email" type="button" data-copy-email={links.email} aria-label="Скопировать адрес электронной почты" title="Скопировать адрес" hidden><Icon name="copy" size={14} /></button>

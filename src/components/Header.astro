@@ -10,6 +10,7 @@ const current = Astro.url.pathname;
     <a class="brand" href={url()} aria-label={`${site.name} — главная`}>
       <span>{site.name}<span class="brand-dot">.</span></span>
     </a>
+    <div class="header-actions">
     <nav class="desktop-nav" aria-label="Основная навигация">
       {site.navigation.map(item => <a href={url(item.path)} aria-current={!item.path.startsWith('#') && current.startsWith(url(item.path)) ? 'page' : undefined}>{item.label}</a>)}
     </nav>
@@ -22,6 +23,7 @@ const current = Astro.url.pathname;
         <summary aria-label="Открыть меню"><span class="menu-lines" aria-hidden="true"></span></summary>
         <nav aria-label="Мобильная навигация">{site.navigation.map(item => <a href={url(item.path)}>{item.label}</a>)}<div class="mobile-contacts"><EmailContact />{links.telegram && <a class="mobile-telegram" href={links.telegram}>Telegram <Icon name="telegram" size={22} /></a>}</div></nav>
       </details>
+    </div>
     </div>
   </div>
 </header>
