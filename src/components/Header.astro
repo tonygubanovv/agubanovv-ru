@@ -38,11 +38,15 @@ const current = Astro.url.pathname;
   });
   const header = document.querySelector<HTMLElement>('.site-header');
   let lastY = window.scrollY;
-  let distance = 0;
-  let direction = 0;
+  const hideDistance = 120;
+  const revealDistance = 64;
+  const topVisibleZone = 120;
+  let scrollAnchor = lastY;
   let scheduled = false;
   const updateHeader = () => {
-    const y = Math.max(0, window.scrollY);
+    // Ignore elastic overscroll at either end of the page.
+    const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    const y = Math.min(maxY, Math.max(0, window.scrollY));
     const delta = y - lastY;
     if (delta !== 0) {
       const focused = document.activeElement;
@@ -54,14 +58,22 @@ const current = Astro.url.pathname;
       }
       if (!keyboardFocus && focused instanceof HTMLElement && header?.contains(focused)) focused.blur();
     }
-    const nextDirection = Math.sign(delta);
-    if (nextDirection && nextDirection !== direction) distance = 0;
-    if (nextDirection) direction = nextDirection;
-    distance += delta;
-    if (y < 80 || header?.contains(document.activeElement)) {
+    if (y <= topVisibleZone || header?.contains(document.activeElement)) {
       header?.classList.remove('is-hidden');
-    } else if (Math.abs(distance) > 12) {
-      header?.classList.toggle('is-hidden', direction > 0);
+      scrollAnchor = y;
+    } else if (header?.classList.contains('is-hidden')) {
+      scrollAnchor = Math.max(scrollAnchor, y);
+      if (scrollAnchor - y >= revealDistance) {
+        header.classList.remove('is-hidden');
+        scrollAnchor = y;
+      }
+    } else {
+      // Measure from the furthest point, so small direction changes do not toggle the header.
+      scrollAnchor = Math.min(scrollAnchor, y);
+      if (y - scrollAnchor >= hideDistance) {
+        header?.classList.add('is-hidden');
+        scrollAnchor = y;
+      }
     }
     lastY = y;
     scheduled = false;
@@ -69,6 +81,10 @@ const current = Astro.url.pathname;
   window.addEventListener('scroll', () => {
     if (!scheduled) { scheduled = true; requestAnimationFrame(updateHeader); }
   }, { passive: true });
-  header?.addEventListener('focusin', () => header.classList.remove('is-hidden'));
-  menu?.addEventListener('toggle', () => { if (menu.open) header?.classList.remove('is-hidden'); });
+  const revealHeader = () => {
+    header?.classList.remove('is-hidden');
+    scrollAnchor = Math.max(0, window.scrollY);
+  };
+  header?.addEventListener('focusin', revealHeader);
+  menu?.addEventListener('toggle', () => { if (menu.open) revealHeader(); });
 </script>
