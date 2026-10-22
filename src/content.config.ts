@@ -27,16 +27,10 @@ const blog = defineCollection({
   loader: loader('./src/content/blog'),
   schema: ({ image }) => z.object({
     ...common, description: text, category: text, updated: date.optional(),
+    permalink: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).optional(),
     preserveText: z.boolean().default(false),
     source: z.url().optional(),
     cover: z.object({ src: image(), alt: text }).optional(),
   }).refine(data => !data.updated || data.updated >= data.date, 'updated must not precede date'),
 });
-const projects = defineCollection({
-  loader: loader('./src/content/projects'),
-  schema: ({ image }) => z.object({
-    ...common, summary: text, role: text.optional(),
-    cover: z.object({ src: image(), alt: text }).optional(),
-  }),
-});
-export const collections = { blog, projects };
+export const collections = { blog };

@@ -5,7 +5,6 @@ export type Crumb = { label: string; path?: string };
 
 const sections: Record<string, string> = {
   blog: 'Блог',
-  projects: 'Проекты',
   privacy: 'Политика',
   cookies: 'Cookie',
   consent: 'Согласие',

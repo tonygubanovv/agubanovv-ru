@@ -1,0 +1,8 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { blogEntries } from '../utils/content';
+import PublicationLayout from '../layouts/PublicationLayout.astro';
+export const getStaticPaths = (async () => (await blogEntries()).filter(entry => entry.data.permalink).map(entry => ({ params: { slug: entry.data.permalink! }, props: { entry } }))) satisfies GetStaticPaths;
+const { entry } = Astro.props;
+---
+<PublicationLayout entry={entry} />

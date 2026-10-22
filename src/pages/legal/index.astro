@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { url } from '../../utils/urls';
+const documents = [
+  { path: 'privacy/', title: 'Политика обработки персональных данных', description: 'Какие данные обрабатываются на сайте, для чего они нужны и какие права есть у посетителя.' },
+  { path: 'cookies/', title: 'Политика использования cookie', description: 'Что сохраняется в браузере и как управлять настройками cookie.' },
+  { path: 'consent/', title: 'Согласие на аналитику', description: 'Условия добровольного согласия на Яндекс.Метрику и порядок его отзыва.' },
+];
+---
+<BaseLayout title="Документы" description="Политика обработки персональных данных, политика cookie и отдельное согласие на аналитику сайта Антона Губанова." path="legal/" noindex>
+  <section class="container page-content">
+    <div class="legal-page">
+      <div class="page-heading"><h1>Документы<span class="brand-dot">.</span></h1><p>Здесь собраны условия обработки данных и использования cookie на сайте.</p></div>
+      <ul class="legal-documents">
+        {documents.map(document => <li><a href={url(`legal/${document.path}`)}><div><h2>{document.title}</h2><p>{document.description}</p></div><Icon /></a></li>)}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

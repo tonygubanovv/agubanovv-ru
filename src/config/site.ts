@@ -19,13 +19,14 @@ export const site = {
     accent: 'От гипотез к выводам.',
     description: 'Я Антон Губанов, digital-маркетолог. Проверяю подходы на практике и делюсь тем, что получилось: экспериментами, наблюдениями и выводами.',
   },
-  about: 'Здесь собираю статьи и проекты о digital-маркетинге. В блоге разбираю инструменты, поисковое продвижение и работу с ИИ — на конкретных вопросах и экспериментах. Первый материал посвящён llms.txt: нужен ли этот файл для GEO и что показали логи сервера.',
+  about: 'Здесь собираю статьи и кейсы о digital-маркетинге. В блоге разбираю инструменты, поисковое продвижение и работу с ИИ — на конкретных вопросах и экспериментах. Первый материал посвящён llms.txt: нужен ли этот файл для GEO и что показали логи сервера.',
   topics: ['Digital-маркетинг', 'SEO и GEO', 'ИИ'],
   navigation: [
-    { label: 'Проекты', path: 'projects/' },
     { label: 'Блог', path: 'blog/' },
     { label: 'Обо мне', path: '#about' },
   ],
+  // Temporarily disabled by the owner; re-enable only on an explicit request.
+  search: { indexingEnabled: false as boolean },
   analytics: { yandexId: 113586660 as number | undefined, privacyApproved: true },
   /** Public ownership tokens for search engines; rendered in every page <head>. */
   verification: {

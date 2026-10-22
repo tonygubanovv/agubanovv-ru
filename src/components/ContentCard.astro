@@ -1,18 +1,18 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
-import { dateLabel } from '../utils/content';
+import { dateLabel, publicationPath } from '../utils/content';
 import { url } from '../utils/urls';
 import Icon from './Icon.astro';
-interface Props { entry: CollectionEntry<'blog'> | CollectionEntry<'projects'>; heading?: 'h2' | 'h3' }
+interface Props { entry: CollectionEntry<'blog'>; heading?: 'h2' | 'h3' }
 const { entry, heading: Heading = 'h2' } = Astro.props;
 const { data } = entry;
-const summary = 'description' in data ? data.description : data.summary;
+const summary = data.description;
 ---
 <article class="content-card">
   {data.cover && <Image src={data.cover.src} alt={data.cover.alt} width={720} widths={[360, 720]} sizes="(max-width: 700px) 100vw, 50vw" format="webp" loading="lazy" />}
   <div class="card-meta"><time datetime={data.date}>{dateLabel(data.date)}</time>{'category' in data && <span>{data.category}</span>}</div>
-  <Heading><a href={url(`${entry.collection}/${entry.id}/`)}>{data.title} <Icon /></a></Heading>
+  <Heading><a href={url(publicationPath(entry))}>{data.title} <Icon /></a></Heading>
   <p>{summary}</p>
   <div class="tags">{data.tags.map(tag => <span class="tag">{tag}</span>)}</div>
 </article>

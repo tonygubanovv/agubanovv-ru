@@ -1,8 +1,0 @@
----
-import type { GetStaticPaths } from 'astro';
-import { projectEntries } from '../../utils/content';
-import PublicationLayout from '../../layouts/PublicationLayout.astro';
-export const getStaticPaths = (async () => (await projectEntries()).map(entry => ({ params: { slug: entry.id }, props: { entry } }))) satisfies GetStaticPaths;
-const { entry } = Astro.props;
----
-<PublicationLayout entry={entry} />

@@ -20,7 +20,7 @@ async function exists(path) {
 
 const countMatches = (text, line) => text.split('\n').filter(entry => entry === line).length;
 
-for (const path of ['index.html', 'blog/index.html', 'projects/index.html', '404.html', 'robots.txt', 'robots-yandex.txt', 'privacy/index.html', 'cookies/index.html', 'consent/index.html', 'sitemap-0.xml']) {
+for (const path of ['index.html', 'blog/index.html', 'telegram-ads-ib-vendor/index.html', '404.html', 'robots.txt', 'robots-yandex.txt', 'privacy/index.html', 'cookies/index.html', 'consent/index.html', 'legal/index.html', 'legal/privacy/index.html', 'legal/cookies/index.html', 'legal/consent/index.html', 'sitemap-0.xml']) {
   if (!await exists(path)) errors.push(`Missing dist/${path}`);
 }
 if (!await exists('sitemap-index.xml') || !await exists('sitemap.xml')) {
@@ -41,6 +41,8 @@ async function walk(dirUrl) {
 for (const page of await walk(dist)) {
   const html = await readFile(page, 'utf8');
   const path = page.pathname.split('/dist/').at(-1) ?? page.pathname;
+  const pagePath = path.replace(/index\.html$/, '');
+  const isPrivatePage = hiddenPaths.includes(pagePath) || path.endsWith('404.html');
   const isNoindex = /<meta\b[^>]*name="robots"[^>]*content="noindex/i.test(html);
   if ((html.match(/<h1\b/gi) ?? []).length !== 1) errors.push(`Expected exactly one H1: ${path}`);
   if (!/<html\b[^>]*lang="ru"/i.test(html)) errors.push(`Missing Russian page language: ${path}`);
@@ -54,18 +56,18 @@ for (const page of await walk(dist)) {
   } else if (/mc\.yandex\.ru/.test(html)) errors.push(`Unapproved Metrika counter: ${path}`);
   if (/mc\.yandex\.ru\/watch\/|clarity\.ms/i.test(html)) errors.push(`Unconditional pixel or removed tracker found: ${path}`);
   // Pages closed from indexing carry noindex instead of a canonical.
-  if (!isNoindex && !path.endsWith('404.html')) {
+  if (!isPrivatePage) {
     const canonical = html.match(/<link\b[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)/i)
       ?? html.match(/<link\b[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["']/i);
     if (!canonical || !canonical[1].startsWith(canonicalPrefix)) {
       errors.push(`Missing/incorrect canonical: ${path}`);
     }
   }
-  const expectCrumbs = !isNoindex && path !== 'index.html' && !path.endsWith('404.html');
+  const expectCrumbs = !isPrivatePage && path !== 'index.html';
   const hasCrumbs = /<nav class="breadcrumbs"/i.test(html);
   if (expectCrumbs !== hasCrumbs) errors.push(`Breadcrumbs ${hasCrumbs ? 'rendered where they should not be' : 'missing'}: ${path}`);
-  const pagePath = path.replace(/index\.html$/, '');
-  if (isNoindex && !pagePath.endsWith('404.html') && !hiddenPaths.includes(pagePath)) errors.push(`Page is noindex but not listed as closed: ${path}`);
+  if (!site.search.indexingEnabled && !isNoindex) errors.push(`Global indexing lock missing: ${path}`);
+  if (site.search.indexingEnabled && isNoindex && !pagePath.endsWith('404.html') && !hiddenPaths.includes(pagePath)) errors.push(`Page is noindex but not listed as closed: ${path}`);
   if (!isNoindex && hiddenPaths.includes(pagePath)) errors.push(`Closed page lost its noindex mark: ${path}`);
   const graphs = html.match(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi) ?? [];
   for (const script of graphs) {
@@ -138,14 +140,14 @@ for (const [, params] of cleanParams) {
 }
 const yandexFile = await readFile(new URL('robots-yandex.txt', dist), 'utf8');
 if (!robots.includes(yandexFile.split('\n\n').at(-2))) errors.push('robots-yandex.txt drifts from the Yandex group in robots.txt');
-for (const path of hiddenPaths) {
+for (const path of site.search.indexingEnabled ? hiddenPaths : []) {
   if (countMatches(robots, `Disallow: /${path}`) !== 2) errors.push(`Closed page is not disallowed in both robot groups: /${path}`);
   if (countMatches(yandexFile, `Disallow: /${path}`) !== 1) errors.push(`Closed page is missing from the Yandex file: /${path}`);
 }
 
 // Publication dates must come from the content, never from the build clock.
 const sourceDates = new Set([site.legal.updated]);
-for (const collection of ['blog', 'projects']) {
+for (const collection of ['blog']) {
   for (const name of await readdir(new URL(`../src/content/${collection}/`, import.meta.url))) {
     if (!name.endsWith('.md')) continue;
     const block = await readFile(new URL(`../src/content/${collection}/${name}`, import.meta.url), 'utf8');
@@ -155,7 +157,9 @@ for (const collection of ['blog', 'projects']) {
 
 const sitemapPart = await readFile(new URL('sitemap-0.xml', dist), 'utf8');
 const entries = [...sitemapPart.matchAll(/<url>([\s\S]*?)<\/url>/g)];
-if (entries.length < 7) errors.push(`Sitemap lost pages: ${entries.length} URLs`);
+if (!site.search.indexingEnabled && entries.length) errors.push('Disabled indexing must have an empty sitemap');
+if (!site.search.indexingEnabled && /^Disallow:/m.test(robots)) errors.push('Crawlers must be able to read the global noindex');
+if (site.search.indexingEnabled && entries.length < 7) errors.push(`Sitemap lost pages: ${entries.length} URLs`);
 for (const path of hiddenPaths) {
   if (sitemapPart.includes(`<loc>${canonicalPrefix}${path}</loc>`)) errors.push(`Closed page is still in the sitemap: /${path}`);
 }

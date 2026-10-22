@@ -21,7 +21,8 @@ const ogImage = image ? new URL(image, import.meta.env.SITE).href : absoluteUrl(
 <meta name="description" content={description} />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>{fullTitle}</title>
-{noindex ? <meta name="robots" content="noindex, follow" /> : <link rel="canonical" href={canonical} />}
+{(noindex || !site.search.indexingEnabled) && <meta name="robots" content="noindex, follow" />}
+{!noindex && <link rel="canonical" href={canonical} />}
 <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
 <meta property="og:locale" content="ru_RU" />
 <meta property="og:type" content={article ? 'article' : 'website'} />

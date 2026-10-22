@@ -1,6 +1,7 @@
 /** One source of truth for both robots files, so the Yandex copy can never drift from the served one. */
 import { absoluteUrl } from './urls';
 import { hiddenPaths } from './routes';
+import { site } from '../config/site';
 
 /**
  * Yandex drops these parameters when building the index, so a marked-up link never creates a second address
@@ -14,7 +15,7 @@ const ignoredParameters = [
 
 const cleanParamLines = ignoredParameters.map(([comment, names]) => `# ${comment}\nClean-param: ${names.join('&')} /`);
 const sitemapLine = `Sitemap: ${absoluteUrl('sitemap.xml')}`;
-const group = (agent: string) => [agent, 'Allow: /', ...hiddenPaths.map(path => `Disallow: /${path}`)];
+const group = (agent: string) => [agent, 'Allow: /', ...(site.search.indexingEnabled ? hiddenPaths.map(path => `Disallow: /${path}`) : [])];
 
 export const yandexGroup = [...group('User-agent: Yandex'), ...cleanParamLines].join('\n');
 
