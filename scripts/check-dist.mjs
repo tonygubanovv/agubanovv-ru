@@ -63,6 +63,12 @@ async function walk(dirUrl) {
 for (const page of await walk(dist)) {
   const html = await readFile(page, 'utf8');
   const path = page.pathname.split('/dist/').at(-1) ?? page.pathname;
+  for (const node of elements(parse(html)).filter(node => node.tagName === 'a')) {
+    const attr = name => node.attrs.find(item => item.name === name)?.value ?? '';
+    if (attr('href').startsWith('mailto:') && (/\bbutton\b/.test(attr('class')) || attr('role') === 'button')) {
+      errors.push(`Email must be a plain mailto link, never a button: ${path}`);
+    }
+  }
   for (const node of elements(parse(html)).filter(node => /^(h[1-6]|p|figcaption|button)$/.test(node.tagName))) {
     const chunks = textChunks(node).filter(Boolean);
     for (let index = 1; index < chunks.length; index++) {

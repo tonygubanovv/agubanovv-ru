@@ -46,5 +46,5 @@ const posts = (await blogEntries()).slice(0, 3);
     <SectionHeader number="02 /" title="Блог" href={url('blog/')} label="Весь блог" />
     {posts.length ? <div class="card-grid">{posts.map(entry => <ContentCard entry={entry} heading="h3" />)}</div> : <EmptyState kind="blog" heading="h3" />}
   </section>
-  {contactLinks().length > 0 && <section class="container contact-section"><div><p class="eyebrow">Есть вопрос или идея?</p><h2>Напишите мне<span class="brand-dot">.</span></h2></div><div class="contact-links">{contactLinks().map(link => <a class="button secondary" href={link.url}>{link.label} <Icon /></a>)}</div></section>}
+  {contactLinks().length > 0 && <section class="container contact-section"><div><p class="eyebrow">Есть вопрос или идея?</p><h2>Напишите мне<span class="brand-dot">.</span></h2></div><div class="contact-links">{contactLinks().map(link => link.key === 'email' ? <a class="contact-email" href={link.url}>{link.label}</a> : <a class="button secondary" href={link.url}>{link.label} <Icon /></a>)}</div></section>}
 </BaseLayout>
