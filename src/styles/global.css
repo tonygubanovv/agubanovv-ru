@@ -103,6 +103,8 @@ code, pre, kbd, samp { font-family: var(--font-mono); font-variant-ligatures: no
 .icon-left { transform: rotate(180deg); }
 .icon-down { transform: rotate(90deg); }
 img { display: block; max-width: 100%; height: auto; }
+/* An optimized picture is a wrapper around the same img, so it must not add a line box of its own. */
+picture { display: block; }
 svg { flex-shrink: 0; }
 .container { width: min(var(--page-max), calc(100% - var(--gutter) * 2)); margin-inline: auto; }
 .skip-link { position: absolute; top: -100px; left: var(--space-4); padding: var(--space-3) var(--space-5); background: var(--foreground); color: var(--background); z-index: 20; }
@@ -222,7 +224,7 @@ a.tag:hover { color: var(--accent); border-color: var(--accent); }
 /* A card holds exactly four things: cover, date, title, text. The grid stretches every card in a row
    to the tallest one, so the boxes line up while the text keeps its natural length. */
 .content-card { overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
-.content-card > img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+.content-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
 .card-body { padding: var(--space-5); }
 /* One quiet technical line above a title: a date, a category, an edition. Used by cards, articles and documents. */
 .meta { display: flex; flex-wrap: wrap; gap: var(--space-4); color: var(--muted); font-size: var(--text-1); }
