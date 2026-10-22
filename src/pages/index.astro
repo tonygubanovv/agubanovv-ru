@@ -36,11 +36,17 @@ const posts = (await blogEntries()).slice(0, 3);
       </svg>
       <div class="art-caption"><span>Идея</span>{' '}<span>Подход</span>{' '}<span>Практика</span></div>
     </div>
-    <div class="hero-bottom"><span>Эксперименты, наблюдения, выводы</span><a href={url('#about')}>Обо мне и сайте <Icon direction="down" /></a></div>
+    <div class="hero-bottom"><span>Эксперименты, наблюдения, выводы</span><a href={url('#about')}>Обо мне <Icon direction="down" /></a></div>
   </section>
   <section id="about" class="about-section container section-space">
-    <div class="about-label"><SectionHeader number="01 /" title="Обо мне и сайте" /></div>
-    <div class="about-copy"><p class="large-text">Что работает в маркетинге?<br />{' '}<span>Проверим на практике.</span></p><p>{site.about}</p><div class="tags">{site.topics.map(topic => <span class="tag">{topic}</span>)}</div></div>
+    <div class="about-label"><SectionHeader number="01 /" title="Обо мне" /></div>
+    <div class="about-copy">
+      <p>{site.about.intro}</p>
+      <details class="about-more">
+        <summary><span class="about-expand-label">Подробнее обо мне</span>{' '}<span class="about-collapse-label">Свернуть</span><Icon direction="down" size={16} /></summary>
+        <div class="about-story">{site.about.more.map(paragraph => <p>{paragraph}</p>)}</div>
+      </details>
+    </div>
   </section>
   <section class="container section-space">
     <SectionHeader number="02 /" title="Блог" href={url('blog/')} label="Весь блог" />
