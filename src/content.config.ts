@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
+import { blogTags } from './config/site';
 
 const text = z.string().trim().min(1);
 // YAML turns an unquoted ISO date into a Date; normalize it to the same public format.
@@ -11,7 +12,7 @@ const date = z.preprocess(value => value instanceof Date && !Number.isNaN(value.
 const common = {
   title: text,
   date,
-  tags: z.array(text.max(40)).max(6).default([]),
+  tags: z.array(z.enum(blogTags)).max(blogTags.length).default([]),
   featured: z.boolean().default(false),
 };
 const loader = (base: string) => glob({

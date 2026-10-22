@@ -2,8 +2,8 @@
 title: "Что такое LLMs.txt и почему он бесполезен для GEO-продвижения"
 description: "Почему llms.txt бесполезен. Провели эксперимент — залили файл на сайт, спрятали пасхалку и проверили логи сервера. Результаты эксперимента — в статье."
 date: "2026-10-06"
-category: "SEO и GEO"
-tags: ["GEO","SEO","ИИ"]
+category: "SEO & GEO"
+tags: ["Нейросети", "SEO & GEO"]
 featured: true
 preserveText: true
 source: "https://teletype.in/@tonygubanovv/llms-txt-useless"

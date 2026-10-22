@@ -1,3 +1,6 @@
+/** Shared blog topics in their public display order. */
+export const blogTags = ['Telegram Ads', 'Нейросети', 'SEO & GEO', 'Кейсы'] as const;
+
 /** Set each public contact once. Missing values are not rendered anywhere. */
 export const links = {
   telegram: 'https://t.me/tonygubanovv' as string | undefined,

@@ -9,6 +9,7 @@
 - [Домен и DNS](guides/DOMAIN_LATER.md).
 - [Приватность и аналитика](guides/PRIVACY.md).
 - [Поиск: Яндекс, Google и Bing](guides/SEARCH_ENGINES.md).
+- [Обложки блога: стиль и промпты](guides/BLOG_COVERS.md).
 - [Отложенные изменения](guides/TODO.md).
 
 ## Утверждённые требования
