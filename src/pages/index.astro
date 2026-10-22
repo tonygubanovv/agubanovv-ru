@@ -13,7 +13,7 @@ const posts = (await blogEntries()).slice(0, 3);
   <section class="hero container">
     <div class="hero-copy">
       <p class="eyebrow hero-kicker"><span class="status-dot" aria-hidden="true"></span> {site.role} <span class="kicker-line" aria-hidden="true"></span> Личный взгляд</p>
-      <h1>{site.hero.title}<br /><span>{site.hero.accent}</span></h1>
+      <h1>{site.hero.title}{' '}<span>{site.hero.accent}</span></h1>
       <p class="hero-description">{site.hero.description}</p>
       <div class="hero-actions"><a class="button primary" href={url('blog/')}>Читать блог <Icon /></a></div>
     </div>
@@ -23,19 +23,24 @@ const posts = (await blogEntries()).slice(0, 3);
         <defs><linearGradient id="orbit" x1="60" y1="70" x2="380" y2="370" gradientUnits="userSpaceOnUse"><stop stop-color="currentColor" stop-opacity=".9"/><stop offset="1" stop-color="currentColor" stop-opacity=".12"/></linearGradient></defs>
         <circle cx="220" cy="220" r="160" stroke="currentColor" stroke-opacity=".15"/><circle cx="220" cy="220" r="116" stroke="currentColor" stroke-opacity=".2"/>
         <path d="M40 220h360M220 40v360" stroke="currentColor" stroke-opacity=".13" stroke-dasharray="3 7"/>
+        <g class="atom-orbits">
         <ellipse cx="220" cy="220" rx="188" ry="74" transform="rotate(-35 220 220)" stroke="url(#orbit)" stroke-width="1.5"/>
         <ellipse cx="220" cy="220" rx="162" ry="64" transform="rotate(42 220 220)" stroke="url(#orbit)" stroke-width="1.5"/>
-        <path d="M167 256V184h18v46l69-46h20v72h-18v-47l-70 47Z" fill="currentColor"/>
+        </g>
+        <circle cx="220" cy="220" r="7" fill="currentColor"/>
+        <circle cx="220" cy="220" r="17" stroke="currentColor" stroke-opacity=".35"/>
+        <g class="atom-particles">
         <circle cx="353" cy="119" r="7" fill="currentColor"/><circle cx="91" cy="116" r="4" fill="currentColor"/><circle cx="278" cy="368" r="4" fill="currentColor"/>
+        </g>
         <path d="M48 65h20M58 55v20M370 332h20M380 322v20" stroke="currentColor" stroke-opacity=".6"/>
       </svg>
-      <div class="art-caption"><span>Идея</span><span>Подход</span><span>Практика</span></div>
+      <div class="art-caption"><span>Идея</span>{' '}<span>Подход</span>{' '}<span>Практика</span></div>
     </div>
     <div class="hero-bottom"><span>Эксперименты, наблюдения, выводы</span><a href={url('#about')}>Обо мне и сайте <Icon direction="down" /></a></div>
   </section>
   <section id="about" class="about-section container section-space">
     <div class="about-label"><SectionHeader number="01 /" title="Обо мне и сайте" /></div>
-    <div class="about-copy"><p class="large-text">Что работает в маркетинге?<br /><span>Проверим на практике.</span></p><p>{site.about}</p><div class="tags">{site.topics.map(topic => <span class="tag">{topic}</span>)}</div></div>
+    <div class="about-copy"><p class="large-text">Что работает в маркетинге?<br />{' '}<span>Проверим на практике.</span></p><p>{site.about}</p><div class="tags">{site.topics.map(topic => <span class="tag">{topic}</span>)}</div></div>
   </section>
   <section class="container section-space">
     <SectionHeader number="02 /" title="Блог" href={url('blog/')} label="Весь блог" />

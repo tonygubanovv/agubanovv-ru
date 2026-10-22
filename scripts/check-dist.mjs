@@ -3,6 +3,7 @@ import { readFile, access, readdir } from 'node:fs/promises';
 import { site } from '../src/config/site.ts';
 import { hiddenPaths } from '../src/utils/routes.ts';
 import { checkAnalytics } from './check-analytics.mjs';
+import { parse } from 'parse5';
 
 
 const dist = new URL('../dist/', import.meta.url);
@@ -12,6 +13,27 @@ const errors = [];
 
 const home = await readFile(new URL('index.html', dist), 'utf8');
 errors.push(...checkAnalytics(home, site, new URL(canonicalPrefix).hostname));
+
+function elements(root) {
+  const result = [];
+  const visit = node => {
+    if (node.tagName) result.push(node);
+    node.childNodes?.forEach(visit);
+  };
+  visit(root);
+  return result;
+}
+// Actual DOM text, as read by search tools and copy/paste; CSS line breaks add no spaces.
+function textChunks(node) {
+  if (node.nodeName === '#text') return [node.value];
+  if (['svg', 'script', 'style', 'sup', 'sub'].includes(node.tagName)) return [];
+  return (node.childNodes ?? []).flatMap(textChunks);
+}
+const normalizeText = value => value.replace(/\s+/gu, ' ').trim();
+const homeH1 = elements(parse(home)).find(node => node.tagName === 'h1');
+if (normalizeText(textChunks(homeH1).join('')) !== normalizeText(`${site.hero.title} ${site.hero.accent}`)) {
+  errors.push('Home H1 text is joined or differs from the configured title');
+}
 
 async function exists(path) {
   try { await access(new URL(path, dist)); return true; }
@@ -41,6 +63,14 @@ async function walk(dirUrl) {
 for (const page of await walk(dist)) {
   const html = await readFile(page, 'utf8');
   const path = page.pathname.split('/dist/').at(-1) ?? page.pathname;
+  for (const node of elements(parse(html)).filter(node => /^(h[1-6]|p|figcaption|button)$/.test(node.tagName))) {
+    const chunks = textChunks(node).filter(Boolean);
+    for (let index = 1; index < chunks.length; index++) {
+      if (/[\p{L}\p{N}.!?]$/u.test(chunks[index - 1]) && /^[\p{L}\p{N}]/u.test(chunks[index])) {
+        errors.push(`Missing text separator in ${node.tagName}: ${path} -> ${chunks[index - 1].slice(-30)}|${chunks[index].slice(0, 30)}`);
+      }
+    }
+  }
   const pagePath = path.replace(/index\.html$/, '');
   const isPrivatePage = hiddenPaths.includes(pagePath) || path.endsWith('404.html');
   const isNoindex = /<meta\b[^>]*name="robots"[^>]*content="noindex/i.test(html);

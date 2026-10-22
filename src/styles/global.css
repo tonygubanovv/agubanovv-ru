@@ -47,7 +47,7 @@ button[hidden] { display: none; }
 :focus-visible { outline: 3px solid var(--accent); outline-offset: 5px; border-radius: 3px; }
 ::selection { background: var(--accent); color: var(--accent-ink); }
 h1, h2, h3, p { margin: 0; }
-h1, h2, h3 { line-height: 1.2; font-weight: 600; letter-spacing: -.025em; text-wrap: balance; }
+h1, h2, h3 { line-height: 1.1; font-weight: 600; letter-spacing: -.025em; text-wrap: balance; }
 p { text-wrap: pretty; }
 code, pre, kbd, samp { font-family: var(--font-mono); font-variant-ligatures: none; letter-spacing: normal; }
 .icon { display: inline-block; vertical-align: -.15em; flex-shrink: 0; }
@@ -93,8 +93,8 @@ svg { flex-shrink: 0; }
 .eyebrow { color: var(--accent); font-size: 13px; line-height: 1.5; letter-spacing: normal; font-weight: 500; }
 .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 .kicker-line { width: 26px; height: 1px; background: var(--border); margin-inline: 3px; }
-.hero h1 { font-size: clamp(42px, 4.6vw, 66px); line-height: 1.14; letter-spacing: -.035em; margin-top: 24px; }
-.hero h1 > span { color: var(--accent); }
+.hero h1 { font-size: clamp(42px, 4.6vw, 66px); line-height: 1.08; letter-spacing: -.035em; margin-top: 24px; }
+.hero h1 > span { display: block; color: var(--accent); }
 .hero-description { color: var(--muted); max-width: 520px; font-size: 17px; line-height: 1.7; margin-top: 28px; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
 .button { display: inline-flex; justify-content: center; align-items: center; gap: 32px; border: 1px solid var(--border); border-radius: 60px; padding: 13px 22px; min-height: 50px; font-size: 14px; font-weight: 600; line-height: 1.5; }
@@ -104,6 +104,10 @@ svg { flex-shrink: 0; }
 .button.secondary:hover { color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--background)); border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
 .hero-art { position: relative; color: var(--accent); align-self: center; background: radial-gradient(ellipse, var(--glow), transparent 70%); }
 .hero-art svg { width: 100%; height: auto; }
+.atom-orbits, .atom-particles { transform-box: view-box; transform-origin: 50% 50%; }
+.atom-orbits { animation: atom-turn 40s linear infinite; }
+.atom-particles { animation: atom-turn 28s linear infinite reverse; }
+@keyframes atom-turn { to { transform: rotate(360deg); } }
 .art-coordinate { font-size: 12px; line-height: 1.5; color: var(--muted); position: absolute; top: 0; left: 18px; }
 .art-caption { display: flex; gap: 24px; justify-content: center; font-size: 12px; line-height: 1.5; color: var(--muted); }
 .art-caption span + span::before { content: '/'; margin-right: 24px; color: var(--border); }
@@ -113,8 +117,8 @@ svg { flex-shrink: 0; }
 .section-space { padding-top: 80px; }
 .about-section { display: grid; grid-template-columns: 1fr 2fr; gap: 48px; }
 .about-label { min-width: 0; }
-.section-number { flex-shrink: 0; color: var(--accent); font-size: inherit; line-height: 1.2; font-weight: 600; letter-spacing: -.025em; font-variant-numeric: tabular-nums; }
-.large-text { font-size: clamp(27px, 3vw, 38px); line-height: 1.35; font-weight: 500; letter-spacing: -.025em; }
+.section-number { flex-shrink: 0; color: var(--accent); font-size: inherit; line-height: 1.1; font-weight: 600; letter-spacing: -.025em; font-variant-numeric: tabular-nums; }
+.large-text { font-size: clamp(27px, 3vw, 38px); line-height: 1.2; font-weight: 500; letter-spacing: -.025em; }
 .large-text span { color: var(--muted); }
 .about-copy > p:not(.large-text) { color: var(--muted); max-width: 600px; margin-top: 24px; font-size: 16px; }
 .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
@@ -181,7 +185,7 @@ a.tag:hover { border-color: var(--accent); }
 .muted { color: var(--muted); }
 .publication-cover { width: 100%; border-radius: 8px; margin-bottom: 40px; }
 .toc { position: sticky; top: 112px; max-height: calc(100dvh - 144px); overflow-y: auto; padding-right: 8px; font-size: 13px; line-height: 1.45; color: var(--muted); }
-.toc h2 { font-size: 18px; font-weight: 600; line-height: 1.25; letter-spacing: -.015em; margin-bottom: 12px; color: var(--foreground); }
+.toc h2 { font-size: 18px; font-weight: 600; line-height: 1.15; letter-spacing: -.015em; margin-bottom: 12px; color: var(--foreground); }
 .toc ul { list-style: none; padding: 0; }
 .toc a { display: block; padding: 4px 0; transition: color 160ms ease; }
 .toc a:hover { color: var(--foreground); }
@@ -228,7 +232,7 @@ a.tag:hover { border-color: var(--accent); }
   .mobile-nav nav a:hover { background: var(--elevated); }
   .hero { padding-top: 48px; display: block; }
   .hero-kicker { font-size: 11px; gap: 8px; flex-wrap: wrap; }
-  .hero h1 { font-size: clamp(34px, 7.5vw, 52px); line-height: 1.18; margin-top: 24px; }
+  .hero h1 { font-size: clamp(34px, 7.5vw, 52px); line-height: 1.1; margin-top: 24px; }
   .hero-description { margin-top: 24px; font-size: 16px; }
   .hero-actions { margin-top: 28px; gap: 10px; }
   .hero-actions .button { gap: 16px; font-size: 13px; padding-inline: 16px; }
