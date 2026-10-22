@@ -72,11 +72,13 @@ const asTerm = (node: Element, id: string): Element => {
   return node;
 };
 
-/** The card hangs off the word, so the line itself never moves. */
+/** The card hangs off the word, so the line itself never moves. The space inside the card is for the raw page
+    text: whatever reads the article with the tags taken away must not get the word and the note run together.
+    The card is a block when it opens, so that space is never painted. */
 function tipCard(id: string, hidden: Child[], term: Element): Element {
   const wrap = shell('<span class="tip"></span>');
   const bubble = shell(`<span class="tip-bubble" role="tooltip" id="${id}"></span>`);
-  return move(wrap, [term, move(bubble, hidden)]);
+  return move(wrap, [term, move(bubble, [textNode(' ', bubble), ...hidden])]);
 }
 
 let tipSeq = 0;
@@ -187,21 +189,25 @@ function inlineTips(node: Element): number {
   return made;
 }
 
+/* The HTML spec keeps a quote's author out of the quoted words: attribution must stand outside the
+   blockquote, and a figure with its caption is the way to tie the two together. So the card is a figure,
+   the words are a blockquote, and the speaker is the caption under them. */
 function quoteCard(inner: Child[], rest: string, accent: boolean): Element {
-  const card = shell(accent ? '<blockquote class="quote accent"></blockquote>' : '<blockquote class="quote"></blockquote>');
-  move(card, inner);
+  const card = shell(accent ? '<figure class="quote accent"></figure>' : '<figure class="quote"></figure>');
+  const words = move(shell('<blockquote></blockquote>'), inner);
   const comma = rest.indexOf(',');
   const name = (comma === -1 ? rest : rest.slice(0, comma)).trim();
   const role = comma === -1 ? '' : rest.slice(comma + 1).trim();
-  if (!name) return card;
-  const by = move(shell('<footer class="quote-by"></footer>'), [labelled('span', 'quote-name', name)]);
+  if (!name) return move(card, [words]);
+  const by = move(shell('<figcaption class="quote-by"></figcaption>'), [labelled('span', 'quote-name', name)]);
   if (role) move(by, [textNode('\n', by), labelled('span', 'quote-role', role)]);
-  return move(card, [textNode('\n', card), by]);
+  return move(card, [words, textNode('\n', card), by]);
 }
 
+/** The mark in the gutter is decoration, so it lives in CSS and never in the page's text. */
 function noteCard(inner: Child[], rest: string): Element {
-  const card = shell('<aside class="note"><span class="note-mark" aria-hidden="true"></span><div class="note-body"></div></aside>');
-  const body = card.childNodes[1] as Element;
+  const card = shell('<aside class="note"><div class="note-body"></div></aside>');
+  const body = card.childNodes[0] as Element;
   // A note has no heading of its own: any words left on the marker line stay ordinary text.
   if (rest.trim()) move(body, [labelled('p', '', rest.trim())]);
   move(body, inner);
@@ -343,7 +349,10 @@ const TIP_SCRIPT = `(function () {
     if (event.target instanceof Element && !event.target.closest('.tip')) close();
   });
   document.addEventListener('keydown', function (event) { if (event.key === 'Escape') close(); });
-})();`;
+  // A card belongs to the moment it was opened: once the page moves, it hangs over the wrong line, so it goes away.
+  // Capture sees every scroller on the page, because a scroll event does not bubble.
+  window.addEventListener('scroll', close, { passive: true, capture: true });
+})()`;
 
 function findByTag(node: Node, tagName: string): Element | null {
   if (isTag(node, tagName)) return node;

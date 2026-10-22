@@ -24,12 +24,18 @@ function elements(root) {
   return result;
 }
 // Actual DOM text, as read by search tools and copy/paste; CSS line breaks add no spaces.
-function textChunks(node) {
+function textChunks(node, keepHidden = false) {
   if (node.nodeName === '#text') return [node.value];
   if (['svg', 'script', 'style', 'sup', 'sub'].includes(node.tagName)) return [];
   // A closed tooltip card is invisible and never copied with the sentence, so its words are not part of the text.
-  if (node.attrs?.some(attr => attr.name === 'role' && attr.value === 'tooltip')) return [];
-  return (node.childNodes ?? []).flatMap(textChunks);
+  if (!keepHidden && node.attrs?.some(attr => attr.name === 'role' && attr.value === 'tooltip')) return [];
+  return (node.childNodes ?? []).flatMap(child => textChunks(child, keepHidden));
+}
+// What a reader gets out of the article body with the tags taken away, so a hidden card is read where it stands.
+function proseText(node) {
+  if (node.nodeName === '#text') return [node.value];
+  if (['pre', 'code', 'script', 'style', 'svg'].includes(node.tagName)) return [];
+  return (node.childNodes ?? []).flatMap(proseText);
 }
 const normalizeText = value => value.replace(/\s+/gu, ' ').trim();
 const homeH1 = elements(parse(home)).find(node => node.tagName === 'h1');
@@ -85,7 +91,8 @@ for (const page of await walk(dist)) {
     if (!/<meta\b[^>]*name="robots"[^>]*content="noindex/i.test(html)) errors.push(`Redirect stub must stay out of search results: ${path}`);
     continue;
   }
-  for (const node of elements(parse(html)).filter(node => node.tagName === 'a')) {
+  const nodes = elements(parse(html));
+  for (const node of nodes.filter(node => node.tagName === 'a')) {
     const attr = name => node.attrs.find(item => item.name === name)?.value ?? '';
     if (attr('href').startsWith('mailto:') && (/\bbutton\b/.test(attr('class')) || attr('role') === 'button')) {
       errors.push(`Email must be a plain mailto link, never a button: ${path}`);
@@ -98,13 +105,27 @@ for (const page of await walk(dist)) {
       }
     }
   }
-  for (const node of elements(parse(html)).filter(node => /^(h[1-6]|p|figcaption|button)$/.test(node.tagName))) {
-    const chunks = textChunks(node).filter(Boolean);
-    for (let index = 1; index < chunks.length; index++) {
-      if (/[\p{L}\p{N}.!?]$/u.test(chunks[index - 1]) && /^[\p{L}\p{N}]/u.test(chunks[index])) {
-        errors.push(`Missing text separator in ${node.tagName}: ${path} -> ${chunks[index - 1].slice(-30)}|${chunks[index].slice(0, 30)}`);
+  // Two words that stand next to each other stay two words: neither an inline tag nor a hidden card may grow them together.
+  for (const keepHidden of [false, true]) {
+    for (const node of nodes.filter(node => /^(h[1-6]|p|figcaption|button)$/.test(node.tagName))) {
+      const chunks = textChunks(node, keepHidden).filter(Boolean);
+      for (let index = 1; index < chunks.length; index++) {
+        if (/[\p{L}\p{N}.!?]$/u.test(chunks[index - 1]) && /^[\p{L}\p{N}]/u.test(chunks[index])) {
+          errors.push(`Missing text separator in ${node.tagName}: ${path} -> ${chunks[index - 1].slice(-30)}|${chunks[index].slice(0, 30)}`);
+        }
       }
     }
+  }
+  // The marker syntax is a private note between the owner and the renderer: none of it may reach a reader or a crawler.
+  for (const prose of nodes.filter(node => (node.attrs?.find(item => item.name === 'class')?.value ?? '').split(/\s+/).includes('prose'))) {
+    const text = proseText(prose).join('');
+    for (const leaked of [':::', '{{', '}}']) {
+      if (text.includes(leaked)) errors.push(`Shortcode syntax leaked into the article text: ${path} -> ${leaked}`);
+    }
+  }
+  // A quote's author stands outside the quoted words, so no search engine takes the name for part of the quotation.
+  for (const quote of nodes.filter(node => node.tagName === 'blockquote')) {
+    if (elements(quote).some(node => node.tagName === 'figcaption')) errors.push(`A quote's author sits inside the quoted words: ${path}`);
   }
   const pagePath = path.replace(/index\.html$/, '');
   const isClosedPage = closedPaths.includes(pagePath) || path.endsWith('404.html');
