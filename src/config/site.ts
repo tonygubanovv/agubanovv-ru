@@ -4,7 +4,7 @@ export const blogTags = ['Telegram Ads', 'Нейросети', 'SEO & GEO', 'К�
 /** Set each public contact once. Missing values are not rendered anywhere. */
 export const links = {
   telegram: 'https://t.me/tonygubanovv' as string | undefined,
-  email: undefined as string | undefined,
+  email: 'tonygubanovv@yandex.ru' as string | undefined,
   privacyEmail: 'tonygubanovv@yandex.ru',
 };
 export const contactLinks = () => [

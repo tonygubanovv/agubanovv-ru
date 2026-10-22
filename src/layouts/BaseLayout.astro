@@ -6,7 +6,7 @@ import Footer from '../components/Footer.astro';
 import Analytics from '../components/Analytics.astro';
 import { breadcrumbGraph, trail } from '../utils/crumbs';
 import '../styles/global.css';
-interface Props { title: string; description: string; path?: string; crumb?: string; breadcrumbPath?: string; noindex?: boolean; breadcrumbs?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> }
+interface Props { title: string; seoTitle?: string; description: string; path?: string; crumb?: string; breadcrumbPath?: string; noindex?: boolean; breadcrumbs?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> }
 const { crumb, breadcrumbPath, path = '', noindex = false, breadcrumbs: showCrumbs = true, jsonLd, ...rest } = Astro.props;
 const crumbs = noindex ? [] : trail(breadcrumbPath ?? path, crumb);
 const graphs = [jsonLd, ...(crumbs.length > 1 ? [breadcrumbGraph(crumbs)] : [])].filter((graph): graph is Record<string, unknown> => Boolean(graph));

@@ -3,10 +3,10 @@ import { site } from '../config/site';
 import { absoluteUrl, url } from '../utils/urls';
 import onestCyrillic from '@fontsource-variable/onest/files/onest-cyrillic-wght-normal.woff2?url';
 import onestLatin from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
-interface Props { title: string; description: string; path?: string; noindex?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> | Record<string, unknown>[] }
-const { title, description, path = '', noindex = false, article = false, image, imageAlt, jsonLd } = Astro.props;
+interface Props { title: string; seoTitle?: string; description: string; path?: string; noindex?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> | Record<string, unknown>[] }
+const { title, seoTitle, description, path = '', noindex = false, article = false, image, imageAlt, jsonLd } = Astro.props;
 const graphs = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
-const fullTitle = `${title} — ${site.name}`;
+const fullTitle = seoTitle ?? `${title} — ${site.name}`;
 const canonical = absoluteUrl(path);
 const ogImage = image ? new URL(image, import.meta.env.SITE).href : absoluteUrl('og.png');
 ---

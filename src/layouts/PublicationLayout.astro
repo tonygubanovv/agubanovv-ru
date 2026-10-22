@@ -27,14 +27,14 @@ const jsonLd = {
   mainEntityOfPage: absoluteUrl(path), inLanguage: 'ru-RU',
 };
 ---
-<BaseLayout title={data.title} description={description} path={path} breadcrumbPath="blog/" crumb={data.title} breadcrumbs={false} article image={data.cover?.src.src} imageAlt={data.cover?.alt} jsonLd={jsonLd}>
+<BaseLayout title={data.title} seoTitle={data.seoTitle} description={description} path={path} breadcrumbPath="blog/" crumb={data.title} breadcrumbs={false} article image={data.cover?.src.src} imageAlt={data.cover?.alt} jsonLd={jsonLd}>
   <div class="container publication-wrap">
     <div class:list={['publication-grid', { 'has-toc': toc.length > 0 }]}>
     {toc.length > 0 && <aside class="publication-sidebar"><nav class="toc" aria-label="Содержание"><h2>Содержание</h2><ul>{toc.map(h => <li class:list={{ 'toc-sub': h.depth === 3 }}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul></nav></aside>}
     <article class="publication">
       <Breadcrumbs crumbs={trail('blog/', data.title)} bare />
       <header class="publication-header"><div class="card-meta"><time datetime={data.date}>{dateLabel(data.date)}</time><span>{data.category}</span></div><h1 data-preserve-text={preserveText ? 'true' : undefined}>{data.title}</h1><p class="publication-summary">{description}</p>{'updated' in data && data.updated && <p class="muted">Обновлено: <time datetime={data.updated}>{dateLabel(data.updated)}</time></p>}
-        <div class="tags">{data.tags.map(tag => <a class="tag" href={url(`blog/tags/${tagSlug(tag)}/`)}>{tag}</a>)}</div>
+        {data.tags.length > 0 && <div class="tags">{data.tags.map(tag => <a class="tag" href={url(`blog/tags/${tagSlug(tag)}/`)}>{tag}</a>)}</div>}
       </header>
       {data.cover && <Image class="publication-cover" src={data.cover.src} alt={data.cover.alt} width={Math.min(1440, data.cover.src.width)} widths={[360, 720, Math.min(1440, data.cover.src.width)].filter(width => width <= data.cover!.src.width)} sizes="(max-width: 760px) 100vw, 720px" format="webp" loading="eager" />}
       <div class="prose" data-preserve-text={preserveText ? 'true' : undefined}><Content /></div>
