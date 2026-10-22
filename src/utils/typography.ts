@@ -1,5 +1,6 @@
 import Typograf from 'typograf';
 import { parse, serialize, type DefaultTreeAdapterMap } from 'parse5';
+import { applyBlocks } from './blocks.ts';
 
 const formatter = new Typograf({ locale: ['ru', 'en-US'] });
 // Inline markup stays in context, so quotes and short words work across emphasis/links.
@@ -50,6 +51,8 @@ export function typographHtml(html: string, contacts: Record<string, string> = {
     if ('childNodes' in node) node.childNodes.forEach(prepareLinks);
   }
   prepareLinks(document);
+  // Shortcodes become cards first, so their wording still goes through the formatter below.
+  applyBlocks(document);
   const preserved: string[] = [];
   function visit(node: DefaultTreeAdapterMap['node']): void {
     if ('tagName' in node) {

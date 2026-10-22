@@ -13,6 +13,8 @@ export default defineConfig({
   base: '/',
   trailingSlash: 'always',
   output: 'static',
+  // The owner prepares and uploads his own pictures, so the site must not re-encode them.
+  image: { service: { entrypoint: 'astro/assets/services/noop' } },
   integrations: [
     ...(site.search.indexingEnabled ? [sitemap({
       filter: (page) => !isClosedPath(new URL(page).pathname) && !page.endsWith('/404/') && !page.endsWith('/404.html'),

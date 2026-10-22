@@ -17,6 +17,8 @@
   --accent: #2e731d;
   --accent-ink: #fff;
   --glow: rgb(74 150 42 / 10%);
+  /* Accent fill, derived so both themes get it from their own --accent. */
+  --accent-wash: color-mix(in srgb, var(--accent) 10%, var(--background));
   /* Surfaces stack in one order only: page background → card or panel (surface) → quiet fill inside it (elevated). */
   color-scheme: light;
 
@@ -249,8 +251,6 @@ a.tag:hover { color: var(--accent); border-color: var(--accent); }
 .publication-header { margin-bottom: var(--space-6); }
 .publication h1 { font-size: var(--display-2); margin-top: var(--space-5); overflow-wrap: anywhere; }
 .publication-summary { font-size: var(--text-5); color: var(--muted); margin-top: var(--space-5); }
-.publication-source { margin-top: var(--space-6); font-size: var(--text-1); color: var(--muted); }
-.publication-source a { text-decoration: underline; text-underline-offset: var(--space-1); }
 .publication-header > p:not(.publication-summary) { margin-top: var(--space-3); font-size: var(--text-2); }
 .muted { color: var(--muted); }
 .publication-cover { width: 100%; border-radius: var(--radius-md); margin-bottom: var(--space-7); }
@@ -278,15 +278,36 @@ body:has(.site-header.is-hidden:not(:focus-within)) .toc { top: var(--toc-gap); 
 @media (hover: none) { .heading-anchor { opacity: 1; } }
 @media (max-width: 700px) { .heading-anchor { inset-inline-start: calc(var(--space-4) * -1); width: var(--space-4); } }
 .prose a { color: var(--accent); text-decoration: underline; text-underline-offset: var(--space-1); }
-.prose ul, .prose ol { padding-left: var(--space-6); list-style: revert; }
+/* List markers carry the accent: the bullet and the number belong to the site, not to the browser. */
+.prose ul, .prose ol { padding-left: var(--space-6); }
+.prose ul { list-style-type: disc; }
+.prose ol { list-style-type: decimal; }
+.prose li::marker { color: var(--accent); }
+.prose ul ul { list-style-type: circle; }
+.prose ol ol { list-style-type: lower-alpha; }
 .prose li + li { margin-top: var(--space-2); }
 .prose blockquote { border-left: 3px solid var(--accent); background: var(--surface); border-radius: 0 var(--radius-md) var(--radius-md) 0; padding: var(--space-5) var(--space-6); color: var(--foreground); }
+/* A quote card: a tinted panel, the speaker under the words, and a large mark in the free corner. */
+.prose blockquote.quote { --quote-mark: var(--muted); position: relative; overflow: hidden; padding: var(--space-6); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); line-height: 1.6; }
+.prose blockquote.quote.accent { --quote-mark: var(--accent); background: var(--accent-wash); }
+.quote > * + * { margin-top: var(--space-4); }
+/* The owner's quote glyph, drawn as a mask so its colour always comes from the current theme. 127/115 is the picture's own ratio. */
+.quote::after { content: ""; position: absolute; right: var(--space-4); bottom: var(--space-4); width: var(--space-9); aspect-ratio: 127 / 115; opacity: .16; pointer-events: none; background-image: linear-gradient(to top, var(--quote-mark), color-mix(in srgb, var(--quote-mark) 50%, transparent)); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 127 115'%3E%3Cpath fill='black' d='M0 112.876L3.33122 89.1344C9.99369 89.6898 15.4069 88.5791 19.571 85.8023C23.735 83.1643 26.6498 79.2769 28.3154 74.1398C29.8423 69.1416 30.1199 63.3104 29.1483 56.6462H4.91575e-06L9.86792e-06 0L56.6309 4.95084e-06V56.6462C56.6309 76.6389 51.9811 91.7723 42.6814 102.046C33.3817 112.459 19.1546 116.069 0 112.876ZM70.3691 112.876L73.7003 89.1344C80.3628 89.6898 85.776 88.5791 89.9401 85.8023C94.1041 83.1643 97.0189 79.2769 98.6845 74.1398C100.211 69.1417 100.489 63.3104 99.5174 56.6462H70.3691V6.15187e-06L127 1.11027e-05V56.6462C127 76.6389 122.35 91.7723 113.05 102.046C103.751 112.459 89.5237 116.069 70.3691 112.876Z'/%3E%3C/svg%3E") center / contain no-repeat; }
+.quote-by { margin-top: var(--space-5); }
+.quote-name { display: block; font-size: var(--text-3); font-weight: 600; }
+.quote-role { display: block; margin-top: var(--space-1); color: var(--muted); font-size: var(--text-1); }
+/* A note card speaks the same language as a code block: a quiet surface, a hairline, a mark in the gutter. */
+.prose aside.note { display: grid; grid-template-columns: var(--space-5) 1fr; column-gap: var(--space-3); padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
+.note-mark { width: var(--space-5); height: var(--space-5); margin-top: var(--space-1); background-color: var(--accent); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5.4'/%3E%3Cpath d='M12 7.4h.01'/%3E%3C/svg%3E") center / contain no-repeat; }
+.note-body { min-width: 0; }
+.note-body > * + * { margin-top: var(--space-4); }
 .prose pre { max-width: 100%; overflow-x: auto; padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); font-size: var(--text-2); }
 .prose :not(pre) > code { background: var(--elevated); padding: 1px var(--space-1); border-radius: var(--radius-sm); font-size: .9em; }
 .prose table { display: block; width: 100%; overflow-x: auto; border-collapse: collapse; }
 .prose th, .prose td { padding: var(--space-3) var(--space-4); border: 1px solid var(--border); text-align: left; }
 .prose figure img, .prose img { max-width: 100%; height: auto; border-radius: var(--radius-md); }
-.prose figcaption { text-align: center; color: var(--muted); font-size: var(--text-1); margin-top: var(--space-3); }
+/* A picture and its caption are one object, and the caption is small print under it, not a second body paragraph. */
+.prose figcaption { text-align: center; color: var(--muted); font-size: var(--text-2); line-height: 1.5; margin-top: var(--space-3); }
 .publication-back { margin-top: var(--space-7); border-top: 1px solid var(--border); padding-top: var(--space-5); width: 100%; }
 .related { margin-top: var(--space-8); }
 .related > h2 { font-size: var(--text-6); margin-bottom: var(--space-5); }
@@ -350,6 +371,8 @@ body:has(.site-header.is-hidden:not(:focus-within)) .toc { top: var(--toc-gap); 
   .breadcrumbs-current { max-width: 26ch; }
   .prose { font-size: var(--text-3); }
   .prose h2 { font-size: var(--text-6); }
+  .prose blockquote.quote { padding: var(--space-5); }
+  .prose blockquote.quote::after { right: var(--space-3); bottom: var(--space-3); width: var(--space-8); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }

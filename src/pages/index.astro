@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { Image } from 'astro:assets';
 import portrait from '../assets/about/anton-gubanov.png';
 import SectionHeader from '../components/SectionHeader.astro';
 import Kicker from '../components/Kicker.astro';
@@ -44,7 +43,7 @@ const posts = (await blogEntries()).slice(0, 3);
   <section id="about" class="about-section container section-space">
     <div class="about-label"><SectionHeader number="01 /" title="Обо мне" /></div>
     <div class="about-copy">
-      <div class="about-portrait"><Image src={portrait} alt="Антон Губанов" width={480} height={480} format="webp" loading="lazy" /></div>
+      <div class="about-portrait"><img src={portrait.src} alt="Антон Губанов" width={portrait.width} height={portrait.height} loading="lazy" decoding="async" /></div>
       <p>{site.about.intro}</p>
       <details class="about-more">
         <summary><span class="about-expand-label">Подробнее</span>{' '}<span class="about-collapse-label">Свернуть</span><Icon direction="down" size={16} /></summary>

@@ -1,6 +1,5 @@
 ---
 import { render, type CollectionEntry } from 'astro:content';
-import { Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ContentCard from '../components/ContentCard.astro';
@@ -37,10 +36,9 @@ const jsonLd = {
       <header class="publication-header"><div class="meta"><time datetime={data.date}>{dateLabel(data.date)}</time><span>{data.category}</span></div><h1 data-preserve-text={preserveText ? 'true' : undefined}>{data.title}</h1><p class="publication-summary">{description}</p>{'updated' in data && data.updated && <p class="muted">Обновлено: <time datetime={data.updated}>{dateLabel(data.updated)}</time></p>}
         {data.tags.length > 0 && <div class="tags">{data.tags.map(tag => <a class="tag" href={url(`blog/tags/${tagSlug(tag)}/`)}>{tag}</a>)}</div>}
       </header>
-      {data.cover && <Image class="publication-cover" src={data.cover.src} alt={data.cover.alt} width={Math.min(1440, data.cover.src.width)} widths={[360, 720, Math.min(1440, data.cover.src.width)].filter(width => width <= data.cover!.src.width)} sizes="(max-width: 760px) 100vw, 720px" format="webp" loading="eager" />}
+      {data.cover && <img class="publication-cover" src={data.cover.src.src} alt={data.cover.alt} width={data.cover.src.width} height={data.cover.src.height} loading="eager" decoding="async" />}
       <div class="prose" data-preserve-text={preserveText ? 'true' : undefined}><Content /></div>
       <HeadingAnchors />
-      {'source' in data && data.source && <p class="publication-source">Впервые опубликовано в <a href={data.source}>Teletype</a>.</p>}
       <a class="text-link publication-back" href={url('blog/')}><Icon direction="left" /> Назад в блог</a>
     </article>
     </div>
