@@ -7,14 +7,12 @@ import Icon from './Icon.astro';
 interface Props { entry: CollectionEntry<'blog'>; heading?: 'h2' | 'h3' }
 const { entry, heading: Heading = 'h2' } = Astro.props;
 const { data } = entry;
-const summary = data.description;
 ---
 <article class="content-card">
-  {data.cover && <Image src={data.cover.src} alt={data.cover.alt} width={720} widths={[360, 720]} sizes="(max-width: 700px) 100vw, (max-width: 1000px) 50vw, 33vw" format="webp" loading="lazy" />}
+  <Image src={data.cover.src} alt={data.cover.alt} width={720} widths={[360, 720]} sizes="(max-width: 700px) 100vw, (max-width: 1000px) 50vw, 33vw" format="webp" loading="lazy" />
   <div class="card-body">
-    <div class="card-meta"><time datetime={data.date}>{dateLabel(data.date)}</time>{'category' in data && <span>{data.category}</span>}</div>
+    <time class="meta" datetime={data.date}>{dateLabel(data.date)}</time>
     <Heading><a href={url(publicationPath(entry))}>{data.title} <Icon /></a></Heading>
-    <p>{summary}</p>
-    {data.tags.length > 0 && <div class="tags">{data.tags.map(tag => <span class="tag">{tag}</span>)}</div>}
+    <p>{data.description}</p>
   </div>
 </article>

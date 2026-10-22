@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import Kicker from './Kicker.astro';
 interface Props { kind: 'blog' | 'tags'; heading?: 'h2' | 'h3' }
 const { kind, heading: Heading = 'h2' } = Astro.props;
 const states = {
@@ -10,6 +11,6 @@ const state = states[kind];
 ---
 <div class="empty-state">
   <div class="empty-icon" aria-hidden="true"><Icon name={state.icon} size={28} /></div>
-  <div class="empty-copy"><p class="eyebrow">{state.label}</p><Heading>{state.title}</Heading><p>{state.text}</p></div>
+  <div class="empty-copy"><Kicker>{state.label}</Kicker><Heading>{state.title}</Heading><p>{state.text}</p></div>
   <div class="empty-decoration" aria-hidden="true"><span></span><span></span><span></span></div>
 </div>

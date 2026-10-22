@@ -1,14 +1,15 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
 import { site, links } from '../../config/site';
 import { url } from '../../utils/urls';
 import { dateLabel } from '../../utils/content';
 ---
 <BaseLayout title="Согласие на обработку данных для аналитики" description="Отдельное добровольное согласие на Яндекс.Метрику и Вебвизор: цель, данные, получатель, срок и порядок отзыва." path="legal/consent/" noindex>
   <section class="container page-content"><div class="legal-page prose">
-    <a class="text-link legal-back" href={url('legal/')}>Все документы</a>
+    <a class="text-link legal-back" href={url('legal/')}><Icon direction="left" /> Все документы</a>
     <h1>Согласие на аналитику</h1>
-    <p class="legal-date">Версия {site.legal.consentVersion} от {dateLabel(site.legal.updated)}</p>
+    <p class="meta">Версия {site.legal.consentVersion} от {dateLabel(site.legal.updated)}</p>
     <p>Нажимая «Окей» в уведомлении об аналитике на agubanovv.ru, я добровольно, своей волей и в своём интересе даю оператору {site.legal.operatorName} ({site.legal.operatorStatus}, email <a href={`mailto:${links.privacyEmail}`}>{links.privacyEmail}</a>) согласие на следующую обработку данных. Открытие этой страницы само по себе согласия не даёт.</p>
     <h2>Цель и состав данных</h2>
     <p>Цель — анализ посещаемости и улучшение содержания и удобства сайта. Данные: IP-адрес, идентификаторы cookie, тип и характеристики браузера, операционной системы и устройства, время визита, адреса просмотренных страниц и источника перехода, клики, прокрутка и переходы по ссылкам, записи взаимодействий со страницей в Вебвизоре. Для фиксации выбора — версия согласия и время его предоставления.</p>

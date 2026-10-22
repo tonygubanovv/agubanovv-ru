@@ -1,14 +1,15 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
 import { site, links } from '../../config/site';
 import { url } from '../../utils/urls';
 import { dateLabel } from '../../utils/content';
 ---
 <BaseLayout title="Политика обработки персональных данных" description="Какие данные обрабатываются на личном сайте Антона Губанова, для каких целей и как отказаться от аналитики." path="legal/privacy/" noindex>
   <section class="container page-content"><div class="legal-page prose">
-    <a class="text-link legal-back" href={url('legal/')}>Все документы</a>
+    <a class="text-link legal-back" href={url('legal/')}><Icon direction="left" /> Все документы</a>
     <h1>Политика обработки персональных данных</h1>
-    <p class="legal-date">Редакция от {dateLabel(site.legal.updated)}</p>
+    <p class="meta">Редакция от {dateLabel(site.legal.updated)}</p>
     <h2>1. Оператор и область действия</h2>
     <p>Оператор сайта agubanovv.ru — {site.legal.operatorName}, {site.legal.operatorStatus}. Адрес для обращений о персональных данных: <a href={`mailto:${links.privacyEmail}`}>{links.privacyEmail}</a>.</p>
     <p>Политика относится к посетителям личного информационного сайта и подготовлена с учётом Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных». На сайте нет форм заявок, регистрации, подписки, оплаты или комментариев. Фамилия, телефон и email посетителя через формы не запрашиваются.</p>
