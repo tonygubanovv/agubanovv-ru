@@ -11,7 +11,7 @@ const { data } = entry;
 const cardSizes = '(min-width: 1001px) 352px, (min-width: 701px) 47vw, calc(100vw - 48px)';
 ---
 <article class="content-card">
-  <Image src={data.cover.src} alt={data.cover.alt} widths={[400, 720, 1080]} sizes={cardSizes} loading="lazy" decoding="async" />
+  <Image src={data.cover.src} alt={data.cover.alt} widths={[400, 720, 1080]} sizes={cardSizes} quality={72} loading="lazy" decoding="async" />
   <div class="card-body">
     <time class="meta" datetime={data.date}>{dateLabel(data.date)}</time>
     <Heading><a href={url(publicationPath(entry))}>{data.title} <Icon /></a></Heading>

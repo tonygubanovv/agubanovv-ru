@@ -95,6 +95,16 @@ button { font: inherit; }
 button[hidden] { display: none; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: var(--space-1); }
 ::selection { background: var(--accent); color: var(--accent-ink); }
+/* A thin quiet scrollbar of our own: the rail is invisible, the thumb is a hair of the border colour,
+   and only the pointer on it brings the accent. Once scrollbar-width is set, Chromium stops reading the
+   webkit pseudo-elements, so the standard pair below belongs to Firefox alone. */
+@supports not selector(::-webkit-scrollbar) {
+  html { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+}
+::-webkit-scrollbar { width: var(--space-3); height: var(--space-3); }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background-color: var(--border); background-clip: padding-box; border: var(--space-1) solid transparent; border-radius: var(--radius-pill); }
+::-webkit-scrollbar-thumb:hover, ::-webkit-scrollbar-thumb:active { background-color: var(--accent); }
 h1, h2, h3, p { margin: 0; }
 h1, h2, h3 { line-height: 1.1; font-weight: 600; letter-spacing: -.025em; text-wrap: balance; }
 p { text-wrap: pretty; }

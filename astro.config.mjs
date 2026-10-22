@@ -13,8 +13,9 @@ export default defineConfig({
   base: '/',
   trailingSlash: 'always',
   output: 'static',
-  // Covers come from the owner as 2,7 MB PNGs, so the build re-encodes them: a browser must never be sent the source file.
-  image: { formats: ['avif', 'webp'] },
+  // Covers arrive as 2,7 MB PNGs, so the build re-encodes them and the browser picks a variant by width.
+  // Sharp stays on purpose: the owner asked for optimization on 22.10.2026, do not put the noop service back.
+  image: { service: { entrypoint: 'astro/assets/services/sharp' } },
   integrations: [
     ...(site.search.indexingEnabled ? [sitemap({
       filter: (page) => !isClosedPath(new URL(page).pathname) && !page.endsWith('/404/') && !page.endsWith('/404.html'),

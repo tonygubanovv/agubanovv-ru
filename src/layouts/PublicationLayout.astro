@@ -19,7 +19,7 @@ const path = publicationPath(entry);
 const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
 const related = (await blogEntries()).filter(other => other.id !== entry.id && other.data.tags.some(tag => data.tags.includes(tag))).slice(0, 2);
 // Social crawlers and Yandex do not take AVIF, and they must not be sent the 2,7 MB source either: one flat JPEG for the card.
-const social = data.cover ? await getImage({ src: data.cover.src, format: 'jpeg', width: 1200, quality: 82 }) : undefined;
+const social = data.cover ? await getImage({ src: data.cover.src, format: 'jpeg', width: 1200, quality: 76 }) : undefined;
 const jsonLd = {
   '@context': 'https://schema.org', '@type': 'BlogPosting', headline: data.title, description,
   datePublished: `${data.date}T12:00:00+03:00`,
@@ -38,7 +38,7 @@ const jsonLd = {
       <header class="publication-header"><div class="meta"><time datetime={data.date}>{dateLabel(data.date)}</time><span>{data.category}</span></div><h1 data-preserve-text={preserveText ? 'true' : undefined}>{data.title}</h1><p class="publication-summary">{description}</p>{'updated' in data && data.updated && <p class="muted">Обновлено: <time datetime={data.updated}>{dateLabel(data.updated)}</time></p>}
         {data.tags.length > 0 && <div class="tags">{data.tags.map(tag => <a class="tag" href={url(`blog/tags/${tagSlug(tag)}/`)}>{tag}</a>)}</div>}
       </header>
-      {data.cover && <Image class="publication-cover" src={data.cover.src} alt={data.cover.alt} widths={[720, 1440]} sizes="(max-width: 700px) calc(100vw - 48px), 720px" loading="eager" decoding="async" />}
+      {data.cover && <Image class="publication-cover" src={data.cover.src} alt={data.cover.alt} widths={[720, 1440]} sizes="(max-width: 700px) calc(100vw - 48px), 720px" quality={74} loading="eager" decoding="async" />}
       <div class="prose" data-preserve-text={preserveText ? 'true' : undefined}><Content /></div>
       <HeadingAnchors />
       <a class="text-link publication-back" href={url('blog/')}><Icon direction="left" /> Назад в блог</a>
