@@ -8,7 +8,7 @@ import { url, tagSlug } from '../../utils/urls';
 const posts = await blogEntries();
 const tags = blogTags.filter(tag => posts.some(post => post.data.tags.includes(tag)));
 ---
-<BaseLayout title="Блог" description="Статьи и кейсы Антона Губанова о digital-маркетинге, рекламе, SEO, GEO и ИИ: эксперименты, разбор инструментов и выводы из практики." path="blog/">
+<BaseLayout title="Блог о маркетинге" description="Делюсь опытом в маркетинге: разбираю Telegram Ads, SEO, GEO и нейросети. Показываю свои эксперименты, рабочие приёмы и ошибки." path="blog/">
   <div class="container page-content"><div class="page-heading"><h1>Блог<span class="brand-dot">.</span></h1><p>Разбираю инструменты и проверяю гипотезы. Рассказываю, как устроен эксперимент и что получилось в результате.</p></div>
     {tags.length > 0 && <nav class="tags tag-filter" aria-label="Темы блога">{tags.map(tag => <a class="tag" href={url(`blog/tags/${tagSlug(tag)}/`)}>{tag}</a>)}</nav>}
     {posts.length ? <div class="card-grid">{posts.map(entry => <ContentCard entry={entry} />)}</div> : <EmptyState kind="blog" />}

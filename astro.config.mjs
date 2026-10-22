@@ -5,6 +5,7 @@ import { copyFile, mkdir, writeFile } from 'node:fs/promises';
 import { sitemapMeta } from './src/utils/sitemapMeta.ts';
 import { isClosedPath, movedPaths } from './src/utils/routes.ts';
 import { site } from './src/config/site.ts';
+import { typographHtml } from './src/utils/typography.ts';
 
 const origin = 'https://agubanovv.ru';
 
@@ -43,10 +44,10 @@ export default defineConfig({
         'astro:build:done': async ({ dir }) => {
           for (const [from, to] of Object.entries(movedPaths)) {
             const target = `${origin}/${to}`;
-            const page = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Страница переехала</title><meta name="description" content="Страница доступна по адресу /${to}, прежняя ссылка ведёт на неё."><meta name="robots" content="noindex, follow"><link rel="canonical" href="${target}"><meta http-equiv="refresh" content="0;url=${target}"></head><body><h1>Страница переехала</h1><p>Перейти по адресу <a href="/${to}">/${to}</a>.</p></body></html>`;
+            const page = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Страница переехала</title><meta name="description" content="Страница переехала. Сейчас перенаправлю на новый адрес."><meta name="robots" content="noindex, follow"><link rel="canonical" href="${target}"><meta http-equiv="refresh" content="0;url=${target}"></head><body><h1>Страница переехала</h1><p>Перейти по адресу <a href="/${to}">/${to}</a>.</p></body></html>`;
             const file = new URL(`${from}index.html`, dir);
             await mkdir(new URL(from, dir), { recursive: true });
-            await writeFile(file, page);
+            await writeFile(file, typographHtml(page));
           }
         },
       },

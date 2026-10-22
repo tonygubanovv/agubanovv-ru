@@ -1,7 +1,7 @@
 ---
 title: "Как передать UTM-метки из Telegram в Salesbot amoCRM с помощью скрипта"
 seoTitle: "Как передать UTM-метки из Telegram в amoCRM через Salesbot"
-description: "Как передать UTM-метки из Telegram в amoCRM Salesbot: автоматическая запись источников в сделку с помощью кода."
+description: "Показываю, как передать UTM-метки из Telegram-бота в amoCRM через Salesbot. Разбираю скрипт и настройку, чтобы не терять источник заявки."
 date: "2026-10-22"
 category: "Инструкции"
 tags: []

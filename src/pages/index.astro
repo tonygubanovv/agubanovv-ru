@@ -12,7 +12,7 @@ import { url, absoluteUrl } from '../utils/urls';
 import { blogEntries } from '../utils/content';
 const posts = (await blogEntries()).slice(0, 3);
 ---
-<BaseLayout title="Digital-маркетинг: статьи и кейсы" description={site.description} jsonLd={{ '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: absoluteUrl(), inLanguage: 'ru-RU' }}>
+<BaseLayout title="Маркетинг, SEO и Telegram Ads" description={site.description} jsonLd={{ '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: absoluteUrl(), inLanguage: 'ru-RU' }}>
   <section class="hero container">
     <div class="hero-copy">
       <h1>{site.hero.title}{' '}<span>{site.hero.accent}</span></h1>
