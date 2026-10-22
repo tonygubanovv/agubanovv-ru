@@ -9,7 +9,6 @@ import { recommendations } from '../config/site';
     <ul class="recommendation-list">
       {recommendations.map(service => <li><h2><a href={service.url} target="_blank" rel="sponsored noopener noreferrer">{service.name}<Icon /></a></h2><p>{service.description}</p></li>)}
     </ul>
-    <p class="recommendation-note">Ссылки реферальные: за регистрацию или оплату я могу получить бонус.</p>
   </section>
 </BaseLayout>
 
@@ -20,7 +19,6 @@ import { recommendations } from '../config/site';
   .recommendation-list a { display: inline-flex; align-items: center; gap: var(--space-3); min-height: var(--tap); }
   .recommendation-list a > :global(.icon) { color: var(--accent); }
   .recommendation-list p { margin-top: var(--space-2); color: var(--muted); font-size: var(--text-2); }
-  .recommendation-note { margin-top: var(--space-7); max-width: var(--measure); color: var(--muted); font-size: var(--text-1); }
   @media (max-width: 700px) {
     .recommendation-list { grid-template-columns: 1fr; gap: var(--space-5); }
   }
