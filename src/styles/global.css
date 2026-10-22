@@ -169,13 +169,13 @@ a.tag:hover { border-color: var(--accent); }
 .publication-header > p:not(.publication-summary) { margin-top: 14px; font-size: 14px; }
 .muted { color: var(--muted); }
 .publication-cover { width: 100%; border-radius: 8px; margin-bottom: 40px; }
-.toc { position: sticky; top: 112px; max-height: calc(100dvh - 144px); overflow-y: auto; padding-right: 16px; font-size: 13px; line-height: 1.55; color: var(--muted); }
-.toc h2 { font-size: 13px; font-weight: 600; letter-spacing: normal; margin-bottom: 16px; color: var(--foreground); }
+.toc { position: sticky; top: 112px; max-height: calc(100dvh - 144px); overflow-y: auto; padding-right: 8px; font-size: 13px; line-height: 1.45; color: var(--muted); }
+.toc h2 { font-size: 18px; font-weight: 600; line-height: 1.25; letter-spacing: -.015em; margin-bottom: 12px; color: var(--foreground); }
 .toc ul { list-style: none; padding: 0; }
-.toc li + li { margin-top: 8px; }
-.toc a { display: block; padding-block: 8px; transition: color 160ms ease; }
+.toc a { display: block; padding: 4px 0; transition: color 160ms ease; }
+.toc a:hover { color: var(--foreground); }
 .toc a.is-active { color: var(--accent); }
-.toc .toc-sub { margin-left: 20px; }
+.toc .toc-sub { margin-left: 14px; font-size: 12.5px; }
 .prose { line-height: 1.8; overflow-wrap: anywhere; }
 .prose > * + * { margin-top: 24px; }
 .prose h2 { font-size: 30px; margin-top: 48px; }
