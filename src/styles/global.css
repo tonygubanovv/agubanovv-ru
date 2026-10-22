@@ -323,8 +323,8 @@ body:has(.cookie-notice:not([hidden])) { padding-bottom: calc(var(--cookie-notic
 .email-contact-row > a { font-size: 13px; font-weight: 500; line-height: 1.4; overflow-wrap: anywhere; }
 .copy-email { display: grid; place-items: center; flex-shrink: 0; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: var(--muted); transition: color 180ms, background-color 180ms; }
 .copy-email:hover, .copy-email.is-copied { color: var(--accent); background: var(--elevated); }
-.telegram-contact { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--border); border-radius: 50%; color: var(--muted); }
-.telegram-contact:hover { color: var(--accent); border-color: var(--accent); background: var(--elevated); }
+.telegram-contact { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--muted); }
+.telegram-contact:hover { color: var(--accent); }
 .mobile-contacts { border-top: 1px solid var(--border); margin-top: 8px; padding: 16px 12px 0; }
 .mobile-nav nav .email-contact-row > a { padding: 8px 0; font-size: 12px; }
 .mobile-nav nav .mobile-telegram { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 8px 0; font-size: 13px; }

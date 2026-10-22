@@ -15,7 +15,7 @@ const current = Astro.url.pathname;
     </nav>
     <div class="header-contacts">
       <EmailContact />
-      {links.telegram && <a class="telegram-contact" href={links.telegram} aria-label="Telegram Антона Губанова"><Icon name="telegram" size={28} /></a>}
+      {links.telegram && <a class="telegram-contact" href={links.telegram} aria-label="Telegram Антона Губанова"><Icon name="telegram" size={44} /></a>}
     </div>
     <div class="header-controls">
       <details class="mobile-nav">
@@ -42,11 +42,21 @@ const current = Astro.url.pathname;
   const updateHeader = () => {
     const y = Math.max(0, window.scrollY);
     const delta = y - lastY;
+    if (delta !== 0) {
+      const focused = document.activeElement;
+      const keyboardFocus = focused instanceof HTMLElement && focused.matches(':focus-visible');
+      if (menu?.open) {
+        menu.open = false;
+        // Keep keyboard focus on the toggle; pointer focus must not pin the header open.
+        if (keyboardFocus && menu.contains(focused)) menu.querySelector('summary')?.focus();
+      }
+      if (!keyboardFocus && focused instanceof HTMLElement && header?.contains(focused)) focused.blur();
+    }
     const nextDirection = Math.sign(delta);
     if (nextDirection && nextDirection !== direction) distance = 0;
     if (nextDirection) direction = nextDirection;
     distance += delta;
-    if (y < 80 || menu?.open || header?.contains(document.activeElement)) {
+    if (y < 80 || header?.contains(document.activeElement)) {
       header?.classList.remove('is-hidden');
     } else if (Math.abs(distance) > 12) {
       header?.classList.toggle('is-hidden', direction > 0);
