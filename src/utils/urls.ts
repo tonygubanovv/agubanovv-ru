@@ -1,3 +1,5 @@
+import { blogTagSlugs } from '../config/site';
+
 /** The single entry point for local URLs, including public assets and fragments. */
 export function url(path = ''): string {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -13,5 +15,8 @@ export function absoluteUrl(path = ''): string {
   return new URL(url(path), import.meta.env.SITE).href;
 }
 
-/** Reversible encoding avoids collisions for Cyrillic and mixed-script tags. */
-export const tagSlug = (tag: string) => Array.from(new TextEncoder().encode(tag)).map(n => n.toString(16).padStart(2, '0')).join('');
+/** Resolve a topic through the shared list so its URL stays stable when rendering. */
+export function tagSlug(tag: string): string {
+  if (!Object.hasOwn(blogTagSlugs, tag)) throw new Error(`Unknown blog topic: ${tag}`);
+  return blogTagSlugs[tag as keyof typeof blogTagSlugs];
+}

@@ -6,6 +6,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ContentCard from '../components/ContentCard.astro';
 import Icon from '../components/Icon.astro';
 import HeadingAnchors from '../components/HeadingAnchors.astro';
+import ArticleShare from '../components/ArticleShare.astro';
 import { site } from '../config/site';
 import { absoluteUrl, url, tagSlug } from '../utils/urls';
 import { dateLabel, blogEntries, publicationPath } from '../utils/content';
@@ -41,6 +42,7 @@ const jsonLd = {
       {data.cover && <Image class="publication-cover" src={data.cover.src} alt={data.cover.alt} widths={[720, 1440]} sizes="(max-width: 700px) calc(100vw - 48px), 720px" quality={74} loading="eager" decoding="async" />}
       <div class="prose" data-preserve-text={preserveText ? 'true' : undefined}><Content /></div>
       <HeadingAnchors />
+      <ArticleShare path={path} title={data.title} />
       <a class="text-link publication-back" href={url('blog/')}><Icon direction="left" /> Назад в блог</a>
     </article>
     </div>

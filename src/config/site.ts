@@ -1,6 +1,22 @@
 /** Shared blog topics in their public display order. */
 export const blogTags = ['Telegram Ads', 'Нейросети', 'SEO & GEO', 'Кейсы'] as const;
 
+/** Stable public addresses, independent of the displayed topic names. */
+export const blogTagSlugs: Record<(typeof blogTags)[number], string> = {
+  'Telegram Ads': 'telegram-ads',
+  'Нейросети': 'neuroseti',
+  'SEO & GEO': 'seo-geo',
+  'Кейсы': 'cases',
+};
+
+/** Share destinations use ordinary links; no third-party widgets are loaded. */
+export const shareServices = [
+  { label: 'Telegram', endpoint: 'https://t.me/share/url', urlParam: 'url', titleParam: 'text' },
+  { label: 'ВКонтакте', endpoint: 'https://vk.com/share.php', urlParam: 'url', titleParam: 'title' },
+  { label: 'Одноклассники', endpoint: 'https://connect.ok.ru/offer', urlParam: 'url', titleParam: 'title' },
+  { label: 'WhatsApp', endpoint: 'https://wa.me/', urlParam: undefined, titleParam: 'text' },
+] as const;
+
 /** Set each public contact once. Missing values are not rendered anywhere. */
 export const links = {
   telegram: 'https://t.me/tonygubanovv' as string | undefined,

@@ -81,6 +81,11 @@ async function walk(dirUrl) {
   return pages;
 }
 
+for (const [from, to] of Object.entries(movedPaths)) {
+  if (!await exists(`${from}index.html`)) errors.push(`Missing redirect page: /${from}`);
+  if (!await exists(`${to}index.html`)) errors.push(`Redirect destination does not exist: /${from} -> /${to}`);
+}
+
 for (const page of await walk(dist)) {
   const html = await readFile(page, 'utf8');
   const path = page.pathname.split('/dist/').at(-1) ?? page.pathname;
@@ -92,6 +97,22 @@ for (const page of await walk(dist)) {
     continue;
   }
   const nodes = elements(parse(html));
+  if (path.startsWith('blog/') && nodes.some(node => node.attrs.some(attr => attr.name === 'class' && attr.value.split(/\s+/).includes('prose')))) {
+    const share = nodes.find(node => node.attrs.some(attr => attr.name === 'data-article-share'));
+    const address = `${canonicalPrefix}${path.replace(/index\.html$/, '')}`;
+    const copy = share && elements(share).find(node => node.attrs.some(attr => attr.name === 'data-copy-article' && attr.value === address));
+    if (!copy) errors.push(`Missing clean article copy address: ${path}`);
+    const links = share ? elements(share).filter(node => node.tagName === 'a') : [];
+    const expectedShares = ['https://t.me/share/url', 'https://vk.com/share.php', 'https://connect.ok.ru/offer', 'https://wa.me/'];
+    if (links.length !== expectedShares.length) errors.push(`Expected four article sharing destinations: ${path}`);
+    for (const endpoint of expectedShares) {
+      const href = links.map(node => node.attrs.find(attr => attr.name === 'href')?.value).find(value => value?.split('?')[0] === endpoint);
+      const target = href && new URL(href);
+      if (!target || (endpoint === 'https://wa.me/' ? !target.searchParams.get('text')?.endsWith(`\n${address}`) : target.searchParams.get('url') !== address)) {
+        errors.push(`Share destination has an incorrect article address: ${path} -> ${endpoint}`);
+      }
+    }
+  }
   for (const node of nodes.filter(node => node.tagName === 'a')) {
     const attr = name => node.attrs.find(item => item.name === name)?.value ?? '';
     if (attr('href').startsWith('mailto:') && (/\bbutton\b/.test(attr('class')) || attr('role') === 'button')) {

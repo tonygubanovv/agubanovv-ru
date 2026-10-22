@@ -37,13 +37,13 @@ export default defineConfig({
       },
     },
     {
-      name: 'publication-redirects',
+      name: 'page-redirects',
       hooks: {
         // GitHub Pages has no server-side redirects, so the moved addresses keep static stub pages.
         'astro:build:done': async ({ dir }) => {
           for (const [from, to] of Object.entries(movedPaths)) {
             const target = `${origin}/${to}`;
-            const page = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Материал переехал в блог</title><meta name="description" content="Статья опубликована по адресу /${to}, прежняя ссылка ведёт на неё."><meta name="robots" content="noindex, follow"><link rel="canonical" href="${target}"><meta http-equiv="refresh" content="0;url=${target}"></head><body><h1>Материал переехал в блог</h1><p>Статья доступна по адресу <a href="/${to}">/${to}</a>.</p></body></html>`;
+            const page = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Страница переехала</title><meta name="description" content="Страница доступна по адресу /${to}, прежняя ссылка ведёт на неё."><meta name="robots" content="noindex, follow"><link rel="canonical" href="${target}"><meta http-equiv="refresh" content="0;url=${target}"></head><body><h1>Страница переехала</h1><p>Перейти по адресу <a href="/${to}">/${to}</a>.</p></body></html>`;
             const file = new URL(`${from}index.html`, dir);
             await mkdir(new URL(from, dir), { recursive: true });
             await writeFile(file, page);

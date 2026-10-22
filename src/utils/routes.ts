@@ -22,10 +22,14 @@ export const closedPaths = [...legalPaths, ...site.search.closed.map(toPath)];
 export const isClosedPath = (path: string) => closedPaths.includes(toPath(path));
 
 /**
- * Addresses of publications the owner moved under /blog/. The build leaves only a redirect page
+ * Previous public addresses. The build leaves only a redirect page
  * at the old path, because those links were already shared before the move.
  */
 export const movedPaths: Record<string, string> = {
   'telegram-ads-ib-vendor/': 'blog/telegram-ads-ib-vendor/',
   'salesbot-utm-amocrm/': 'blog/salesbot-utm-amocrm/',
+  'blog/tags/54656c656772616d20416473/': 'blog/tags/telegram-ads/',
+  'blog/tags/d09dd0b5d0b9d180d0bed181d0b5d182d0b8/': 'blog/tags/neuroseti/',
+  'blog/tags/53454f20262047454f/': 'blog/tags/seo-geo/',
+  'blog/tags/d09ad0b5d0b9d181d18b/': 'blog/tags/cases/',
 };

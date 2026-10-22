@@ -347,6 +347,17 @@ body:has(.site-header.is-hidden:not(:focus-within)) .toc { top: var(--toc-gap); 
 /* Only a picture's caption is small print under it: a quote card writes its speaker the other way. */
 .prose figure > img + figcaption { text-align: center; color: var(--muted); font-size: var(--text-2); line-height: 1.5; margin-top: var(--space-3); }
 .publication-back { margin-top: var(--space-7); border-top: 1px solid var(--border); padding-top: var(--space-5); width: 100%; }
+.article-share { margin-top: var(--space-7); }
+.article-share-actions { display: flex; flex-wrap: wrap; align-items: start; gap: var(--space-3); }
+.article-share .button { gap: var(--space-3); color: var(--foreground); }
+.article-share [hidden] { display: none; }
+.article-share-options { position: relative; }
+.article-share-options summary { list-style: none; }
+.article-share-options summary::-webkit-details-marker { display: none; }
+.article-share-links { display: flex; flex-direction: column; margin-top: var(--space-2); padding: var(--space-2); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.article-share-links a { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); min-height: var(--tap); padding-inline: var(--space-3); border-radius: var(--radius-md); font-size: var(--text-2); }
+.article-share-links a:hover { color: var(--accent); background: var(--elevated); }
+.article-share-status { min-height: var(--space-5); margin: var(--space-2) 0 0; color: var(--muted); font-size: var(--text-1); }
 .related { margin-top: var(--space-8); }
 .related > h2 { font-size: var(--text-6); margin-bottom: var(--space-5); }
 @media (max-width: 1000px) {
