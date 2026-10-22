@@ -27,6 +27,12 @@ export const site = {
     { label: 'Обо мне', path: '#about' },
   ],
   analytics: { yandexId: 113586660 as number | undefined, privacyApproved: true },
+  /** Public ownership tokens for search engines; rendered in every page <head>. */
+  verification: {
+    yandex: '1a79001ad80f627e',
+    google: '6XETKa1QzG373kEImKULNHN9I-I0iV8mRj2orvuqKxM',
+    bing: '5B5199D1ACA69B0BBDE7153766706793',
+  },
   legal: {
     operatorName: 'Губанов Антон Андреевич',
     operatorStatus: 'самозанятый',

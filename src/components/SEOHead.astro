@@ -10,6 +10,9 @@ const canonical = absoluteUrl(path);
 const ogImage = image ? new URL(image, import.meta.env.SITE).href : absoluteUrl('og.png');
 ---
 <meta charset="utf-8" />
+<meta name="yandex-verification" content={site.verification.yandex} />
+<meta name="google-site-verification" content={site.verification.google} />
+<meta name="msvalidate.01" content={site.verification.bing} />
 <link rel="preload" href={onestCyrillic} as="font" type="font/woff2" crossorigin />
 <link rel="preload" href={onestLatin} as="font" type="font/woff2" crossorigin />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
