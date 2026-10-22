@@ -147,8 +147,7 @@ svg { flex-shrink: 0; }
 /* The one label used above a heading, drawn by Kicker.astro. */
 .eyebrow { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--accent); font-size: var(--text-2); line-height: 1.4; font-weight: 500; }
 .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
-.eyebrow-rule { width: var(--space-5); height: 1px; background: var(--border); flex-shrink: 0; }
-.hero h1 { font-size: var(--display-3); line-height: 1.08; letter-spacing: -.035em; margin-top: var(--space-5); }
+.hero h1 { font-size: var(--display-3); line-height: 1.08; letter-spacing: -.035em; }
 .hero h1 > span { display: block; color: var(--accent); }
 .hero-description { color: var(--muted); max-width: 520px; font-size: var(--text-4); line-height: 1.7; margin-top: var(--space-5); }
 .hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-6); }
@@ -157,18 +156,12 @@ svg { flex-shrink: 0; }
 .button.primary:hover { background: color-mix(in srgb, var(--accent) 85%, var(--foreground)); border-color: var(--accent); box-shadow: 0 0 0 var(--space-1) var(--glow), 0 6px 22px var(--glow); }
 .button.secondary { background: transparent; }
 .button.secondary:hover { color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--background)); border-color: var(--accent); box-shadow: 0 0 0 var(--space-1) var(--glow); }
-.hero-art { position: relative; color: var(--accent); align-self: center; background: radial-gradient(ellipse, var(--glow), transparent 70%); }
+.hero-art { color: var(--accent); align-self: center; background: radial-gradient(ellipse, var(--glow), transparent 70%); }
 .hero-art svg { width: 100%; height: auto; }
 .atom-orbits, .atom-particles { transform-box: view-box; transform-origin: 50% 50%; }
 .atom-orbits { animation: atom-turn 40s linear infinite; }
 .atom-particles { animation: atom-turn 28s linear infinite reverse; }
 @keyframes atom-turn { to { transform: rotate(360deg); } }
-.art-coordinate { font-size: var(--text-1); line-height: 1.5; color: var(--muted); position: absolute; top: 0; left: var(--space-4); }
-.art-caption { display: flex; gap: var(--space-6); justify-content: center; font-size: var(--text-1); line-height: 1.5; color: var(--muted); }
-.art-caption span + span::before { content: '/'; margin-right: var(--space-6); color: var(--border); }
-.hero-bottom { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: var(--space-4); border-bottom: 1px solid var(--border); padding-block: var(--space-9) var(--space-5); color: var(--muted); font-size: var(--text-1); }
-.hero-bottom a { display: inline-flex; align-items: center; gap: var(--space-4); }
-.hero-bottom .icon { color: var(--accent); }
 .section-space { padding-top: var(--space-9); }
 .about-section { display: grid; grid-template-columns: 1fr 2fr; gap: var(--space-7); }
 .about-label { min-width: 0; }
@@ -240,10 +233,11 @@ a.tag:hover { color: var(--accent); border-color: var(--accent); }
 .not-found > p:not(.error-code, .eyebrow) { color: var(--muted); margin-block: var(--space-5) var(--space-6); }
 .publication-wrap { padding-block: var(--space-6) var(--space-9); }
 .breadcrumbs { padding-top: var(--space-5); color: var(--muted); font-size: var(--text-1); }
-.breadcrumbs-inner { display: flex; flex-wrap: wrap; gap: var(--space-3); }
-.breadcrumb-item { display: inline-flex; align-items: center; gap: var(--space-3); min-width: 0; }
+.breadcrumbs-inner { display: flex; gap: var(--space-3); overflow: hidden; mask-image: linear-gradient(to right, black calc(100% - var(--space-7)), transparent); }
+.breadcrumb-item { display: inline-flex; align-items: center; gap: var(--space-3); flex-shrink: 0; }
 .breadcrumbs a { min-height: var(--tap); display: inline-flex; align-items: center; }
-.breadcrumbs-current { max-width: 46ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; align-self: center; }
+/* A long title is never cut into an ellipsis: the whole line stays in the page and its tail dissolves into transparency. */
+.breadcrumbs-current { white-space: nowrap; }
 .publication > .breadcrumbs { padding-top: 0; margin-bottom: var(--space-4); }
 .publication-grid { max-width: var(--measure); margin-inline: auto; }
 .publication { min-width: 0; }
@@ -297,7 +291,7 @@ body:has(.site-header.is-hidden:not(:focus-within)) .toc { top: var(--toc-gap); 
 .quote-name { display: block; font-size: var(--text-3); font-weight: 600; }
 .quote-role { display: block; margin-top: var(--space-1); color: var(--muted); font-size: var(--text-1); }
 /* A note card speaks the same language as a code block: a quiet surface, a hairline, a mark in the gutter. */
-.prose aside.note { display: grid; grid-template-columns: var(--space-5) 1fr; column-gap: var(--space-3); padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
+.prose aside.note { display: grid; grid-template-columns: var(--space-5) 1fr; column-gap: var(--space-3); padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); line-height: 1.6; }
 .note-mark { width: var(--space-5); height: var(--space-5); margin-top: var(--space-1); background-color: var(--accent); mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5.4'/%3E%3Cpath d='M12 7.4h.01'/%3E%3C/svg%3E") center / contain no-repeat; }
 .note-body { min-width: 0; }
 .note-body > * + * { margin-top: var(--space-4); }
@@ -345,8 +339,6 @@ body:has(.site-header.is-hidden:not(:focus-within)) .toc { top: var(--toc-gap); 
   .hero-actions { margin-top: var(--space-5); gap: var(--space-2); }
   .hero-actions .button { gap: var(--space-4); padding-inline: var(--space-4); }
   .hero-art { width: min(100%, 350px); margin: var(--space-7) auto 0; }
-  .hero-bottom { padding-block: var(--space-7) var(--space-5); align-items: baseline; }
-  .hero-bottom a { gap: var(--space-2); }
   .section-space { padding-top: var(--space-7); }
   .about-section { display: block; }
   /* The portrait sits above the text so both paragraphs use the full container width. */
@@ -368,7 +360,6 @@ body:has(.site-header.is-hidden:not(:focus-within)) .toc { top: var(--toc-gap); 
   .card-grid { grid-template-columns: 1fr; }
   .publication-wrap { padding-top: var(--space-5); }
   .breadcrumbs { padding-top: var(--space-4); }
-  .breadcrumbs-current { max-width: 26ch; }
   .prose { font-size: var(--text-3); }
   .prose h2 { font-size: var(--text-6); }
   .prose blockquote.quote { padding: var(--space-5); }
@@ -376,9 +367,6 @@ body:has(.site-header.is-hidden:not(:focus-within)) .toc { top: var(--toc-gap); 
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
-}
-@media (max-width: 400px) {
-  .hero-actions .button { width: 100%; justify-content: space-between; }
 }
 
 /* The contents column is desktop only: phones and tablets, including 10.9—11" in landscape, keep the plain article. */

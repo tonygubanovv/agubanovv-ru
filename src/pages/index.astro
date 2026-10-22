@@ -14,13 +14,11 @@ const posts = (await blogEntries()).slice(0, 3);
 <BaseLayout title="Digital-маркетинг: статьи и кейсы" description={site.description} jsonLd={{ '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: absoluteUrl(), inLanguage: 'ru-RU' }}>
   <section class="hero container">
     <div class="hero-copy">
-      <Kicker status trailing="Личный взгляд">{site.role}</Kicker>
       <h1>{site.hero.title}{' '}<span>{site.hero.accent}</span></h1>
       <p class="hero-description">{site.hero.description}</p>
       <div class="hero-actions"><a class="button primary" href={url('blog/')}>Читать блог <Icon /></a></div>
     </div>
     <div class="hero-art" aria-hidden="true">
-      <div class="art-coordinate">Маркетинг и технологии</div>
       <svg viewBox="0 0 440 440" fill="none">
         <defs><linearGradient id="orbit" x1="60" y1="70" x2="380" y2="370" gradientUnits="userSpaceOnUse"><stop stop-color="currentColor" stop-opacity=".9"/><stop offset="1" stop-color="currentColor" stop-opacity=".12"/></linearGradient></defs>
         <circle cx="220" cy="220" r="160" stroke="currentColor" stroke-opacity=".15"/><circle cx="220" cy="220" r="116" stroke="currentColor" stroke-opacity=".2"/>
@@ -36,9 +34,7 @@ const posts = (await blogEntries()).slice(0, 3);
         </g>
         <path d="M48 65h20M58 55v20M370 332h20M380 322v20" stroke="currentColor" stroke-opacity=".6"/>
       </svg>
-      <div class="art-caption"><span>Идея</span>{' '}<span>Подход</span>{' '}<span>Практика</span></div>
     </div>
-    <div class="hero-bottom"><span>Эксперименты, наблюдения, выводы</span><a href={url('#about')}>Обо мне <Icon direction="down" /></a></div>
   </section>
   <section id="about" class="about-section container section-space">
     <div class="about-label"><SectionHeader number="01 /" title="Обо мне" /></div>

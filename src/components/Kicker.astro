@@ -1,6 +1,4 @@
 ---
-// Единственная подпись над заголовком: точка-статус слева и короткая черта с вторым словом — по желанию.
-interface Props { status?: boolean; trailing?: string }
-const { status = false, trailing } = Astro.props;
+// Единственная подпись над заголовком.
 ---
-<p class="eyebrow">{status && <span class="status-dot" aria-hidden="true"></span>}<slot />{trailing && <>{' '}<span class="eyebrow-rule" aria-hidden="true"></span>{' '}<span>{trailing}</span></>}</p>
+<p class="eyebrow"><slot /></p>

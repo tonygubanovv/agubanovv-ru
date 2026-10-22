@@ -1,8 +1,10 @@
 ---
 import { url } from '../utils/urls';
-import type { Crumb } from '../utils/crumbs';
-interface Props { crumbs: Crumb[]; bare?: boolean }
-const { crumbs, bare = false } = Astro.props;
+import { trail } from '../utils/crumbs';
+interface Props { current?: string; bare?: boolean }
+const { current, bare = false } = Astro.props;
+// The address of the page being built gives the whole chain; a page only names its own last step.
+const crumbs = trail(Astro.url.pathname, current);
 const last = crumbs.length - 1;
 ---
 {crumbs.length > 1 && <nav class="breadcrumbs" aria-label="Хлебные крошки">

@@ -6,9 +6,9 @@ import Footer from '../components/Footer.astro';
 import Analytics from '../components/Analytics.astro';
 import { breadcrumbGraph, trail } from '../utils/crumbs';
 import '../styles/global.css';
-interface Props { title: string; seoTitle?: string; description: string; path?: string; crumb?: string; breadcrumbPath?: string; noindex?: boolean; breadcrumbs?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> }
-const { crumb, breadcrumbPath, path = '', noindex = false, breadcrumbs: showCrumbs = true, jsonLd, ...rest } = Astro.props;
-const crumbs = noindex ? [] : trail(breadcrumbPath ?? path, crumb);
+interface Props { title: string; seoTitle?: string; description: string; path?: string; crumb?: string; noindex?: boolean; breadcrumbs?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> }
+const { crumb, path = '', noindex = false, breadcrumbs: showCrumbs = true, jsonLd, ...rest } = Astro.props;
+const crumbs = noindex ? [] : trail(Astro.url.pathname, crumb);
 const graphs = [jsonLd, ...(crumbs.length > 1 ? [breadcrumbGraph(crumbs)] : [])].filter((graph): graph is Record<string, unknown> => Boolean(graph));
 ---
 <!doctype html>
@@ -17,7 +17,7 @@ const graphs = [jsonLd, ...(crumbs.length > 1 ? [breadcrumbGraph(crumbs)] : [])]
   <body>
     <a href="#main" class="skip-link">К содержимому</a>
     <Header />
-    <main id="main" tabindex="-1">{showCrumbs && <Breadcrumbs crumbs={crumbs} />}<slot /></main>
+    <main id="main" tabindex="-1">{showCrumbs && !noindex && <Breadcrumbs current={crumb} />}<slot /></main>
     <Footer />
     <Analytics />
   </body>
