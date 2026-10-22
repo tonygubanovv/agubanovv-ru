@@ -26,6 +26,7 @@ export const recommendations = [
   { name: 'Qoder', url: 'https://qoder.com/activities?referral_code=6ree2iTPEJoqWyE5vT0rlQmByyvt4amO', description: 'Редактор с ИИ, чтобы попробовать вайбкодинг. Есть бесплатный тариф.' },
   { name: 'Keys.so', url: 'https://www.keys.so/ru/?p=57950', description: 'Подсмотреть запросы, SEO и рекламу конкурентов.' },
   { name: 'Timeweb Cloud', url: 'https://timeweb.cloud/r/kt656114', description: 'Облачные серверы для сайтов, ботов и своих проектов.' },
+  { name: 'TGStat', url: 'https://tgstat.ru/x/X2eGo', description: 'Статистика Telegram-каналов и поиск площадок для рекламы.' },
 ] as const;
 
 /** Set each public contact once. Missing values are not rendered anywhere. */
