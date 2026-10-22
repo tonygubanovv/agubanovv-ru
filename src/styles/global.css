@@ -17,6 +17,8 @@
   --accent: #2e731d;
   --accent-ink: #fff;
   --glow: rgb(74 150 42 / 10%);
+  /* .header-inner is 80 px tall plus the 1 px bottom border; the contents column hangs under it. */
+  --header-h: 81px;
   color-scheme: light;
 }
 /* Repeat the small token set so the system theme also works without JavaScript. */
@@ -207,13 +209,16 @@ a.tag:hover { border-color: var(--accent); }
 .publication-header > p:not(.publication-summary) { margin-top: 14px; font-size: 14px; }
 .muted { color: var(--muted); }
 .publication-cover { width: 100%; border-radius: 8px; margin-bottom: 40px; }
-.toc { position: sticky; top: 112px; max-height: calc(100dvh - 144px); overflow-y: auto; padding-right: 8px; font-size: 13px; line-height: 1.45; color: var(--muted); }
+/* The contents hang under the sticky header and rise into the freed space as soon as the header scrolls away. */
+.toc { --toc-gap: 32px; position: sticky; top: calc(var(--header-h) + var(--toc-gap)); max-height: calc(100dvh - var(--header-h) - var(--toc-gap) * 2); overflow-y: auto; padding-right: 8px; font-size: 15px; line-height: 1.55; color: var(--muted); transition: top 240ms ease; }
+body:has(.site-header.is-hidden:not(:focus-within)) .toc { top: var(--toc-gap); }
+/* The heading of the contents stays smaller than the site logo in the header. */
 .toc h2 { font-size: 18px; font-weight: 600; line-height: 1.15; letter-spacing: -.015em; margin-bottom: 12px; color: var(--foreground); }
 .toc ul { list-style: none; padding: 0; }
 .toc a { display: block; padding: 4px 0; transition: color 160ms ease; }
 .toc a:hover { color: var(--foreground); }
 .toc a.is-active { color: var(--accent); }
-.toc .toc-sub { margin-left: 14px; font-size: 12.5px; }
+.toc .toc-sub { margin-left: 16px; font-size: 14px; }
 .prose { line-height: 1.8; overflow-wrap: anywhere; }
 .prose > * + * { margin-top: 24px; }
 .prose h2 { font-size: 30px; margin-top: 48px; }
@@ -317,7 +322,8 @@ a.tag:hover { border-color: var(--accent); }
 @media (min-width: 1200px) {
   /* The article holds the middle of the screen; the contents hang in the left gutter and an empty right gutter keeps them balanced. */
   .publication-grid.has-toc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 720px) minmax(0, 1fr); gap: 24px; max-width: none; }
-  .publication-sidebar { display: block; padding-top: 10px; }
+  /* The script marks the article body as the travel range: the contents appear with the body and leave with it. */
+  .publication-sidebar { display: block; padding-top: var(--toc-from, 0px); padding-bottom: var(--toc-to, 0px); }
 }
 
 /* Optional analytics stays off until an explicit choice. */

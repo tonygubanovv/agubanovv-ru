@@ -51,6 +51,20 @@ const jsonLd = {
       const links = new Map([...document.querySelectorAll('.toc a[href^="#"]')].map(link => [link.getAttribute('href').slice(1), link]));
       const heads = [...document.querySelectorAll('.prose h2[id], .prose h3[id]')].filter(heading => links.has(heading.id));
       if (!heads.length) return;
+      const article = document.querySelector('.publication');
+      const sidebar = document.querySelector('.publication-sidebar');
+      const body = document.querySelector('.prose');
+      const nav = document.querySelector('.toc');
+      // The contents travel only along the article body, so the body becomes the sticky range of the column.
+      // A list taller than the body would stretch the row instead, so it keeps the whole column.
+      const setRange = () => {
+        const box = article.getBoundingClientRect();
+        const text = body.getBoundingClientRect();
+        const fits = nav.getBoundingClientRect().height <= text.bottom - text.top;
+        sidebar.style.setProperty('--toc-from', fits ? `${Math.round(Math.max(0, text.top - box.top))}px` : '0px');
+        sidebar.style.setProperty('--toc-to', fits ? `${Math.round(Math.max(0, box.bottom - text.bottom))}px` : '0px');
+      };
+      new ResizeObserver(setRange).observe(article);
       const mark = () => {
         const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
         let active = heads[heads.length - 1];
