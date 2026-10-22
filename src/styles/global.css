@@ -233,8 +233,8 @@ a.tag:hover { color: var(--accent); border-color: var(--accent); }
 .not-found > p:not(.error-code, .eyebrow) { color: var(--muted); margin-block: var(--space-5) var(--space-6); }
 .publication-wrap { padding-block: var(--space-6) var(--space-9); }
 .breadcrumbs { padding-top: var(--space-5); color: var(--muted); font-size: var(--text-1); }
-.breadcrumbs-inner { display: flex; gap: var(--space-3); overflow: hidden; mask-image: linear-gradient(to right, black calc(100% - var(--space-7)), transparent); }
-.breadcrumb-item { display: inline-flex; align-items: center; gap: var(--space-3); flex-shrink: 0; }
+.breadcrumbs-inner { display: flex; gap: var(--space-1); overflow: hidden; mask-image: linear-gradient(to right, black calc(100% - var(--space-7)), transparent); }
+.breadcrumb-item { display: inline-flex; align-items: center; gap: var(--space-1); flex-shrink: 0; }
 .breadcrumbs a { min-height: var(--tap); display: inline-flex; align-items: center; }
 /* A long title is never cut into an ellipsis: the whole line stays in the page and its tail dissolves into transparency. */
 .breadcrumbs-current { white-space: nowrap; }
@@ -244,7 +244,8 @@ a.tag:hover { color: var(--accent); border-color: var(--accent); }
 .publication-sidebar { display: none; }
 .publication-header { margin-bottom: var(--space-6); }
 .publication h1 { font-size: var(--display-2); margin-top: var(--space-5); overflow-wrap: anywhere; }
-.publication-summary { font-size: var(--text-5); color: var(--muted); margin-top: var(--space-5); }
+/* The lead reads as one rung of the article, not a second heading: body size and a tighter line. */
+.publication-summary { font-size: var(--text-4); line-height: 1.6; color: var(--muted); margin-top: var(--space-5); }
 .publication-header > p:not(.publication-summary) { margin-top: var(--space-3); font-size: var(--text-2); }
 .muted { color: var(--muted); }
 .publication-cover { width: 100%; border-radius: var(--radius-md); margin-bottom: var(--space-7); }
@@ -269,8 +270,8 @@ body:has(.site-header.is-hidden:not(:focus-within)) .toc { top: var(--toc-gap); 
 .heading-anchor-link, .heading-anchor-check { display: flex; }
 .heading-anchor-check, .heading-anchor[data-copy-state="success"] .heading-anchor-link { display: none; }
 .heading-anchor[data-copy-state="success"] .heading-anchor-check { display: flex; }
-@media (hover: none) { .heading-anchor { opacity: 1; } }
-@media (max-width: 700px) { .heading-anchor { inset-inline-start: calc(var(--space-4) * -1); width: var(--space-4); } }
+/* The copy anchor is a pointer affordance: touch screens and phones do not get it at all (owner, 22.10.2026). */
+@media (hover: none), (max-width: 700px) { .heading-anchor { display: none; } }
 .prose a { color: var(--accent); text-decoration: underline; text-underline-offset: var(--space-1); }
 /* List markers carry the accent: the bullet and the number belong to the site, not to the browser. */
 .prose ul, .prose ol { padding-left: var(--space-6); }
@@ -361,6 +362,7 @@ body:has(.site-header.is-hidden:not(:focus-within)) .toc { top: var(--toc-gap); 
   .publication-wrap { padding-top: var(--space-5); }
   .breadcrumbs { padding-top: var(--space-4); }
   .prose { font-size: var(--text-3); }
+  .publication-summary { font-size: var(--text-3); }
   .prose h2 { font-size: var(--text-6); }
   .prose blockquote.quote { padding: var(--space-5); }
   .prose blockquote.quote::after { right: var(--space-3); bottom: var(--space-3); width: var(--space-8); }
@@ -381,7 +383,8 @@ body:has(.site-header.is-hidden:not(:focus-within)) .toc { top: var(--toc-gap); 
 .cookie-notice { position: fixed; z-index: 20; inset: auto 0 0; padding-bottom: env(safe-area-inset-bottom); border-top: 1px solid var(--border); background: var(--background); color: var(--muted); font-size: var(--text-1); line-height: 1.3; }
 .cookie-notice[hidden] { display: none; }
 body:has(.cookie-notice:not([hidden])) { padding-bottom: calc(var(--cookie-notice-height, 48px) + env(safe-area-inset-bottom)); }
-.cookie-notice-inner { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: var(--space-1) var(--space-3); min-height: var(--tap); padding-block: var(--space-1); }
+/* When the sentence and the buttons fall onto two lines, the band keeps its own air instead of crowding them together. */
+.cookie-notice-inner { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: var(--space-3); min-height: var(--tap); padding-block: var(--space-2); }
 .cookie-notice-inner > p { min-width: 0; text-align: center; }
 .cookie-terms { display: inline; text-decoration: underline; text-underline-offset: var(--space-1); }
 .cookie-notice-actions { display: flex; flex: 0 0 auto; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
