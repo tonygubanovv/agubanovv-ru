@@ -18,8 +18,11 @@ const KINDS: Record<string, Kind> = { quote: 'quote', цитата: 'quote', 'qu
 const MARKER = /^:::\s*(?:(\S+)(?:[ \t]+(.*))?)?$/iu;
 
 /* The inline marker: two braces hold the hidden text, the word right before them is the visible hint.
-   Trailing punctuation stays outside the hint, so «термин.{{…}}» underlines the word and not the dot. */
-const TIP = /\{\{([^{}]*)\}\}/gu;
+   Trailing punctuation stays outside the hint, so «термин.{{…}}» underlines the word and not the dot.
+   The hidden text may carry a link or bold words, and Markdown cuts the line into pieces exactly there,
+   so the opening braces and the closing ones are allowed to sit in different pieces of the same line. */
+const OPEN = '{{';
+const CLOSE = '}}';
 const TIP_WORD = /([^\s.,;:!?)\]]+)([.,;:!?)\]]*)$/u;
 const TIP_HOST = new Set(['strong', 'em', 'b', 'i', 'code', 'dfn', 'abbr', 'span']);
 /* Nothing inside these is marked: code keeps its own text, links stay clickable as they are,
@@ -27,6 +30,8 @@ const TIP_HOST = new Set(['strong', 'em', 'b', 'i', 'code', 'dfn', 'abbr', 'span
 const TIP_SKIP = new Set(['pre', 'code', 'script', 'style', 'svg', 'a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']);
 
 type Item = { block: { kind: Kind; rest: string; raw: string } } | { end: true } | { node: Child };
+type Text = DefaultTreeAdapterMap['textNode'];
+type Part = { node: Text; start: number };
 
 const attribute = (node: Node, name: string) => 'attrs' in node ? node.attrs.find(item => item.name === name)?.value : undefined;
 const isTag = (node: Node, tagName: string): node is Element => 'tagName' in node && node.tagName === tagName;
@@ -68,62 +73,117 @@ const asTerm = (node: Element, id: string): Element => {
 };
 
 /** The card and the little pointer hang off the word, so the line itself never moves. */
-function tipCard(id: string, hidden: string, term: Element): Element {
+function tipCard(id: string, hidden: Child[], term: Element): Element {
   const wrap = shell('<span class="tip"></span>');
   const bubble = shell(`<span class="tip-bubble" role="tooltip" id="${id}"></span>`);
-  move(bubble, [textNode(hidden, bubble)]);
-  return move(wrap, [term, bubble, shell('<span class="tip-caret" aria-hidden="true"></span>')]);
+  return move(wrap, [term, move(bubble, hidden), shell('<span class="tip-caret" aria-hidden="true"></span>')]);
 }
 
 let tipSeq = 0;
 
-/** Rewrites one text node: every whole marker turns the word before it into a hint with a hidden card. */
-function tipsInText(parent: Element, node: DefaultTreeAdapterMap['textNode']): number {
-  if (!node.value.includes('{{')) return 0;
-  let at = parent.childNodes.indexOf(node);
-  const out: Child[] = [];
-  let made = 0;
-  let cursor = 0;
-  TIP.lastIndex = 0;
-  let match: RegExpExecArray | null;
-  while ((match = TIP.exec(node.value))) {
-    const hidden = match[1].trim();
-    const before = node.value.slice(cursor, match.index);
-    const word = TIP_WORD.exec(before);
-    if (hidden && word?.[1]) {
-      const id = `tip-${++tipSeq}`;
-      if (word.index) out.push(textNode(before.slice(0, word.index), parent));
-      out.push(tipCard(id, hidden, asTerm(labelled('span', '', word[1]), id)));
-      // The dot or comma after the word is not part of the hint, so it stays in the sentence.
-      if (word[2]) out.push(textNode(word[2], parent));
-      cursor = match.index + match[0].length;
-      made++;
-      continue;
-    }
-    // **термин**{{пояснение}}: the marker sits straight after a marked-up word, so that word becomes the hint.
-    if (!hidden || made || before.trim()) continue;
-    const previous = parent.childNodes[at - 1];
-    if (!previous || !('tagName' in previous) || !TIP_HOST.has(previous.tagName)) continue;
-    const id = `tip-${++tipSeq}`;
-    parent.childNodes.splice(at - 1, 1);
-    at--;
-    if (before) out.push(textNode(before, parent));
-    out.push(tipCard(id, hidden, asTerm(previous, id)));
-    cursor = match.index + match[0].length;
-    made++;
+/** The plain words of one element, joined so a marker can start in one piece of the line and end in another. */
+function flowOf(parent: Element): { text: string; parts: Part[] } {
+  const parts: Part[] = [];
+  let text = '';
+  for (const child of parent.childNodes) {
+    if ('value' in child) { parts.push({ node: child, start: text.length }); text += child.value; }
   }
-  if (!made) return 0;
-  const tail = node.value.slice(cursor);
-  parent.childNodes.splice(at, 1, ...out, ...(tail ? [textNode(tail, parent)] : []));
-  return made;
+  return { text, parts };
+}
+
+function pieceAt(parts: Part[], position: number): Part {
+  for (let index = parts.length - 1; index >= 0; index--) if (parts[index]!.start <= position) return parts[index]!;
+  return parts[0]!;
+}
+
+const marked = (node: Child | undefined): Element | null => node && 'tagName' in node && TIP_HOST.has(node.tagName) ? node : null;
+
+/** The text inside a written element that holds the closing braces, if any. */
+function eatenBy(node: Element): Text | null {
+  for (const child of node.childNodes) {
+    if ('value' in child) { if (child.value.includes(CLOSE)) return child; }
+    else if ('tagName' in child) { const found = eatenBy(child); if (found) return found; }
+  }
+  return null;
+}
+
+/* Markdown reads a bare address in the hidden text as a link and sticks the closing braces onto it,
+   so only a link is allowed to finish a marker that opened in the plain words of the line. */
+function linkAfter(siblings: Child[], first: number): Element | null {
+  for (const node of siblings.slice(first + 1)) if (isTag(node, 'a') && eatenBy(node)) return node;
+  return null;
+}
+
+/** The link that swallowed the marker keeps only its own address: braces belong to the marker, not to a URL. */
+function spitOut(node: Text): void {
+  const at = node.value.indexOf(CLOSE);
+  node.value = node.value.slice(0, at) + node.value.slice(at + CLOSE.length);
+  let up = node.parentNode as Node | null;
+  while (up && 'tagName' in up) {
+    const href = attribute(up, 'href');
+    if (up.tagName === 'a' && href) setAttr(up, 'href', href.replace(/(?:%7D%7D|\}\})+$/iu, ''));
+    up = up.parentNode as Node | null;
+  }
+}
+
+const pieces = (value: string, parent: Element): Child[] => value ? [textNode(value, parent)] : [];
+
+/** Turns the first whole marker of this element into a hint with a hidden card. A broken one is left as written. */
+function oneTip(parent: Element): boolean {
+  const { text, parts } = flowOf(parent);
+  const siblings = [...parent.childNodes];
+  let from = 0;
+  for (;;) {
+    const open = text.indexOf(OPEN, from);
+    if (open === -1) return false;
+    from = open + OPEN.length;
+    const paired = text.indexOf(CLOSE, from);
+    const between = paired === -1 ? '' : text.slice(from, paired);
+    // A brace inside means these two openings are not one marker: only a clean pair of them hides a note.
+    const close = paired !== -1 && !between.includes('{') && !between.includes('}') ? paired : -1;
+    const piece = pieceAt(parts, open);
+    const first = siblings.indexOf(piece.node);
+    const before = piece.node.value.slice(0, open - piece.start);
+    // The hint is the word standing right before the braces, or a bold or italic word the marker follows.
+    const word = TIP_WORD.exec(before);
+    const host = word?.[1] || before.trim() ? null : marked(siblings[first - 1]);
+    if (!word?.[1] && !host) continue;
+    const holder = close === -1 ? linkAfter(siblings, first) : null;
+    if (close === -1 && !holder) continue;
+    const last = close === -1 ? siblings.indexOf(holder!) : siblings.indexOf(pieceAt(parts, close).node);
+    const openEnd = open - piece.start + OPEN.length;
+    const hidden: Child[] = [];
+    let tail = '';
+    if (close === -1) {
+      hidden.push(...pieces(piece.node.value.slice(openEnd), parent), ...siblings.slice(first + 1, last));
+      spitOut(eatenBy(holder!)!);
+      hidden.push(holder!);
+    } else if (last === first) {
+      hidden.push(...pieces(piece.node.value.slice(openEnd, close - piece.start), parent));
+      tail = piece.node.value.slice(close - piece.start + CLOSE.length);
+    } else {
+      const end = pieceAt(parts, close);
+      hidden.push(...pieces(piece.node.value.slice(openEnd), parent), ...siblings.slice(first + 1, last), ...pieces(end.node.value.slice(0, close - end.start), parent));
+      tail = end.node.value.slice(close - end.start + CLOSE.length);
+    }
+    // The air around the hidden words is not part of them, and a note with no words of its own stays visible.
+    while (hidden.length && !visible(hidden[0]!)) hidden.shift();
+    while (hidden.length && !visible(hidden.at(-1)!)) hidden.pop();
+    if (!hidden.length) continue;
+    const id = `tip-${++tipSeq}`;
+    const head = host ? before : before.slice(0, word!.index);
+    const term = host ? asTerm(host, id) : asTerm(labelled('span', '', word![1]), id);
+    const start = host ? first - 1 : first;
+    parent.childNodes.splice(start, last - start + 1, ...pieces(head, parent), tipCard(id, hidden, term), ...pieces(host ? '' : word![2], parent), ...pieces(tail, parent));
+    return true;
+  }
 }
 
 function inlineTips(node: Element): number {
+  const children = [...node.childNodes];
   let made = 0;
-  for (const child of [...node.childNodes]) {
-    if ('value' in child) made += tipsInText(node, child);
-    else if ('tagName' in child && !TIP_SKIP.has(child.tagName)) made += inlineTips(child);
-  }
+  while (oneTip(node)) made++;
+  for (const child of children) if ('tagName' in child && !TIP_SKIP.has(child.tagName)) made += inlineTips(child);
   return made;
 }
 
@@ -271,6 +331,8 @@ const TIP_SCRIPT = `(function () {
     tip.addEventListener('pointerenter', function () { place(tip); });
     tip.addEventListener('focusin', function () { place(tip); });
     tip.addEventListener('click', function (event) {
+      // A link written inside the hidden text stays a link: the tap that already opened the card must not eat it.
+      if (event.target instanceof Element && event.target.closest('.tip-bubble')) return;
       event.preventDefault();
       var opened = tip.hasAttribute('data-tip-open');
       close();
