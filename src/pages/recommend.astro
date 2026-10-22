@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { recommendations } from '../config/site';
+---
+<BaseLayout title="Рекомендую" description="Сервисы, которыми пользуется и которые рекомендует Антон Губанов: для сайтов, рекламы, SEO, Telegram-ботов и работы с ИИ." path="recommend/">
+  <section class="container page-content">
+    <div class="page-heading"><h1>Рекомендую<span class="brand-dot">.</span></h1><p>Сервисы, которыми пользуюсь сам и советую попробовать.</p></div>
+    <ul class="recommendation-list">
+      {recommendations.map(service => <li><h2><a href={service.url} target="_blank" rel="sponsored noopener noreferrer">{service.name}<Icon /></a></h2><p>{service.description}</p></li>)}
+    </ul>
+    <p class="recommendation-note">Ссылки реферальные: за регистрацию или оплату я могу получить бонус.</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .recommendation-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6) var(--space-8); list-style: none; margin: 0; padding: 0; }
+  .recommendation-list li { border-top: 1px solid var(--border); padding-top: var(--space-4); }
+  .recommendation-list h2 { font-size: var(--text-5); }
+  .recommendation-list a { display: inline-flex; align-items: center; gap: var(--space-3); min-height: var(--tap); }
+  .recommendation-list a > :global(.icon) { color: var(--accent); }
+  .recommendation-list p { margin-top: var(--space-2); color: var(--muted); font-size: var(--text-2); }
+  .recommendation-note { margin-top: var(--space-7); max-width: var(--measure); color: var(--muted); font-size: var(--text-1); }
+  @media (max-width: 700px) {
+    .recommendation-list { grid-template-columns: 1fr; gap: var(--space-5); }
+  }
+</style>

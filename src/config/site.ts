@@ -15,6 +15,19 @@ export const shareServices = [
   { label: 'ВКонтакте', icon: 'vk', endpoint: 'https://vk.com/share.php', urlParam: 'url', titleParam: 'title' },
 ] as const;
 
+/** Personal recommendations and the owner's exact referral addresses. */
+export const recommendations = [
+  { name: 'Tilda', url: 'https://tilda.ru/?r=7536403', description: 'Собрать сайт или лендинг без программирования.' },
+  { name: 'Seopapa', url: 'https://seopapa.com/agbnv', description: 'Продвижение сайтов в Яндексе через поведенческие факторы.' },
+  { name: 'Плати по миру', url: 'https://platipomiru.com/?code=XVSQGOLB', description: 'Зарубежная карта для оплаты подписок и сервисов.' },
+  { name: 'Мишка VPN', url: 'https://mishka.cc/invite/869f4c75252e', description: 'Мой VPN на всех устройствах. Пользуюсь уже два года.' },
+  { name: 'Vitamin.tools', url: 'https://vitamin.tools/?ref2=385b1e94-9fe4-4d17-a54f-9f7c00414dbb', description: 'Рекламные кабинеты и бонусы. Реферальные бонусы делим 50/50.' },
+  { name: 'Salebot', url: 'https://salebot.pro/l/152537', description: 'Мой любимый конструктор воронок и ботов в Telegram.' },
+  { name: 'Qoder', url: 'https://qoder.com/activities?referral_code=6ree2iTPEJoqWyE5vT0rlQmByyvt4amO', description: 'Редактор с ИИ, чтобы попробовать вайбкодинг. Есть бесплатный тариф.' },
+  { name: 'Keys.so', url: 'https://www.keys.so/ru/?p=57950', description: 'Подсмотреть запросы, SEO и рекламу конкурентов.' },
+  { name: 'Timeweb Cloud', url: 'https://timeweb.cloud/r/kt656114', description: 'Облачные серверы для сайтов, ботов и своих проектов.' },
+] as const;
+
 /** Set each public contact once. Missing values are not rendered anywhere. */
 export const links = {
   telegram: 'https://t.me/tonygubanovv' as string | undefined,
@@ -45,6 +58,7 @@ export const site = {
   },
   navigation: [
     { label: 'Блог', path: 'blog/' },
+    { label: 'Рекомендую', path: 'recommend/' },
   ],
   // Индексация сайтом владеет этот блок. indexingEnabled: false закрывает весь сайт сразу.
   // closed — отдельные страницы: впиши адрес как в браузере, и он закроется от поисковика
