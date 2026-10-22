@@ -1,7 +1,7 @@
 /** Checks the actual static output for the approved custom domain. */
 import { readFile, access, readdir } from 'node:fs/promises';
 import { site } from '../src/config/site.ts';
-import { hiddenPaths } from '../src/utils/routes.ts';
+import { hiddenPaths, movedPaths } from '../src/utils/routes.ts';
 import { checkAnalytics } from './check-analytics.mjs';
 import { parse } from 'parse5';
 
@@ -42,8 +42,16 @@ async function exists(path) {
 
 const countMatches = (text, line) => text.split('\n').filter(entry => entry === line).length;
 
-for (const path of ['index.html', 'blog/index.html', 'telegram-ads-ib-vendor/index.html', '404.html', 'robots.txt', 'robots-yandex.txt', 'privacy/index.html', 'cookies/index.html', 'consent/index.html', 'legal/index.html', 'legal/privacy/index.html', 'legal/cookies/index.html', 'legal/consent/index.html', 'sitemap-0.xml']) {
+for (const path of ['index.html', 'blog/index.html', '404.html', 'robots.txt', 'robots-yandex.txt', 'privacy/index.html', 'cookies/index.html', 'consent/index.html', 'legal/index.html', 'legal/privacy/index.html', 'legal/cookies/index.html', 'legal/consent/index.html', 'sitemap-0.xml']) {
   if (!await exists(path)) errors.push(`Missing dist/${path}`);
+}
+
+// The owner publishes every text material only under /blog/; the site root may hold a redirect stub alone.
+for (const name of await readdir(new URL('../src/content/blog/', import.meta.url))) {
+  if (!name.endsWith('.md')) continue;
+  const slug = name.replace(/\.md$/, '');
+  if (!await exists(`blog/${slug}/index.html`)) errors.push(`Publication is not served under /blog/: /${slug}/`);
+  if (await exists(`${slug}/index.html`) && !movedPaths[`${slug}/`]) errors.push(`Publication escaped /blog/ to the site root: /${slug}/`);
 }
 if (!await exists('sitemap-index.xml') || !await exists('sitemap.xml')) {
   errors.push('Missing sitemap-index.xml or its sitemap.xml alias');
@@ -63,6 +71,13 @@ async function walk(dirUrl) {
 for (const page of await walk(dist)) {
   const html = await readFile(page, 'utf8');
   const path = page.pathname.split('/dist/').at(-1) ?? page.pathname;
+  const moved = Object.entries(movedPaths).find(([from]) => path === `${from}index.html`);
+  if (moved) {
+    const [, to] = moved;
+    if (!html.includes(`url=${canonicalPrefix}${to}`)) errors.push(`Old address does not redirect to its blog page: ${path}`);
+    if (!/<meta\b[^>]*name="robots"[^>]*content="noindex/i.test(html)) errors.push(`Redirect stub must stay out of search results: ${path}`);
+    continue;
+  }
   for (const node of elements(parse(html)).filter(node => node.tagName === 'a')) {
     const attr = name => node.attrs.find(item => item.name === name)?.value ?? '';
     if (attr('href').startsWith('mailto:') && (/\bbutton\b/.test(attr('class')) || attr('role') === 'button')) {

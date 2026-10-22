@@ -5,7 +5,6 @@ date: "2026-10-22"
 category: "Кейсы"
 tags: ["Telegram Ads", "Кейсы"]
 featured: true
-permalink: "telegram-ads-ib-vendor"
 cover: {"src":"../../assets/blog/telegram-ads-ib-vendor-cover.png","alt":"Из технологического узла в дата-центре вылетают зелёные голографические бумажные самолётики"}
 ---
 

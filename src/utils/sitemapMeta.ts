@@ -27,7 +27,7 @@ function readPosts(directory: string, prefix: string): Post[] {
     const block = readFileSync(`${directory}/${name}`, 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? '';
     const published = isoDate(block, 'date');
     if (!published) continue;
-    posts.push({ path: `${block.match(/^permalink:\s*["']?([a-z0-9-]+)/m)?.[1] ?? prefix + name.replace(/\.md$/, '')}/`, lastmod: isoDate(block, 'updated') ?? published, tags: parseTags(block) });
+    posts.push({ path: `${prefix + name.replace(/\.md$/, '')}/`, lastmod: isoDate(block, 'updated') ?? published, tags: parseTags(block) });
   }
   return posts;
 }

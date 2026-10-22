@@ -1,13 +1,15 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
-import { copyFile, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, writeFile } from 'node:fs/promises';
 import { sitemapMeta } from './src/utils/sitemapMeta.ts';
-import { isHiddenPath } from './src/utils/routes.ts';
+import { isHiddenPath, movedPaths } from './src/utils/routes.ts';
 import { site } from './src/config/site.ts';
 
+const origin = 'https://agubanovv.ru';
+
 export default defineConfig({
-  site: 'https://agubanovv.ru',
+  site: origin,
   base: '/',
   trailingSlash: 'always',
   output: 'static',
@@ -28,6 +30,21 @@ export default defineConfig({
           // The owner reads /sitemap.xml in the webmaster consoles, so it must list the pages themselves,
           // not an index with one link to a second file.
           await copyFile(new URL('sitemap-0.xml', dir), new URL('sitemap.xml', dir));
+        },
+      },
+    },
+    {
+      name: 'publication-redirects',
+      hooks: {
+        // GitHub Pages has no server-side redirects, so the moved addresses keep static stub pages.
+        'astro:build:done': async ({ dir }) => {
+          for (const [from, to] of Object.entries(movedPaths)) {
+            const target = `${origin}/${to}`;
+            const page = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Материал переехал в блог</title><meta name="description" content="Статья опубликована по адресу /${to}, прежняя ссылка ведёт на неё."><meta name="robots" content="noindex, follow"><link rel="canonical" href="${target}"><meta http-equiv="refresh" content="0;url=${target}"></head><body><h1>Материал переехал в блог</h1><p>Статья доступна по адресу <a href="/${to}">/${to}</a>.</p></body></html>`;
+            const file = new URL(`${from}index.html`, dir);
+            await mkdir(new URL(from, dir), { recursive: true });
+            await writeFile(file, page);
+          }
         },
       },
     },

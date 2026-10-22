@@ -46,7 +46,7 @@ const posts = (await blogEntries()).slice(0, 3);
       <div class="about-portrait"><Image src={portrait} alt="Антон Губанов" width={480} height={480} format="webp" loading="lazy" /></div>
       <p>{site.about.intro}</p>
       <details class="about-more">
-        <summary><span class="about-expand-label">Подробнее обо мне</span>{' '}<span class="about-collapse-label">Свернуть</span><Icon direction="down" size={16} /></summary>
+        <summary><span class="about-expand-label">Подробнее</span>{' '}<span class="about-collapse-label">Свернуть</span><Icon direction="down" size={16} /></summary>
         <div class="about-story">{site.about.more.map(paragraph => <p>{paragraph}</p>)}</div>
       </details>
     </div>

@@ -29,7 +29,6 @@ const blog = defineCollection({
   schema: ({ image }) => z.object({
     ...common, description: text, category: text, updated: date.optional(),
     seoTitle: text.optional(),
-    permalink: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).optional(),
     preserveText: z.boolean().default(false),
     source: z.url().optional(),
     cover: z.object({ src: image(), alt: text }),

@@ -23,6 +23,8 @@
 - Tailwind CSS 4 через `@tailwindcss/vite` (не ставь устаревший `@astrojs/tailwind`).
 - Обычные `.astro` компоненты и CSS; без React, Next.js, серверного кода, базы данных, CMS или API-сервера.
 - Markdown для блога и кейсов, MDX только для реально необходимой интерактивной публикации, Astro Content Collections с типизированной схемой.
+- Любой опубликованный текстовый материал доступен только по адресу `https://agubanovv.ru/blog/<slug>/`. Адреса от корня сайта запрещены: поле `permalink` и корневой маршрут `src/pages/[slug].astro` удалены по прямому решению владельца, возвращать их нельзя. `npm run smoke` не пропустит публикацию вне `/blog/`.
+- Сменить адрес уже опубликованной статьи можно только вместе с перенаправлением со старого адреса (`movedPaths` в `src/utils/routes.ts`); серверного 301 на GitHub Pages нет.
 - `npm` и коммит `package-lock.json`. Не вводи другие пакетные менеджеры.
 - GitHub Pages через GitHub Actions; публикация из `main` после успешных проверок.
 - Текущий URL `https://agubanovv.ru/`. В `astro.config.mjs`: `site: 'https://agubanovv.ru'`, `base: '/'`, `trailingSlash: 'always'`.
