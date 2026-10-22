@@ -1,27 +1,80 @@
 ---
 import { links } from '../config/site';
 import Icon from './Icon.astro';
+interface Props { tooltipId: string }
+const { tooltipId } = Astro.props;
 ---
 {links.email && <div class="email-contact">
   <div class="email-contact-row">
     <a href={`mailto:${links.email}`}>{links.email}</a>
-    <button class="copy-email" type="button" data-copy-email={links.email} aria-label="Скопировать адрес электронной почты" title="Скопировать адрес" hidden><Icon name="copy" size={14} /></button>
+    <span class="copy-email-control">
+      <button class="copy-email" type="button" data-copy-email={links.email} data-copy-state="idle" aria-label="Скопировать почту" aria-describedby={tooltipId} hidden>
+        <span class="copy-email-base"><Icon name="copy" size={14} /></span>
+        <span class="copy-email-check"><Icon name="check" size={14} /></span>
+      </button>
+      <span class="copy-email-tooltip" id={tooltipId} role="tooltip" hidden>Скопировать почту</span>
+    </span>
   </div>
   <span class="sr-only" data-email-copy-status role="status" aria-live="polite"></span>
 </div>}
 <script>
   document.querySelectorAll<HTMLButtonElement>('[data-copy-email]').forEach(button => {
-    if (!navigator.clipboard?.writeText) return;
+    const tooltip = button.parentElement?.querySelector<HTMLElement>('[role="tooltip"]');
+    const status = button.closest('.email-contact')?.querySelector('[data-email-copy-status]');
+    if (!tooltip) return;
     button.hidden = false;
-    button.addEventListener('click', async () => {
-      const status = button.closest('.email-contact')?.querySelector('[data-email-copy-status]');
+    let timer: number | undefined;
+    const reset = () => {
+      window.clearTimeout(timer);
+      button.dataset.copyState = 'idle';
+      button.setAttribute('aria-label', 'Скопировать почту');
+      tooltip.hidden = true;
+      tooltip.textContent = 'Скопировать почту';
+      if (status) status.textContent = '';
+    };
+    const show = () => { if (button.dataset.copyState === 'idle') tooltip.hidden = false; };
+    const hide = () => { if (button.dataset.copyState === 'idle') tooltip.hidden = true; };
+    button.addEventListener('pointerenter', show);
+    button.addEventListener('pointerleave', hide);
+    button.addEventListener('focus', show);
+    button.addEventListener('blur', hide);
+    button.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
+    // The fallback also works when the browser exposes no Clipboard API (for example over HTTP).
+    const copySelection = (email: string) => {
+      const field = document.createElement('textarea');
+      field.value = email;
+      field.readOnly = true;
+      field.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+      document.body.append(field);
       try {
-        await navigator.clipboard.writeText(button.dataset.copyEmail!);
-        if (status) status.textContent = 'Адрес скопирован';
-        button.title = 'Адрес скопирован';
-      } catch {
-        if (status) status.textContent = 'Не удалось скопировать адрес';
+        field.select();
+        if (!document.execCommand('copy')) throw new Error('Copy denied');
+      } finally {
+        field.remove();
+        button.focus({ preventScroll: true });
       }
+    };
+    button.addEventListener('click', async () => {
+      if (button.dataset.copyState === 'copying') return;
+      window.clearTimeout(timer);
+      button.dataset.copyState = 'copying';
+      const email = button.dataset.copyEmail!;
+      try {
+        if (navigator.clipboard?.writeText) {
+          try { await navigator.clipboard.writeText(email); }
+          catch { copySelection(email); }
+        } else copySelection(email);
+        button.dataset.copyState = 'success';
+        button.setAttribute('aria-label', 'Почта скопирована');
+        tooltip.textContent = 'Почта скопирована';
+        if (status) status.textContent = 'Почта скопирована';
+      } catch {
+        button.dataset.copyState = 'error';
+        tooltip.textContent = 'Не удалось скопировать почту';
+        if (status) status.textContent = 'Не удалось скопировать почту';
+      }
+      tooltip.hidden = false;
+      timer = window.setTimeout(reset, 1600);
     });
   });
 </script>

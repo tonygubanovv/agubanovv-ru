@@ -21,8 +21,35 @@ function formatJson(value: unknown, key = ''): unknown {
 }
 
 /** Runs during prerender and dev; no typography library is sent to the browser. */
-export function typographHtml(html: string, contacts: Record<string, string> = {}): string {
+export function typographHtml(html: string, contacts: Record<string, string> = {}, siteOrigin?: string): string {
   const document = parse(html);
+  // Link attributes must also be updated inside publications whose wording is kept verbatim.
+  function prepareLinks(node: DefaultTreeAdapterMap['node']): void {
+    if ('tagName' in node && node.tagName === 'a') {
+      const href = node.attrs.find(attr => attr.name === 'href');
+      if (href?.value.startsWith('contact:')) {
+        const key = href.value.slice('contact:'.length);
+        const target = contacts[key];
+        if (!target || !/^(https:\/\/|mailto:)/.test(target)) throw new Error(`Contact "${key}" must be configured in src/config/site.ts before publishing.`);
+        href.value = target;
+      }
+      if (siteOrigin && href && /^(https?:)?\/\//i.test(href.value)) {
+        const target = new URL(href.value, siteOrigin);
+        if (target.origin !== new URL(siteOrigin).origin) {
+          const set = (name: string, value: string) => {
+            const attr = node.attrs.find(attr => attr.name === name);
+            if (attr) attr.value = value;
+            else node.attrs.push({ name, value });
+          };
+          const rel = node.attrs.find(attr => attr.name === 'rel')?.value.split(/\s+/).filter(Boolean) ?? [];
+          set('target', '_blank');
+          set('rel', [...new Set([...rel, 'noopener', 'noreferrer'])].join(' '));
+        }
+      }
+    }
+    if ('childNodes' in node) node.childNodes.forEach(prepareLinks);
+  }
+  prepareLinks(document);
   const preserved: string[] = [];
   function visit(node: DefaultTreeAdapterMap['node']): void {
     if ('tagName' in node) {
@@ -40,12 +67,6 @@ export function typographHtml(html: string, contacts: Record<string, string> = {
       }
       if (['pre', 'code', 'kbd', 'samp', 'script', 'style', 'svg', 'math', 'textarea'].includes(node.tagName)) return;
       for (const attr of node.attrs) {
-        if (node.tagName === 'a' && attr.name === 'href' && attr.value.startsWith('contact:')) {
-          const key = attr.value.slice('contact:'.length);
-          const target = contacts[key];
-          if (!target || !/^(https:\/\/|mailto:)/.test(target)) throw new Error(`Contact "${key}" must be configured in src/config/site.ts before publishing.`);
-          attr.value = target;
-        }
         if (node.tagName === 'a' && attr.name === 'href' && attr.value.startsWith('mailto:')) {
           node.childNodes = [{ nodeName: '#text', value: decodeURIComponent(attr.value.slice(7).split('?')[0]!), parentNode: node }];
         }

@@ -68,6 +68,13 @@ for (const page of await walk(dist)) {
     if (attr('href').startsWith('mailto:') && (/\bbutton\b/.test(attr('class')) || attr('role') === 'button')) {
       errors.push(`Email must be a plain mailto link, never a button: ${path}`);
     }
+    const target = new URL(attr('href'), canonicalPrefix);
+    if (/^https?:$/.test(target.protocol) && target.origin !== new URL(canonicalPrefix).origin) {
+      const rel = attr('rel').split(/\s+/);
+      if (attr('target') !== '_blank' || !rel.includes('noopener') || !rel.includes('noreferrer')) {
+        errors.push(`External link must open safely in a new tab: ${path} -> ${attr('href')}`);
+      }
+    }
   }
   for (const node of elements(parse(html)).filter(node => /^(h[1-6]|p|figcaption|button)$/.test(node.tagName))) {
     const chunks = textChunks(node).filter(Boolean);

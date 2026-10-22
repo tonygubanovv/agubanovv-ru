@@ -8,5 +8,5 @@ export const onRequest = defineMiddleware(async (_context, next) => {
   const headers = new Headers(response.headers);
   headers.delete('content-length');
   const contacts = Object.fromEntries(contactLinks().map(link => [link.key, link.url]));
-  return new Response(typographHtml(await response.text(), contacts), { status: response.status, statusText: response.statusText, headers });
+  return new Response(typographHtml(await response.text(), contacts, import.meta.env.SITE), { status: response.status, statusText: response.statusText, headers });
 });

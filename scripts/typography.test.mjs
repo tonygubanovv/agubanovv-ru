@@ -68,3 +68,18 @@ test('Email links show the configured address instead of a generic label', () =>
   assert.deepEqual(links.map(node => node.childNodes.map(child => child.value ?? '').join('')), ['owner@example.com', 'owner@example.com']);
   assert.deepEqual(links.map(node => attr(node, 'href')), ['mailto:owner@example.com', 'mailto:owner@example.com?subject=Hello']);
 });
+
+test('External links open safely in a new tab, including verbatim content and contact aliases', () => {
+  const source = '<div data-preserve-text="true"><p><a href="https://other.example/source" rel="nofollow">Исходный  текст...</a></p></div><a href="contact:telegram">Telegram</a><a href="//other.example/">Источник</a><a href="/blog/">Блог</a><a href="https://site.example/blog/">Внутренняя</a><a href="contact:email">Почта</a>';
+  const output = typographHtml(source, { telegram: 'https://t.me/example', email: 'mailto:owner@example.com' }, 'https://site.example');
+  const links = nodes(output).filter(node => node.tagName === 'a');
+  for (const link of links.slice(0, 3)) {
+    assert.equal(attr(link, 'target'), '_blank');
+    assert.ok(attr(link, 'rel').includes('noopener'));
+    assert.ok(attr(link, 'rel').includes('noreferrer'));
+  }
+  assert.ok(attr(links[0], 'rel').includes('nofollow'));
+  assert.equal(links[0].childNodes[0].value, 'Исходный  текст...');
+  for (const link of links.slice(3)) assert.equal(attr(link, 'target'), undefined);
+  assert.equal(typographHtml(output, {}, 'https://site.example'), output);
+});
