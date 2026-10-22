@@ -1,0 +1,42 @@
+---
+import Icon from './Icon.astro';
+---
+<template id="heading-anchor-template"><button class="heading-anchor" type="button" aria-label="Скопировать ссылку на раздел" title="Скопировать ссылку на раздел"><span class="heading-anchor-link"><Icon name="link" size={16} /></span><span class="heading-anchor-check"><Icon name="check" size={16} /></span></button></template>
+<span class="sr-only" data-heading-copy-status role="status" aria-live="polite"></span>
+<script>
+  import { copyText } from '../utils/clipboard';
+  const template = document.querySelector<HTMLTemplateElement>('#heading-anchor-template');
+  const status = document.querySelector('[data-heading-copy-status]');
+  document.querySelectorAll<HTMLElement>('.prose :is(h2,h3,h4,h5,h6)[id]').forEach(heading => {
+    const button = template?.content.firstElementChild?.cloneNode(true) as HTMLButtonElement | undefined;
+    if (!button) return;
+    const label = `${button.getAttribute('aria-label')}: ${heading.textContent?.trim()}`;
+    button.setAttribute('aria-label', label);
+    heading.classList.add('has-heading-anchor');
+    heading.prepend(button);
+    let timer: number | undefined;
+    button.addEventListener('click', async () => {
+      if (button.dataset.copyState === 'copying') return;
+      window.clearTimeout(timer);
+      button.dataset.copyState = 'copying';
+      try {
+        // Keep the readable heading slug; the browser handles Cyrillic fragments on arrival.
+        await copyText(`${location.origin}${location.pathname}#${heading.id}`);
+        button.dataset.copyState = 'success';
+        button.title = 'Ссылка скопирована';
+        button.setAttribute('aria-label', button.title);
+        if (status) status.textContent = button.title;
+      } catch {
+        button.dataset.copyState = 'error';
+        button.title = 'Не удалось скопировать ссылку';
+        if (status) status.textContent = button.title;
+      }
+      timer = window.setTimeout(() => {
+        delete button.dataset.copyState;
+        button.title = 'Скопировать ссылку на раздел';
+        button.setAttribute('aria-label', label);
+        if (status) status.textContent = '';
+      }, 1600);
+    });
+  });
+</script>

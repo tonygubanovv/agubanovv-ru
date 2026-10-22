@@ -5,6 +5,7 @@ import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ContentCard from '../components/ContentCard.astro';
 import Icon from '../components/Icon.astro';
+import HeadingAnchors from '../components/HeadingAnchors.astro';
 import { site } from '../config/site';
 import { absoluteUrl, url, tagSlug } from '../utils/urls';
 import { trail } from '../utils/crumbs';
@@ -38,6 +39,7 @@ const jsonLd = {
       </header>
       {data.cover && <Image class="publication-cover" src={data.cover.src} alt={data.cover.alt} width={Math.min(1440, data.cover.src.width)} widths={[360, 720, Math.min(1440, data.cover.src.width)].filter(width => width <= data.cover!.src.width)} sizes="(max-width: 760px) 100vw, 720px" format="webp" loading="eager" />}
       <div class="prose" data-preserve-text={preserveText ? 'true' : undefined}><Content /></div>
+      <HeadingAnchors />
       {'source' in data && data.source && <p class="publication-source">Впервые опубликовано в <a href={data.source}>Teletype</a>.</p>}
       <a class="text-link publication-back" href={url('blog/')}><Icon direction="left" /> Назад в блог</a>
     </article>

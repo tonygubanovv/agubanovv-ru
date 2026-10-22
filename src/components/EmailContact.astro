@@ -18,6 +18,7 @@ const { tooltipId } = Astro.props;
   <span class="sr-only" data-email-copy-status role="status" aria-live="polite"></span>
 </div>}
 <script>
+  import { copyText } from '../utils/clipboard';
   document.querySelectorAll<HTMLButtonElement>('[data-copy-email]').forEach(button => {
     const tooltip = button.parentElement?.querySelector<HTMLElement>('[role="tooltip"]');
     const status = button.closest('.email-contact')?.querySelector('[data-email-copy-status]');
@@ -39,31 +40,13 @@ const { tooltipId } = Astro.props;
     button.addEventListener('focus', show);
     button.addEventListener('blur', hide);
     button.addEventListener('keydown', event => { if (event.key === 'Escape') reset(); });
-    // The fallback also works when the browser exposes no Clipboard API (for example over HTTP).
-    const copySelection = (email: string) => {
-      const field = document.createElement('textarea');
-      field.value = email;
-      field.readOnly = true;
-      field.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
-      document.body.append(field);
-      try {
-        field.select();
-        if (!document.execCommand('copy')) throw new Error('Copy denied');
-      } finally {
-        field.remove();
-        button.focus({ preventScroll: true });
-      }
-    };
     button.addEventListener('click', async () => {
       if (button.dataset.copyState === 'copying') return;
       window.clearTimeout(timer);
       button.dataset.copyState = 'copying';
       const email = button.dataset.copyEmail!;
       try {
-        if (navigator.clipboard?.writeText) {
-          try { await navigator.clipboard.writeText(email); }
-          catch { copySelection(email); }
-        } else copySelection(email);
+        await copyText(email);
         button.dataset.copyState = 'success';
         button.setAttribute('aria-label', 'Почта скопирована');
         tooltip.textContent = 'Почта скопирована';
