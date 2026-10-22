@@ -72,11 +72,11 @@ const asTerm = (node: Element, id: string): Element => {
   return node;
 };
 
-/** The card and the little pointer hang off the word, so the line itself never moves. */
+/** The card hangs off the word, so the line itself never moves. */
 function tipCard(id: string, hidden: Child[], term: Element): Element {
   const wrap = shell('<span class="tip"></span>');
   const bubble = shell(`<span class="tip-bubble" role="tooltip" id="${id}"></span>`);
-  return move(wrap, [term, move(bubble, hidden), shell('<span class="tip-caret" aria-hidden="true"></span>')]);
+  return move(wrap, [term, move(bubble, hidden)]);
 }
 
 let tipSeq = 0;

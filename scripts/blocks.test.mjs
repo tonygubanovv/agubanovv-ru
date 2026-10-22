@@ -73,7 +73,7 @@ test('A marker after a word hides the note in a card', () => {
 
 test('The dot after the word stays in the sentence, a marked-up word becomes the hint itself', () => {
   const fullStop = render('<p>Метрика.{{счётник на сайте}}</p>');
-  assert.match(fullStop, /<span tabindex="0" aria-describedby="tip-1" class="tip-term">Метрика<\/span><span class="tip-bubble" role="tooltip" id="tip-1">счётник на сайте<\/span><span class="tip-caret" aria-hidden="true"><\/span><\/span>\./u);
+  assert.match(fullStop, /<span tabindex="0" aria-describedby="tip-1" class="tip-term">Метрика<\/span><span class="tip-bubble" role="tooltip" id="tip-1">счётник на сайте<\/span><\/span>\./u);
   const bold = render('<p>Про <strong>лид</strong>{{клик по объявлению}}</p>');
   assert.match(bold, /<span class="tip"><strong tabindex="0" aria-describedby="tip-1" class="tip-term">лид<\/strong>/u);
 });
