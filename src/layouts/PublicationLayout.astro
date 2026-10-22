@@ -1,5 +1,6 @@
 ---
 import { render, type CollectionEntry } from 'astro:content';
+import { getImage, Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ContentCard from '../components/ContentCard.astro';
@@ -17,16 +18,18 @@ const description = data.description;
 const path = publicationPath(entry);
 const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
 const related = (await blogEntries()).filter(other => other.id !== entry.id && other.data.tags.some(tag => data.tags.includes(tag))).slice(0, 2);
+// Social crawlers and Yandex do not take AVIF, and they must not be sent the 2,7 MB source either: one flat JPEG for the card.
+const social = data.cover ? await getImage({ src: data.cover.src, format: 'jpeg', width: 1200, quality: 82 }) : undefined;
 const jsonLd = {
   '@context': 'https://schema.org', '@type': 'BlogPosting', headline: data.title, description,
   datePublished: `${data.date}T12:00:00+03:00`,
   ...('updated' in data && data.updated ? { dateModified: `${data.updated}T12:00:00+03:00` } : {}),
   ...(site.author ? { author: { '@type': 'Person', name: site.author } } : {}),
-  ...(data.cover ? { image: new URL(data.cover.src.src, import.meta.env.SITE).href } : {}),
+  ...(social ? { image: new URL(social.src, import.meta.env.SITE).href } : {}),
   mainEntityOfPage: absoluteUrl(path), inLanguage: 'ru-RU',
 };
 ---
-<BaseLayout title={data.title} seoTitle={data.seoTitle} description={description} path={path} crumb={data.title} breadcrumbs={false} article image={data.cover?.src.src} imageAlt={data.cover?.alt} jsonLd={jsonLd}>
+<BaseLayout title={data.title} seoTitle={data.seoTitle} description={description} path={path} crumb={data.title} breadcrumbs={false} article image={social?.src} imageAlt={data.cover?.alt} jsonLd={jsonLd}>
   <div class="container publication-wrap">
     <div class:list={['publication-grid', { 'has-toc': toc.length > 0 }]}>
     {toc.length > 0 && <aside class="publication-sidebar"><nav class="toc" aria-label="Содержание"><h2>Содержание</h2><ul>{toc.map(h => <li class:list={{ 'toc-sub': h.depth === 3 }}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul></nav></aside>}
@@ -35,7 +38,7 @@ const jsonLd = {
       <header class="publication-header"><div class="meta"><time datetime={data.date}>{dateLabel(data.date)}</time><span>{data.category}</span></div><h1 data-preserve-text={preserveText ? 'true' : undefined}>{data.title}</h1><p class="publication-summary">{description}</p>{'updated' in data && data.updated && <p class="muted">Обновлено: <time datetime={data.updated}>{dateLabel(data.updated)}</time></p>}
         {data.tags.length > 0 && <div class="tags">{data.tags.map(tag => <a class="tag" href={url(`blog/tags/${tagSlug(tag)}/`)}>{tag}</a>)}</div>}
       </header>
-      {data.cover && <img class="publication-cover" src={data.cover.src.src} alt={data.cover.alt} width={data.cover.src.width} height={data.cover.src.height} loading="eager" decoding="async" />}
+      {data.cover && <Image class="publication-cover" src={data.cover.src} alt={data.cover.alt} widths={[720, 1440]} sizes="(max-width: 700px) calc(100vw - 48px), 720px" loading="eager" decoding="async" />}
       <div class="prose" data-preserve-text={preserveText ? 'true' : undefined}><Content /></div>
       <HeadingAnchors />
       <a class="text-link publication-back" href={url('blog/')}><Icon direction="left" /> Назад в блог</a>
