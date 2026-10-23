@@ -12,7 +12,10 @@ import { url, absoluteUrl } from '../utils/urls';
 import { blogEntries } from '../utils/content';
 const posts = (await blogEntries()).slice(0, 3);
 ---
-<BaseLayout jsonLd={{ '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: absoluteUrl(), inLanguage: 'ru-RU' }}>
+<BaseLayout jsonLd={{ '@context': 'https://schema.org', '@graph': [
+  { '@type': 'WebSite', '@id': absoluteUrl('#website'), name: site.name, url: absoluteUrl(), inLanguage: 'ru-RU', publisher: { '@id': absoluteUrl('#author') } },
+  { '@type': 'Person', '@id': absoluteUrl('#author'), name: site.author, url: absoluteUrl('#about'), jobTitle: site.role, description: site.about.intro },
+] }}>
   <section class="hero container">
     <div class="hero-copy">
       <h1>{site.hero.title}{' '}<span>{site.hero.accent}</span></h1>

@@ -17,6 +17,7 @@ export const shareServices = [
 
 /** Personal recommendations and the owner's exact referral addresses. */
 export const recommendations = [
+  { name: 'Карта Пэй', url: 'https://bank.yandex.ru/invite?refid=h681fG9uAGv', description: 'Мой любимый банк: бесплатная карта, бонусы в сервисах Яндекса и удобный Сейв. Откройте карту по моей ссылке — предложение с кешбэком 5% баллами Яндекс Плюса за все покупки. Срок, лимиты и условия начисления — на странице приглашения.' },
   { name: 'Tilda', url: 'https://tilda.ru/?r=7536403', description: 'Собрать сайт или лендинг без программирования.' },
   { name: 'Seopapa', url: 'https://seopapa.com/agbnv', description: 'Продвижение сайтов в Яндексе через поведенческие факторы.' },
   { name: 'Плати по миру', url: 'https://platipomiru.com/?code=XVSQGOLB', description: 'Зарубежная карта для оплаты подписок и сервисов.' },

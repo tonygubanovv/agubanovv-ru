@@ -55,6 +55,25 @@ async function exists(path) {
 
 const countMatches = (text, line) => text.split('\n').filter(entry => entry === line).length;
 
+// Browsers and search engines also request the conventional ICO address directly.
+if (await exists('favicon.ico')) {
+  const ico = await readFile(new URL('favicon.ico', dist));
+  if (ico.length < 6 || ico.readUInt16LE(0) !== 0 || ico.readUInt16LE(2) !== 1 || ico.readUInt16LE(4) !== 3) {
+    errors.push('favicon.ico must be a real ICO with 16, 32 and 48 px images');
+  } else {
+    for (const [index, size] of [16, 32, 48].entries()) {
+      const entry = 6 + index * 16;
+      if (ico.length < entry + 16 || ico[entry] !== size || ico[entry + 1] !== size || ico.readUInt32LE(entry + 12) + ico.readUInt32LE(entry + 8) > ico.length) {
+        errors.push(`Invalid favicon.ico image: ${size}px`);
+      }
+    }
+  }
+} else errors.push('Missing dist/favicon.ico');
+if (!elements(parse(home)).some(node => node.tagName === 'link' && node.attrs?.some(attr => attr.name === 'rel' && attr.value === 'icon') && node.attrs?.some(attr => attr.name === 'href' && attr.value === `${expectedBase}favicon.ico`))) {
+  errors.push('The page head must link to favicon.ico');
+}
+if (!await exists('recommend/index.html')) errors.push('Missing recommendations page');
+
 for (const path of ['index.html', 'blog/index.html', '404.html', 'robots.txt', 'robots-yandex.txt', '4705095550820effb099a08c420e8464.txt', 'privacy/index.html', 'cookies/index.html', 'consent/index.html', 'legal/index.html', 'legal/privacy/index.html', 'legal/cookies/index.html', 'legal/consent/index.html', 'sitemap-0.xml']) {
   if (!await exists(path)) errors.push(`Missing dist/${path}`);
 }
@@ -91,6 +110,8 @@ for (const [from, to] of Object.entries(movedPaths)) {
   if (!await exists(`${to}index.html`)) errors.push(`Redirect destination does not exist: /${from} -> /${to}`);
 }
 
+const indexedTitles = new Map();
+const indexedDescriptions = new Map();
 for (const page of await walk(dist)) {
   const html = await readFile(page, 'utf8');
   const path = page.pathname.split('/dist/').at(-1) ?? page.pathname;
@@ -191,9 +212,17 @@ for (const page of await walk(dist)) {
   if (!isClosedPage) {
     const canonical = html.match(/<link\b[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)/i)
       ?? html.match(/<link\b[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["']/i);
-    if (!canonical || !canonical[1].startsWith(canonicalPrefix)) {
+    if (!canonical || canonical[1] !== canonicalPrefix + pagePath) {
       errors.push(`Missing/incorrect canonical: ${path}`);
     }
+  }
+  if (!isNoindex && meta) {
+    for (const [seen, value, name] of [[indexedTitles, meta.title, 'title'], [indexedDescriptions, meta.description, 'description']]) {
+      const normalized = normalizeText(typograph(value)).toLocaleLowerCase('ru');
+      if (seen.has(normalized)) errors.push(`Duplicate indexed ${name}: ${seen.get(normalized)} and ${path}`);
+      seen.set(normalized, path);
+    }
+    if (!html.includes('max-image-preview:large')) errors.push(`Large search image previews are not enabled: ${path}`);
   }
   const expectCrumbs = !isDocumentPage && path !== 'index.html';
   const hasCrumbs = /<nav class="breadcrumbs"/i.test(html);
@@ -202,6 +231,18 @@ for (const page of await walk(dist)) {
   if (site.search.indexingEnabled && isNoindex && !isClosedPage) errors.push(`Page is noindex but not listed as closed: ${path}`);
   if (!isNoindex && closedPaths.includes(pagePath)) errors.push(`Closed page lost its noindex mark: ${path}`);
   const graphs = html.match(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi) ?? [];
+  const structured = graphs.flatMap(script => {
+    const graph = JSON.parse(script.replace(/^<script[^>]*>/i, '').replace(/<\/script>$/i, ''));
+    return graph['@graph'] ?? [graph];
+  });
+  if (nodes.some(node => node.tagName === 'article' && node.attrs.some(attr => attr.name === 'class' && attr.value.split(/\s+/).includes('publication')))) {
+    const article = structured.find(graph => ['BlogPosting', 'Article'].includes(graph['@type']));
+    if (!article || article.mainEntityOfPage !== canonicalPrefix + pagePath || !article.headline || !article.image || !article.datePublished || !article.dateModified || !article.author?.url || article.author?.name !== site.author) {
+      errors.push(`Missing or incomplete article structured data: ${path}`);
+    }
+    if (!nodes.some(node => node.tagName === 'a' && node.attrs.some(attr => attr.name === 'rel' && attr.value === 'author'))) errors.push(`Article author has no visible profile link: ${path}`);
+  }
+  if (path === 'index.html' && !structured.some(graph => graph['@type'] === 'Person' && graph.name === site.author)) errors.push('Home page must identify the real author');
   for (const script of graphs) {
     const json = JSON.parse(script.replace(/^<script[^>]*>/i, '').replace(/<\/script>$/i, '').replace(/\\u003c/g, '<'));
     if (json['@type'] !== 'BreadcrumbList') continue;
