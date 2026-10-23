@@ -3,9 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
 import { recommendations } from '../config/site';
 ---
-<BaseLayout title="Сервисы, которые рекомендую" description="Собрал сервисы, которыми пользуюсь сам: для сайтов, рекламы, SEO, Telegram-ботов и работы с ИИ. Коротко о том, зачем нужен каждый." path="recommend/">
+<BaseLayout title="Сервисы, которые рекомендую" description="Собрал сервисы, которыми пользуюсь сам: для сайтов, рекламы, SEO, Telegram-ботов и работы с ИИ" path="recommend/">
   <section class="container page-content">
-    <div class="page-heading"><h1>Рекомендую<span class="brand-dot">.</span></h1><p>Сервисы, которыми пользуюсь сам и советую попробовать.</p></div>
+    <div class="page-heading"><h1>Рекомендую<span class="brand-dot">.</span></h1><p>Сервисы, которыми пользуюсь сам и могу рекомендовать вам</p></div>
     <ul class="recommendation-list">
       {recommendations.map(service => <li><h2><a href={service.url} target="_blank" rel="sponsored noopener noreferrer">{service.name}<Icon /></a></h2><p>{service.description}</p></li>)}
     </ul>
