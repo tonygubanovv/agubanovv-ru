@@ -15,9 +15,20 @@ test('invalid table edits fail with an actionable location', () => {
   assert.throws(() => parseSeoTable(header + '| / | Один | Текст | |\n| / | Два | Текст | |'), /повторяется/);
   assert.throws(() => parseSeoTable(header), /пуста/);
 });
-test('metadata address matching keeps document aliases and 404 stable', () => {
+test('metadata address matching keeps page paths and 404 stable', () => {
   assert.equal(seoPath(''), '/');
   assert.equal(seoPath('blog/example/'), '/blog/example/');
-  assert.equal(seoPath('/privacy/'), '/legal/privacy/');
+  assert.equal(seoPath('/legal/privacy/'), '/legal/privacy/');
   assert.equal(seoPath('404.html'), '/404.html');
+});
+
+test('visual editor table output preserves escaped pipes, backslashes and aligned headers', () => {
+  const table = String.raw`| Адрес | Title | Description | Ключевые фразы |
+| :---: | ---: | :--- | --- |
+| / | Блог \| Антон Губанов | Путь C:\\folder | |
+| /blog/ | Блог &#124; автор | Описание | GEO |`;
+  const pages = parseSeoTable(table);
+  assert.equal(pages.get('/').title, 'Блог | Антон Губанов');
+  assert.equal(pages.get('/').description, String.raw`Путь C:\folder`);
+  assert.equal(pages.get('/blog/').title, 'Блог | автор');
 });

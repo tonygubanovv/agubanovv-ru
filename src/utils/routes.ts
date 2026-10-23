@@ -26,6 +26,9 @@ export const isClosedPath = (path: string) => closedPaths.includes(toPath(path))
  * at the old path, because those links were already shared before the move.
  */
 export const movedPaths: Record<string, string> = {
+  'privacy/': 'legal/privacy/',
+  'cookies/': 'legal/cookies/',
+  'consent/': 'legal/consent/',
   'telegram-ads-ib-vendor/': 'blog/telegram-ads-ib-vendor/',
   'salesbot-utm-amocrm/': 'blog/salesbot-utm-amocrm/',
   'blog/tags/54656c656772616d20416473/': 'blog/tags/telegram-ads/',

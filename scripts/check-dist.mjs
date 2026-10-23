@@ -97,7 +97,9 @@ for (const page of await walk(dist)) {
   const moved = Object.entries(movedPaths).find(([from]) => path === `${from}index.html`);
   if (moved) {
     const [, to] = moved;
-    if (!html.includes(`url=${canonicalPrefix}${to}`)) errors.push(`Old address does not redirect to its blog page: ${path}`);
+    if (!html.includes(`url=${expectedBase}${to}`)) errors.push(`Old address does not redirect to its destination: ${path}`);
+    if (!html.includes(`rel="canonical" href="${canonicalPrefix}${to}"`)) errors.push(`Redirect has an incorrect canonical: ${path}`);
+    if (!html.includes(`href="${expectedBase}${to}"`)) errors.push(`Redirect has no working fallback link: ${path}`);
     if (!/<meta\b[^>]*name="robots"[^>]*content="noindex/i.test(html)) errors.push(`Redirect stub must stay out of search results: ${path}`);
     continue;
   }

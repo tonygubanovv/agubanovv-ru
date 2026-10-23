@@ -5,6 +5,7 @@
 ## Владельцу
 
 - [Где что менять: карта проекта](guides/PROJECT_MAP.md).
+- [Визуально редактировать статьи и SEO: MarkText](guides/VISUAL_EDITING.md).
 - [Общая таблица метаданных](../content/seo.md).
 - [Как поручать изменения](guides/START_HERE.md).
 - [Как публикуется сайт](guides/PUBLISH.md).

@@ -1,0 +1,27 @@
+---
+import { movedPaths } from '../utils/routes';
+import { absoluteUrl, url } from '../utils/urls';
+
+// Registered from movedPaths by Astro: one template for every previous address.
+const current = Astro.url.pathname.replace(/\/$/, '');
+const redirect = Object.entries(movedPaths).find(([from]) => url(from).replace(/\/$/, '') === current);
+if (!redirect) throw new Error(`Redirect destination is missing for ${Astro.url.pathname}`);
+const [, to] = redirect;
+const target = url(to);
+---
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Страница переехала</title>
+    <meta name="description" content="Страница переехала. Сейчас перенаправлю на новый адрес." />
+    <meta name="robots" content="noindex, follow" />
+    <link rel="canonical" href={absoluteUrl(to)} />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+  </head>
+  <body>
+    <h1>Страница переехала</h1>
+    <p>Перейти по адресу <a href={target}>{target}</a>.</p>
+  </body>
+</html>

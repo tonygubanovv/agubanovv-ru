@@ -1,11 +1,10 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
-import { copyFile, mkdir, writeFile } from 'node:fs/promises';
+import { copyFile, writeFile } from 'node:fs/promises';
 import { sitemapMeta } from './src/utils/sitemapMeta.ts';
 import { isClosedPath, movedPaths } from './src/utils/routes.ts';
 import { site } from './src/config/site.ts';
-import { typographHtml } from './src/utils/typography.ts';
 
 const origin = 'https://agubanovv.ru';
 
@@ -19,7 +18,7 @@ export default defineConfig({
   image: { service: { entrypoint: 'astro/assets/services/sharp' } },
   integrations: [
     ...(site.search.indexingEnabled ? [sitemap({
-      filter: (page) => !isClosedPath(new URL(page).pathname) && !page.endsWith('/404/') && !page.endsWith('/404.html'),
+      filter: (page) => !isClosedPath(new URL(page).pathname) && !Object.hasOwn(movedPaths, new URL(page).pathname.replace(/^\//, '')) && !page.endsWith('/404/') && !page.endsWith('/404.html'),
       serialize: (item) => ({ ...item, ...sitemapMeta(new URL(item.url).pathname) }),
     })] : []),
     {
@@ -40,14 +39,10 @@ export default defineConfig({
     {
       name: 'page-redirects',
       hooks: {
-        // GitHub Pages has no server-side redirects, so the moved addresses keep static stub pages.
-        'astro:build:done': async ({ dir }) => {
-          for (const [from, to] of Object.entries(movedPaths)) {
-            const target = `${origin}/${to}`;
-            const page = `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Страница переехала</title><meta name="description" content="Страница переехала. Сейчас перенаправлю на новый адрес."><meta name="robots" content="noindex, follow"><link rel="canonical" href="${target}"><meta http-equiv="refresh" content="0;url=${target}"></head><body><h1>Страница переехала</h1><p>Перейти по адресу <a href="/${to}">/${to}</a>.</p></body></html>`;
-            const file = new URL(`${from}index.html`, dir);
-            await mkdir(new URL(from, dir), { recursive: true });
-            await writeFile(file, typographHtml(page));
+        // The same redirects work in development and in the static GitHub Pages build.
+        'astro:config:setup': ({ injectRoute }) => {
+          for (const from of Object.keys(movedPaths)) {
+            injectRoute({ pattern: `/${from.replace(/\/$/, '')}`, entrypoint: new URL('./src/layouts/RedirectLayout.astro', import.meta.url), prerender: true });
           }
         },
       },
