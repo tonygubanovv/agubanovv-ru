@@ -17,17 +17,17 @@ export const shareServices = [
 
 /** Personal recommendations and the owner's exact referral addresses. */
 export const recommendations = [
-  { name: 'Карта Пэй', url: 'https://bank.yandex.ru/invite?refid=h681fG9uAGv', description: 'Мой любимый банк: бесплатная карта, бонусы в сервисах Яндекса и удобный Сейв. Откройте карту по моей ссылке — предложение с кешбэком 5% баллами Яндекс Плюса за все покупки. Срок, лимиты и условия начисления — на странице приглашения.' },
-  { name: 'Tilda', url: 'https://tilda.ru/?r=7536403', description: 'Собрать сайт или лендинг без программирования.' },
-  { name: 'Seopapa', url: 'https://seopapa.com/agbnv', description: 'Продвижение сайтов в Яндексе через поведенческие факторы.' },
+  { name: 'Карта Пэй', url: 'https://bank.yandex.ru/invite?refid=h681fG9uAGv', description: 'Мой любимый банк с кешбэком Пэй и лучшим, по моему мнению, Сейвом для накоплений.' },
   { name: 'Плати по миру', url: 'https://platipomiru.com/?code=XVSQGOLB', description: 'Зарубежная карта для оплаты подписок и сервисов.' },
   { name: 'Мишка VPN', url: 'https://mishka.cc/invite/869f4c75252e', description: 'Мой VPN на всех устройствах. Пользуюсь уже два года.' },
+  { name: 'Tilda', url: 'https://tilda.ru/?r=7536403', description: 'Собрать сайт или лендинг без программирования.' },
+  { name: 'Timeweb Cloud', url: 'https://timeweb.cloud/r/kt656114', description: 'Облачные серверы для сайтов, ботов и своих проектов.' },
+  { name: 'Keys.so', url: 'https://www.keys.so/ru/?p=57950', description: 'Подсмотреть запросы, SEO и рекламу конкурентов.' },
+  { name: 'Seopapa', url: 'https://seopapa.com/agbnv', description: 'Продвижение сайтов в Яндексе через поведенческие факторы.' },
   { name: 'Vitamin.tools', url: 'https://vitamin.tools/?ref2=385b1e94-9fe4-4d17-a54f-9f7c00414dbb', description: 'Рекламные кабинеты и бонусы. Реферальные бонусы делим 50/50.' },
+  { name: 'TGStat', url: 'https://tgstat.ru/x/X2eGo', description: 'Статистика Telegram-каналов и поиск площадок для рекламы.' },
   { name: 'Salebot', url: 'https://salebot.pro/l/152537', description: 'Мой любимый конструктор воронок и ботов в Telegram.' },
   { name: 'Qoder', url: 'https://qoder.com/activities?referral_code=6ree2iTPEJoqWyE5vT0rlQmByyvt4amO', description: 'Редактор с ИИ, чтобы попробовать вайбкодинг. Есть бесплатный тариф.' },
-  { name: 'Keys.so', url: 'https://www.keys.so/ru/?p=57950', description: 'Подсмотреть запросы, SEO и рекламу конкурентов.' },
-  { name: 'Timeweb Cloud', url: 'https://timeweb.cloud/r/kt656114', description: 'Облачные серверы для сайтов, ботов и своих проектов.' },
-  { name: 'TGStat', url: 'https://tgstat.ru/x/X2eGo', description: 'Статистика Telegram-каналов и поиск площадок для рекламы.' },
 ] as const;
 
 /** Set each public contact once. Missing values are not rendered anywhere. */
