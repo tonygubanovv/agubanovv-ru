@@ -23,6 +23,6 @@
 
 Если GitHub Settings недоступны агенту, он сообщает конкретное необходимое действие. Успешный push сам по себе не подтверждает публикацию.
 
-Не отключайте Secret scanning и Push protection. Остальные настройки описаны в [правилах безопасности](../specs/SECURITY.md).
+Не отключайте Secret scanning и Push protection. Остальные настройки описаны в [правилах безопасности](../agents/specs/SECURITY.md).
 
 Официальный порядок: [GitHub Pages с собственным workflow](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).

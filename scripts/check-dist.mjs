@@ -6,6 +6,7 @@ import { checkAnalytics } from './check-analytics.mjs';
 import { parse } from 'parse5';
 import { parseSeoTable, seoPath } from '../src/utils/seoTable.ts';
 import { typograph } from '../src/utils/typography.ts';
+import { isDocumentationPath } from './check-documentation.mjs';
 
 
 const dist = new URL('../dist/', import.meta.url);
@@ -139,6 +140,7 @@ for (const page of await walk(dist)) {
       errors.push(`Email must be a plain mailto link, never a button: ${path}`);
     }
     const target = new URL(attr('href'), canonicalPrefix);
+    if (target.origin === new URL(canonicalPrefix).origin && isDocumentationPath(target.pathname)) errors.push(`Internal link exposes project documentation: ${path} -> ${attr('href')}`);
     if (/^https?:$/.test(target.protocol) && target.origin !== new URL(canonicalPrefix).origin) {
       const rel = attr('rel').split(/\s+/);
       if (attr('target') !== '_blank' || !rel.includes('noopener') || !rel.includes('noreferrer')) {
@@ -293,6 +295,7 @@ for (const path of closedPaths) {
 }
 for (const [, body] of entries) {
   const loc = body.match(/<loc>([^<]+)<\/loc>/)?.[1] ?? '';
+  if (loc && isDocumentationPath(new URL(loc).pathname)) errors.push(`Project documentation in sitemap: ${loc}`);
   if (!loc.startsWith(canonicalPrefix)) errors.push(`Sitemap URL outside the approved domain: ${loc}`);
   if (!/<priority>/.test(body)) errors.push(`Sitemap URL without priority: ${loc}`);
   const lastmod = body.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1];
@@ -333,6 +336,14 @@ for (const name of await readdir(dist)) {
 for (const path of seoPages.keys()) {
   if (!usedSeoPaths.has(path)) errors.push(`content/seo.md contains a page missing from this build: ${path}`);
 }
+async function checkPublicFiles(directory, prefix = '') {
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const path = `${prefix}${entry.name}`;
+    if (isDocumentationPath(path)) errors.push(`Project documentation or Markdown source in dist: ${path}`);
+    if (entry.isDirectory()) await checkPublicFiles(new URL(`${entry.name}/`, directory), `${path}/`);
+  }
+}
+await checkPublicFiles(dist);
 if (errors.length) {
   console.error('Static site checks failed:\n' + errors.map(e => '- ' + e).join('\n'));
   process.exitCode = 1;

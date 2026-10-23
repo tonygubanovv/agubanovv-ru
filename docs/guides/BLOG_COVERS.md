@@ -26,7 +26,7 @@ Palette: blackened steel, graphite, emerald illumination and selective lime #7cf
 MUST be different from the previous covers: NO humanoid or robot arm, NO paper plane, NO sphere transmitter, NO flying fleet, NO conveyor, NO rack of cartridges, NO portal or billboard. No letters, numbers, logos, typography, watermark, UI screenshot, flat illustration, cartoon or stock photo. Keep key forms inside central 70% for thumbnail cropping. Opaque background.
 ```
 
-У каждой публикации обязательна обложка. Постоянная часть промпта: [BLOG_COVER_STYLE.md](../prompts/BLOG_COVER_STYLE.md).
+У каждой публикации обязательна обложка. Постоянная часть промпта: [BLOG_COVER_STYLE.md](../agents/prompts/BLOG_COVER_STYLE.md).
 
 ## Описание исходной обложки
 

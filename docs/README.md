@@ -1,6 +1,6 @@
 # Документация проекта
 
-Все руководства и запросы собраны здесь. В корне остаются `README.md` (обзор и запуск) и `AGENTS.md` (общие обязательные правила для Codex, Qoder и других инструментов).
+Все руководства и запросы собраны здесь. В корне остаются `README.md` (обзор и запуск) и `AGENTS.md` (короткая ссылка на общие правила).
 
 ## Владельцу
 
@@ -15,20 +15,22 @@
 - [Блоки в статье: цитаты, заметки, подписи](guides/BLOG_BLOCKS.md).
 - [Отложенные изменения](guides/TODO.md).
 
+[Все инструкции для агентов](agents/README.md) находятся в одной папке `docs/agents/`.
+
 ## Утверждённые требования
 
-- [Техническое задание](specs/TECHNICAL_SPEC.md).
-- [Дизайн-система](specs/DESIGN_SYSTEM.md).
-- [Контент и SEO](specs/CONTENT_AND_SEO.md).
-- [Безопасность](specs/SECURITY.md).
-- [Приёмка](specs/ACCEPTANCE.md).
+- [Техническое задание](agents/specs/TECHNICAL_SPEC.md).
+- [Дизайн-система](agents/specs/DESIGN_SYSTEM.md).
+- [Контент и SEO](agents/specs/CONTENT_AND_SEO.md).
+- [Безопасность](agents/specs/SECURITY.md).
+- [Приёмка](agents/specs/ACCEPTANCE.md).
 
 ## Готовые запросы для любого агента
 
-- [Добавить статью](prompts/NEW_ARTICLE.md).
-- [Обязательный промпт обложек](prompts/BLOG_COVER_STYLE.md).
-- [Проверить и опубликовать](prompts/PUBLISH.md).
-- [Первоначальное создание — архив, повторно не запускать](prompts/INITIAL_BUILD.md).
+- [Добавить статью](agents/prompts/NEW_ARTICLE.md).
+- [Обязательный промпт обложек](agents/prompts/BLOG_COVER_STYLE.md).
+- [Проверить и опубликовать](agents/prompts/PUBLISH.md).
+- [Первоначальное создание — архив, повторно не запускать](agents/prompts/INITIAL_BUILD.md).
 
 ## Устройство репозитория
 
@@ -41,15 +43,13 @@ src/                  код, собирающий сайт
   components/         общие элементы интерфейса
   layouts/            оболочка и шаблон публикации
   pages/              страницы и маршруты
-  content/            опубликованные статьи и кейсы
   config/site.ts      сведения о владельце и настройки
   styles/             общие стили и темы
   utils/              ссылки, даты, коллекции, robots, sitemap и крошки
 public/               общие изображения и favicon
 docs/                 вся документация
-  specs/              утверждённые требования
+  agents/             все инструкции, требования и промпты агентов
   guides/             руководства владельцу
-  prompts/            готовые запросы
 scripts/              проверки сборки
 .github/workflows/    проверка и публикация GitHub Pages
 .qoder/rules/         правила подключения Qoder
