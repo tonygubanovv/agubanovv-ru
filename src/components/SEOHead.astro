@@ -4,10 +4,10 @@ import { isClosedPath } from '../utils/routes';
 import { absoluteUrl, url } from '../utils/urls';
 import onestCyrillic from '@fontsource-variable/onest/files/onest-cyrillic-wght-normal.woff2?url';
 import onestLatin from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
-interface Props { title: string; seoTitle?: string; description: string; path?: string; noindex?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> | Record<string, unknown>[] }
-const { title, seoTitle, description, path = '', noindex = false, article = false, image, imageAlt, jsonLd } = Astro.props;
+interface Props { title: string; description: string; keywords?: string; path?: string; noindex?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> | Record<string, unknown>[] }
+const { title, description, keywords, path = '', noindex = false, article = false, image, imageAlt, jsonLd } = Astro.props;
 const graphs = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
-const fullTitle = seoTitle ?? `${title} — ${site.name}`;
+const fullTitle = title;
 const canonical = absoluteUrl(path);
 // A page the owner closed keeps no canonical at all; a temporarily locked site only loses noindex.
 const closed = noindex || isClosedPath(path);
@@ -23,6 +23,7 @@ const ogImage = image ? new URL(image, import.meta.env.SITE).href : absoluteUrl(
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="color-scheme" content="light dark" />
 <meta name="description" content={description} />
+{keywords && <meta name="keywords" content={keywords} />}
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>{fullTitle}</title>
 {hidden && <meta name="robots" content="noindex, follow" />}

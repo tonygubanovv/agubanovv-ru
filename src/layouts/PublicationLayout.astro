@@ -7,6 +7,7 @@ import ContentCard from '../components/ContentCard.astro';
 import Icon from '../components/Icon.astro';
 import HeadingAnchors from '../components/HeadingAnchors.astro';
 import ArticleShare from '../components/ArticleShare.astro';
+import { pageSeo } from '../utils/seo';
 import { site } from '../config/site';
 import { absoluteUrl, url, tagSlug } from '../utils/urls';
 import { dateLabel, blogEntries, publicationPath } from '../utils/content';
@@ -15,8 +16,8 @@ const { entry } = Astro.props;
 const { data } = entry;
 const { Content, headings } = await render(entry);
 const preserveText = data.preserveText;
-const description = data.description;
 const path = publicationPath(entry);
+const { description } = pageSeo(path);
 const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
 const related = (await blogEntries()).filter(other => other.id !== entry.id && other.data.tags.some(tag => data.tags.includes(tag))).slice(0, 2);
 // Social crawlers and Yandex do not take AVIF, and they must not be sent the 2,7 MB source either: one flat JPEG for the card.
@@ -30,13 +31,13 @@ const jsonLd = {
   mainEntityOfPage: absoluteUrl(path), inLanguage: 'ru-RU',
 };
 ---
-<BaseLayout title={data.title} seoTitle={data.seoTitle} description={description} path={path} crumb={data.title} breadcrumbs={false} article image={social?.src} imageAlt={data.cover?.alt} jsonLd={jsonLd}>
+<BaseLayout path={path} crumb={data.title} breadcrumbs={false} article image={social?.src} imageAlt={data.cover?.alt} jsonLd={jsonLd}>
   <div class="container publication-wrap">
     <div class:list={['publication-grid', { 'has-toc': toc.length > 0 }]}>
     {toc.length > 0 && <aside class="publication-sidebar"><nav class="toc" aria-label="Содержание"><h2>Содержание</h2><ul>{toc.map(h => <li class:list={{ 'toc-sub': h.depth === 3 }}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul></nav></aside>}
     <article class="publication">
       <Breadcrumbs current={data.title} bare />
-      <header class="publication-header"><div class="meta"><time datetime={data.date}>{dateLabel(data.date)}</time><span>{data.category}</span></div><h1 data-preserve-text={preserveText ? 'true' : undefined}>{data.title}</h1><p class="publication-summary">{description}</p>{'updated' in data && data.updated && <p class="muted">Обновлено: <time datetime={data.updated}>{dateLabel(data.updated)}</time></p>}
+      <header class="publication-header"><div class="meta"><time datetime={data.date}>{dateLabel(data.date)}</time><span>{data.category}</span></div><h1 data-preserve-text={preserveText ? 'true' : undefined}>{data.title}</h1><p class="publication-summary">{data.summary}</p>{'updated' in data && data.updated && <p class="muted">Обновлено: <time datetime={data.updated}>{dateLabel(data.updated)}</time></p>}
         {data.tags.length > 0 && <div class="tags">{data.tags.map(tag => <a class="tag" href={url(`blog/tags/${tagSlug(tag)}/`)}>{tag}</a>)}</div>}
       </header>
       {data.cover && <Image class="publication-cover" src={data.cover.src} alt={data.cover.alt} widths={[720, 1440]} sizes="(max-width: 700px) calc(100vw - 48px), 720px" quality={74} loading="eager" decoding="async" />}

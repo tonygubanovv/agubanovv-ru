@@ -4,12 +4,16 @@ import { site } from '../src/config/site.ts';
 import { closedPaths, legalPaths, movedPaths } from '../src/utils/routes.ts';
 import { checkAnalytics } from './check-analytics.mjs';
 import { parse } from 'parse5';
+import { parseSeoTable, seoPath } from '../src/utils/seoTable.ts';
+import { typograph } from '../src/utils/typography.ts';
 
 
 const dist = new URL('../dist/', import.meta.url);
 const expectedBase = '/';
 const canonicalPrefix = 'https://agubanovv.ru/';
 const errors = [];
+const seoPages = parseSeoTable(await readFile(new URL('../content/seo.md', import.meta.url), 'utf8'));
+const usedSeoPaths = new Set();
 
 const home = await readFile(new URL('index.html', dist), 'utf8');
 errors.push(...checkAnalytics(home, site, new URL(canonicalPrefix).hostname));
@@ -60,9 +64,9 @@ for (const path of closedPaths) {
 }
 
 // The owner publishes every text material only under /blog/; the site root may hold a redirect stub alone.
-for (const name of await readdir(new URL('../src/content/blog/', import.meta.url))) {
-  if (!name.endsWith('.md')) continue;
-  const slug = name.replace(/\.md$/, '');
+for (const name of await readdir(new URL('../content/blog/', import.meta.url), { withFileTypes: true })) {
+  if (!name.isDirectory()) continue;
+  const slug = name.name;
   if (!await exists(`blog/${slug}/index.html`)) errors.push(`Publication is not served under /blog/: /${slug}/`);
   if (await exists(`${slug}/index.html`) && !movedPaths[`${slug}/`]) errors.push(`Publication escaped /blog/ to the site root: /${slug}/`);
 }
@@ -97,6 +101,22 @@ for (const page of await walk(dist)) {
     continue;
   }
   const nodes = elements(parse(html));
+  const key = seoPath(path.replace(/index\.html$/, ''));
+  const meta = seoPages.get(key);
+  usedSeoPaths.add(key);
+  if (!meta) errors.push(`Missing row in content/seo.md: ${key}`);
+  else {
+    const attribute = (node, name) => node.attrs.find(attr => attr.name === name)?.value;
+    const values = name => nodes.filter(node => node.tagName === 'meta' && (attribute(node, 'name') === name || attribute(node, 'property') === name)).map(node => attribute(node, 'content'));
+    const title = nodes.filter(node => node.tagName === 'title');
+    if (title.length !== 1 || textChunks(title[0]).join('') !== typograph(meta.title)) errors.push(`Title differs from content/seo.md: ${path}`);
+    for (const [name, expected] of [['description', meta.description], ['og:title', meta.title], ['twitter:title', meta.title], ['og:description', meta.description], ['twitter:description', meta.description]]) {
+      const found = values(name);
+      if (found.length !== 1 || found[0] !== typograph(expected)) errors.push(`Missing, duplicate or incorrect ${name}: ${path}`);
+    }
+    const keywords = values('keywords');
+    if (meta.keywords ? keywords.length !== 1 || keywords[0] !== typograph(meta.keywords) : keywords.length !== 0) errors.push(`Keywords differ from content/seo.md: ${path}`);
+  }
   if (path.startsWith('blog/') && nodes.some(node => node.attrs.some(attr => attr.name === 'class' && attr.value.split(/\s+/).includes('prose')))) {
     const share = nodes.find(node => node.attrs.some(attr => attr.name === 'data-article-share'));
     const address = `${canonicalPrefix}${path.replace(/index\.html$/, '')}`;
@@ -256,9 +276,9 @@ for (const path of site.search.indexingEnabled ? legalPaths : []) {
 // Publication dates must come from the content, never from the build clock.
 const sourceDates = new Set([site.legal.updated]);
 for (const collection of ['blog']) {
-  for (const name of await readdir(new URL(`../src/content/${collection}/`, import.meta.url))) {
-    if (!name.endsWith('.md')) continue;
-    const block = await readFile(new URL(`../src/content/${collection}/${name}`, import.meta.url), 'utf8');
+  for (const name of await readdir(new URL(`../content/${collection}/`, import.meta.url), { withFileTypes: true })) {
+    if (!name.isDirectory()) continue;
+    const block = await readFile(new URL(`../content/${collection}/${name.name}/index.md`, import.meta.url), 'utf8');
     for (const match of block.matchAll(/^(?:date|updated):\s*"?(\d{4}-\d{2}-\d{2})"?/gm)) sourceDates.add(match[1]);
   }
 }
@@ -310,6 +330,9 @@ for (const name of await readdir(dist)) {
   if (/^\.env|\.(pem|key|p12|pfx)$/i.test(name)) errors.push(`Sensitive file in dist: ${name}`);
 }
 
+for (const path of seoPages.keys()) {
+  if (!usedSeoPaths.has(path)) errors.push(`content/seo.md contains a page missing from this build: ${path}`);
+}
 if (errors.length) {
   console.error('Static site checks failed:\n' + errors.map(e => '- ' + e).join('\n'));
   process.exitCode = 1;

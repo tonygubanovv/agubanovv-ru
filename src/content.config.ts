@@ -17,20 +17,19 @@ const common = {
 };
 const loader = (base: string) => glob({
   base,
-  pattern: '*.md',
+  pattern: '*/index.md',
   generateId: ({ entry }) => {
-    const id = entry.replace(/\.md$/, '');
+    const id = entry.replace(/\/index\.md$/, '');
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id)) throw new Error(`Unsafe content filename: ${entry}`);
     return id;
   },
 });
 const blog = defineCollection({
-  loader: loader('./src/content/blog'),
+  loader: loader('./content/blog'),
   schema: ({ image }) => z.object({
-    ...common, description: text, category: text, updated: date.optional(),
-    seoTitle: text.optional(),
+    ...common, summary: text, category: text, updated: date.optional(),
     preserveText: z.boolean().default(false),
     cover: z.object({ src: image(), alt: text }),
-  }).refine(data => !data.updated || data.updated >= data.date, 'updated must not precede date'),
+  }).strict().refine(data => !data.updated || data.updated >= data.date, 'updated must not precede date'),
 });
 export const collections = { blog };

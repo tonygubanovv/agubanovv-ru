@@ -23,16 +23,16 @@ function readPosts(directory: string, prefix: string): Post[] {
     return [];
   }
   const posts: Post[] = [];
-  for (const name of names.filter(entry => entry.endsWith('.md'))) {
-    const block = readFileSync(`${directory}/${name}`, 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? '';
+  for (const name of names.filter(entry => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entry))) {
+    const block = readFileSync(`${directory}/${name}/index.md`, 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? '';
     const published = isoDate(block, 'date');
     if (!published) continue;
-    posts.push({ path: `${prefix + name.replace(/\.md$/, '')}/`, lastmod: isoDate(block, 'updated') ?? published, tags: parseTags(block) });
+    posts.push({ path: `${prefix + name}/`, lastmod: isoDate(block, 'updated') ?? published, tags: parseTags(block) });
   }
   return posts;
 }
 
-const blog = readPosts('src/content/blog', 'blog/');
+const blog = readPosts('content/blog', 'blog/');
 const newest = (posts: Post[]) => posts.map(post => post.lastmod).sort().at(-1);
 const publicationDates = new Map(blog.map(post => [post.path, post.lastmod]));
 

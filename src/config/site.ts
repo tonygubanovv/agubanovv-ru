@@ -9,14 +9,6 @@ export const blogTagSlugs: Record<(typeof blogTags)[number], string> = {
   'Кейсы': 'cases',
 };
 
-/** Short descriptions for topic pages, in the same voice as the rest of the site. */
-export const blogTagDescriptions: Record<(typeof blogTags)[number], string> = {
-  'Telegram Ads': 'Делюсь опытом запуска Telegram Ads: как выбираю каналы, тестирую объявления и считаю стоимость подписки.',
-  'Нейросети': 'Проверяю, где нейросети помогают в маркетинге, а где только обещают. Здесь мои эксперименты и выводы.',
-  'SEO & GEO': 'Разбираюсь, как сайты находят в поиске и ответах нейросетей. Проверяю SEO и GEO на практике и делюсь результатами.',
-  'Кейсы': 'Рассказываю о своих рекламных запусках: какая была задача, что пробовал и что получилось. С цифрами и выводами.',
-};
-
 /** Share destinations use ordinary links; no third-party widgets are loaded. */
 export const shareServices = [
   { label: 'Telegram', icon: 'telegram', endpoint: 'https://t.me/share/url', urlParam: 'url', titleParam: 'text' },
@@ -52,7 +44,6 @@ export const site = {
   name: 'Антон Губанов',
   author: 'Антон Губанов',
   role: 'Digital-маркетолог',
-  description: 'Я Антон Губанов, digital-маркетолог. Пишу про Telegram Ads, SEO, GEO и нейросети: что пробую в работе, что получается и какие выводы делаю.',
   hero: {
     title: 'Маркетинг.',
     accent: 'От гипотез к выводам.',

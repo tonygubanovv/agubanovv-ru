@@ -12,7 +12,7 @@ formatter.addSafeTag(/<textarea\b[^>]*>[\s\S]*?<\/textarea>/gi);
 export const typograph = (text: string): string => formatter.execute(text);
 
 const readableAttributes = new Set(['alt', 'title', 'aria-label', 'aria-description', 'placeholder']);
-const metadata = new Set(['description', 'og:title', 'og:description', 'og:site_name', 'og:image:alt', 'twitter:title', 'twitter:description', 'twitter:image:alt']);
+const metadata = new Set(['description', 'keywords', 'og:title', 'og:description', 'og:site_name', 'og:image:alt', 'twitter:title', 'twitter:description', 'twitter:image:alt']);
 const jsonTextKeys = new Set(['name', 'headline', 'description', 'articleBody', 'caption']);
 function formatJson(value: unknown, key = ''): unknown {
   if (typeof value === 'string') return jsonTextKeys.has(key) ? typograph(value) : value;

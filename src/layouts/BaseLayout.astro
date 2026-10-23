@@ -4,16 +4,18 @@ import Header from '../components/Header.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import Footer from '../components/Footer.astro';
 import Analytics from '../components/Analytics.astro';
+import { pageSeo } from '../utils/seo';
 import { breadcrumbGraph, trail } from '../utils/crumbs';
 import '../styles/global.css';
-interface Props { title: string; seoTitle?: string; description: string; path?: string; crumb?: string; noindex?: boolean; breadcrumbs?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> }
+interface Props { path?: string; crumb?: string; noindex?: boolean; breadcrumbs?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> }
 const { crumb, path = '', noindex = false, breadcrumbs: showCrumbs = true, jsonLd, ...rest } = Astro.props;
+const metadata = pageSeo(path);
 const crumbs = noindex ? [] : trail(Astro.url.pathname, crumb);
 const graphs = [jsonLd, ...(crumbs.length > 1 ? [breadcrumbGraph(crumbs)] : [])].filter((graph): graph is Record<string, unknown> => Boolean(graph));
 ---
 <!doctype html>
 <html lang="ru">
-  <head><SEOHead {...rest} path={path} noindex={noindex} jsonLd={graphs.length ? graphs : undefined} /></head>
+  <head><SEOHead {...rest} {...metadata} path={path} noindex={noindex} jsonLd={graphs.length ? graphs : undefined} /></head>
   <body>
     <a href="#main" class="skip-link">К содержимому</a>
     <Header />

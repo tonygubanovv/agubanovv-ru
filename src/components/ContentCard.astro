@@ -15,6 +15,6 @@ const cardSizes = '(min-width: 1001px) 352px, (min-width: 701px) 47vw, calc(100v
   <div class="card-body">
     <time class="meta" datetime={data.date}>{dateLabel(data.date)}</time>
     <Heading><a href={url(publicationPath(entry))}>{data.title} <Icon /></a></Heading>
-    <p>{data.description}</p>
+    <p>{data.summary}</p>
   </div>
 </article>

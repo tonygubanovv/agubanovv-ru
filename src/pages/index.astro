@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
-import portrait from '../assets/about/anton-gubanov.png';
+import portrait from '../../content/images/anton-gubanov.png';
 import SectionHeader from '../components/SectionHeader.astro';
 import Kicker from '../components/Kicker.astro';
 import EmptyState from '../components/EmptyState.astro';
@@ -12,7 +12,7 @@ import { url, absoluteUrl } from '../utils/urls';
 import { blogEntries } from '../utils/content';
 const posts = (await blogEntries()).slice(0, 3);
 ---
-<BaseLayout title="Маркетинг, SEO и Telegram Ads" description={site.description} jsonLd={{ '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: absoluteUrl(), inLanguage: 'ru-RU' }}>
+<BaseLayout jsonLd={{ '@context': 'https://schema.org', '@type': 'WebSite', name: site.name, url: absoluteUrl(), inLanguage: 'ru-RU' }}>
   <section class="hero container">
     <div class="hero-copy">
       <h1>{site.hero.title}{' '}<span>{site.hero.accent}</span></h1>
