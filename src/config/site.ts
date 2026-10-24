@@ -17,17 +17,17 @@ export const shareServices = [
 
 /** Personal recommendations and the owner's exact referral addresses. */
 export const recommendations = [
-  { name: 'Карта Пэй', url: 'https://bank.yandex.ru/invite?refid=h681fG9uAGv', description: 'Мой любимый банк с кешбэком Пэй и лучшим, по моему мнению, Сейвом для накоплений.' },
-  { name: 'Плати по миру', url: 'https://platipomiru.com/?code=XVSQGOLB', description: 'Зарубежная карта для оплаты подписок и сервисов.' },
+  { name: 'Карта Пэй', url: 'https://bank.yandex.ru/invite?refid=h681fG9uAGv', description: 'Мой любимый банк с кешбэком Пэй и Сейвом для накоплений.' },
+  { name: 'Плати по миру', url: 'https://platipomiru.com/?code=XVSQGOLB', description: 'Зарубежная карта для оплаты подписок на нейронки.' },
   { name: 'Мишка VPN', url: 'https://mishka.cc/invite/869f4c75252e', description: 'Мой VPN на всех устройствах. Пользуюсь уже два года.' },
-  { name: 'Tilda', url: 'https://tilda.ru/?r=7536403', description: 'Собрать сайт или лендинг без программирования.' },
-  { name: 'Timeweb Cloud', url: 'https://timeweb.cloud/r/kt656114', description: 'Облачные серверы для сайтов, ботов и своих проектов.' },
-  { name: 'Keys.so', url: 'https://www.keys.so/ru/?p=57950', description: 'Подсмотреть запросы, SEO и рекламу конкурентов.' },
-  { name: 'Seopapa', url: 'https://seopapa.com/agbnv', description: 'Продвижение сайтов в Яндексе через поведенческие факторы.' },
-  { name: 'Vitamin.tools', url: 'https://vitamin.tools/?ref2=385b1e94-9fe4-4d17-a54f-9f7c00414dbb', description: 'Рекламные кабинеты и бонусы. Реферальные бонусы делим 50/50.' },
-  { name: 'TGStat', url: 'https://tgstat.ru/x/X2eGo', description: 'Статистика Telegram-каналов и поиск площадок для рекламы.' },
+  { name: 'Tilda', url: 'https://tilda.ru/?r=7536403', description: 'Самый удобный конструктор сайтов без кода (почти).' },
+  { name: 'Timeweb Cloud', url: 'https://timeweb.cloud/r/kt656114', description: 'Хостинг/сервера для сайтов, ботов и прочих проектов.' },
+  { name: 'Keys.so', url: 'https://www.keys.so/ru/?p=57950', description: 'Набор инструментов для SEO и разведки рекламы конкурентов' },
+  { name: 'Seopapa', url: 'https://seopapa.com/agbnv', description: 'SEO-продвижение в Яндексе через поведенческие факторы.' },
+  { name: 'Vitamin.tools', url: 'https://vitamin.tools/?ref2=385b1e94-9fe4-4d17-a54f-9f7c00414dbb', description: 'Рекламные кабинеты и сервисы' },
+  { name: 'TGStat', url: 'https://tgstat.ru/x/X2eGo', description: 'Сервис для аналитики и поиска Telegram-каналов.' },
   { name: 'Salebot', url: 'https://salebot.pro/l/152537', description: 'Мой любимый конструктор воронок и ботов в Telegram.' },
-  { name: 'Qoder', url: 'https://qoder.com/activities?referral_code=6ree2iTPEJoqWyE5vT0rlQmByyvt4amO', description: 'Редактор с ИИ, чтобы попробовать вайбкодинг. Есть бесплатный тариф.' },
+  { name: 'Qoder', url: 'https://qoder.com/activities?referral_code=6ree2iTPEJoqWyE5vT0rlQmByyvt4amO', description: 'Китайская приложуха для вайб-кодинга (есть бесплатная моделька).' },
 ] as const;
 
 /** Set each public contact once. Missing values are not rendered anywhere. */
@@ -46,15 +46,15 @@ export const site = {
   author: 'Антон Губанов',
   role: 'Digital-маркетолог',
   hero: {
-    title: 'Маркетинг.',
-    accent: 'От гипотез к выводам.',
-    description: 'Я Антон Губанов, digital-маркетолог. Проверяю подходы на практике и делюсь тем, что получилось: экспериментами, наблюдениями и выводами.',
+    title: 'Антон Губанов.',
+    accent: 'Digital-маркетолог.',
+    description: 'Дневник B2B-маркетолога в кибербезе. Мысли, кейсы, практика.',
   },
   about: {
-    intro: 'Я Антон Губанов, диджитал-маркетолог. Работаю в компании в сфере информационной безопасности и делюсь опытом продвижения сложных B2B-продуктов.',
+    intro: 'Привет! Я Антон Губанов, диджитал-маркетолог. Работаю в компании в сфере информационной безопасности и занимаюсь продвижением сложных B2B-продуктов.',
     more: [
-      'В блоге разбираю Telegram Ads, SEO, GEO и нейросети на конкретных задачах. Пишу о продвижении Telegram-каналов, поисковых экспериментах и инструментах, которые помогают связать рекламу с результатами.',
-      'Этот сайт — место для моих статей, кейсов и наблюдений из практики. Здесь собираю то, что удалось проверить: от рекламных запусков до технических решений для маркетинга.',
+      'Занимаюсь рекламой, сайтом, аналитикой и работой с клиентской базой. Смотрю, как всё это связано: от первого знакомства с продуктом до заявки и разговора с продажами. Пробую разные подходы и разбираюсь, что помогает получать результат.',
+      'А здесь делюсь опытом, мыслями и тем, что удалось проверить на практике. Пишу про маркетинг, технологии и инструменты, с которыми работаю. Собираю свои статьи, кейсы и наблюдения — чтобы было куда вернуться самому и чем поделиться с другими.',
     ],
   },
   navigation: [

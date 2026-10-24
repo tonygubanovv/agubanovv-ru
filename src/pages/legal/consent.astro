@@ -1,13 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Icon from '../../components/Icon.astro';
 import { site, links } from '../../config/site';
 import { url } from '../../utils/urls';
 import { dateLabel } from '../../utils/content';
 ---
 <BaseLayout path="legal/consent/" noindex>
   <section class="container page-content"><div class="legal-page prose">
-    <a class="text-link legal-back" href={url('legal/')}><Icon direction="left" /> Все документы</a>
+    <a class="text-link legal-back" href={url('legal/')}>Все документы</a>
     <h1>Согласие на аналитику</h1>
     <p class="meta">Версия {site.legal.consentVersion} от {dateLabel(site.legal.updated)}</p>
     <p>Нажимая «Окей» в уведомлении об аналитике на agubanovv.ru, я добровольно, своей волей и в своём интересе даю оператору {site.legal.operatorName} ({site.legal.operatorStatus}, email <a href={`mailto:${links.privacyEmail}`}>{links.privacyEmail}</a>) согласие на следующую обработку данных. Открытие этой страницы само по себе согласия не даёт.</p>

@@ -1,13 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Icon from '../../components/Icon.astro';
 import { site } from '../../config/site';
 import { url } from '../../utils/urls';
 import { dateLabel } from '../../utils/content';
 ---
 <BaseLayout path="legal/cookies/" noindex>
   <section class="container page-content"><div class="legal-page prose">
-    <a class="text-link legal-back" href={url('legal/')}><Icon direction="left" /> Все документы</a>
+    <a class="text-link legal-back" href={url('legal/')}>Все документы</a>
     <h1>Политика использования cookie</h1>
     <p class="meta">Редакция от {dateLabel(site.legal.updated)}</p>
     <p>Cookie — небольшие записи в браузере. На сайте также используется localStorage — отдельное локальное хранилище. Ни прокрутка, ни переход по ссылке, ни закрытие страницы не считаются согласием на аналитику.</p>

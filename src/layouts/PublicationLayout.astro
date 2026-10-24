@@ -4,7 +4,6 @@ import { getImage, Image } from 'astro:assets';
 import BaseLayout from './BaseLayout.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ContentCard from '../components/ContentCard.astro';
-import Icon from '../components/Icon.astro';
 import HeadingAnchors from '../components/HeadingAnchors.astro';
 import ArticleShare from '../components/ArticleShare.astro';
 import { pageSeo } from '../utils/seo';
@@ -44,7 +43,7 @@ const jsonLd = {
       <div class="prose" data-preserve-text={preserveText ? 'true' : undefined}><Content /></div>
       <HeadingAnchors />
       <ArticleShare path={path} title={data.title} />
-      <a class="text-link publication-back" href={url('blog/')}><Icon direction="left" /> Назад в блог</a>
+      <a class="text-link publication-back" href={url('blog/')}>Назад в блог</a>
     </article>
     </div>
     {related.length > 0 && <section class="related"><h2>По соседству</h2><div class="card-grid">{related.map(entry => <ContentCard entry={entry} heading="h3" />)}</div></section>}
