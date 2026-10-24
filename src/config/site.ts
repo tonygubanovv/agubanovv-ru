@@ -23,16 +23,15 @@ export const shareServices = [
 
 /** Personal recommendations and the owner's exact referral addresses. */
 export const recommendations = [
-  { name: 'Карта Пэй', url: 'https://bank.yandex.ru/invite?refid=h681fG9uAGv', description: 'Мой любимый банк с кешбэком баллами Плюса и Сейвом для накоплений.' },
+  { name: 'Карта Пэй', url: 'https://bank.yandex.ru/invite?refid=h681fG9uAGv', description: 'Любимый банк с кешбэком баллами Плюса и Сейвом для накоплений.' },
   { name: 'Плати по миру', url: 'https://platipomiru.com/?code=XVSQGOLB', description: 'Зарубежная карта для оплаты подписок на нейронки.' },
-  { name: 'Мишка VPN', url: 'https://mishka.cc/invite/869f4c75252e', description: 'Мой VPN на всех устройствах. Пользуюсь уже два года.' },
-  { name: 'Tilda', url: 'https://tilda.ru/?r=7536403', description: 'Самый удобный конструктор сайтов без кода (почти).' },
+  { name: 'Tilda', url: 'https://tilda.ru/?r=7536403', description: 'Самый удобный и продвинутый конструктор сайтов.' },
   { name: 'Timeweb Cloud', url: 'https://timeweb.cloud/r/kt656114', description: 'Хостинг/сервера для сайтов, ботов и прочих проектов.' },
   { name: 'Keys.so', url: 'https://www.keys.so/ru/?p=57950', description: 'Набор инструментов для SEO и разведки рекламы конкурентов' },
   { name: 'Seopapa', url: 'https://seopapa.com/agbnv', description: 'SEO-продвижение в Яндексе через поведенческие факторы.' },
   { name: 'Vitamin.tools', url: 'https://vitamin.tools/?ref2=385b1e94-9fe4-4d17-a54f-9f7c00414dbb', description: 'Рекламные кабинеты и сервисы' },
   { name: 'TGStat', url: 'https://tgstat.ru/x/X2eGo', description: 'Сервис для аналитики и поиска Telegram-каналов.' },
-  { name: 'Salebot', url: 'https://salebot.pro/l/152537', description: 'Мой любимый конструктор воронок и ботов в Telegram.' },
+  { name: 'Salebot', url: 'https://salebot.pro/l/152537', description: 'Конструктор воронок и ботов в Telegram.' },
   { name: 'Qoder', url: 'https://qoder.com/activities?referral_code=6ree2iTPEJoqWyE5vT0rlQmByyvt4amO', description: 'Китайская приложуха для вайб-кодинга (есть бесплатная моделька).' },
 ] as const;
 
