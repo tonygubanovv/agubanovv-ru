@@ -17,6 +17,7 @@
 | Старые адреса и перенаправления | `movedPaths` в `src/utils/routes.ts` |
 | Содержимое юридического документа | `src/pages/legal/` — документы содержат подстановки из общих настроек |
 | Состав и порядок блоков главной | `src/pages/index.astro` |
+| Раздел «Навыки» (`/skills/`) | `src/pages/skills.astro` — разметка и оформление; `skillGroups` в `src/config/site.ts` — названия и навыки |
 | Раздел «Рекомендую» (`/recommend/`) | `src/pages/recommend.astro` — оформление; `recommendations` в `src/config/site.ts` — названия, описания и ссылки |
 | Значок сайта | `public/favicon.svg` и `public/favicon.ico` — один значок в двух форматах; подключение в `src/components/SEOHead.astro` |
 | Цвет, размер текста, отступы | `src/styles/global.css` |
@@ -42,6 +43,7 @@ src/                            код, собирающий сайт
     legal/                      все юридические документы
     blog/                       лента, темы и шаблон адресов статей
     recommend.astro             раздел рекомендаций
+    skills.astro                навыки
   layouts/                      оболочка, шаблон статьи и перенаправлений
   components/                   повторяющиеся элементы
   styles/global.css             оформление и темы

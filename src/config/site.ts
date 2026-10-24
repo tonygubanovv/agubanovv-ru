@@ -16,6 +16,38 @@ export const mainMenu = [
   { label: 'Рекомендую', path: 'recommend/', description: 'Сервисы, которыми пользуюсь сам', icon: 'star' },
 ] as const;
 
+/** Skills shown as plain text labels on the /skills/ page. */
+export const skillGroups = [
+  {
+    title: 'Интернет-реклама',
+    skills: ['Яндекс Директ', 'Telegram Ads', 'VK Ads', 'Посевы в Telegram', 'Лидогенерация', 'Оптимизация рекламы'],
+  },
+  {
+    title: 'Сайты и SEO',
+    skills: ['SEO', 'Техническое SEO', 'Контент-маркетинг', 'Структура сайта', 'Постановка ТЗ', 'Развитие сайта', 'Tilda', 'GitHub'],
+  },
+  {
+    title: 'Веб- и сквозная аналитика',
+    skills: ['Яндекс Метрика', 'Google Analytics 4', 'Roistat', 'Веб-аналитика', 'Сквозная аналитика', 'UTM-метки'],
+  },
+  {
+    title: 'CRM и автоматизация',
+    skills: ['amoCRM', 'Salesbot', 'Telegram-боты', 'Сегментация базы', 'Контроль качества лидов', 'Mango Office'],
+  },
+  {
+    title: 'Email-маркетинг',
+    skills: ['Sendsay', 'Email-рассылки', 'Сегментация рассылок', 'Аналитика рассылок'],
+  },
+  {
+    title: 'Управление репутацией',
+    skills: ['Яндекс Карты', '2ГИС', 'Google Карты', 'Работа с отзывами'],
+  },
+  {
+    title: 'Рабочие процессы',
+    skills: ['B2B-маркетинг', 'Управление бэклогом', 'Приоритизация задач', 'Релиз-ноутсы', 'Работа с разработчиками', 'Взаимодействие с продажами'],
+  },
+] as const;
+
 /** Share destinations use ordinary links; no third-party widgets are loaded. */
 export const shareServices = [
   { label: 'Telegram', icon: 'telegram', endpoint: 'https://t.me/share/url', urlParam: 'url', titleParam: 'text' },
