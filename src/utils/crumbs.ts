@@ -4,6 +4,7 @@ import { absoluteUrl } from './urls';
 export type Crumb = { label: string; path?: string };
 
 const sections: Record<string, string> = {
+  skills: 'Навыки',
   blog: 'Блог',
   recommend: 'Рекомендую',
   privacy: 'Политика',

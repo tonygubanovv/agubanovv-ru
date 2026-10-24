@@ -11,6 +11,7 @@ export const blogTagSlugs: Record<(typeof blogTags)[number], string> = {
 
 /** Real destinations shared by desktop and mobile navigation. */
 export const mainMenu = [
+  { label: 'Навыки', path: 'skills/', description: 'Направления работы и инструменты', icon: 'tag' },
   { label: 'Блог', path: 'blog/', description: 'Статьи, кейсы и эксперименты', icon: 'article' },
   { label: 'Рекомендую', path: 'recommend/', description: 'Сервисы, которыми пользуюсь сам', icon: 'star' },
 ] as const;
