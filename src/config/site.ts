@@ -23,7 +23,7 @@ export const shareServices = [
 
 /** Personal recommendations and the owner's exact referral addresses. */
 export const recommendations = [
-  { name: 'Карта Пэй', url: 'https://bank.yandex.ru/invite?refid=h681fG9uAGv', description: 'Мой любимый банк с кешбэком Пэй и Сейвом для накоплений.' },
+  { name: 'Карта Пэй', url: 'https://bank.yandex.ru/invite?refid=h681fG9uAGv', description: 'Мой любимый банк с кешбэком баллами Плюса и Сейвом для накоплений.' },
   { name: 'Плати по миру', url: 'https://platipomiru.com/?code=XVSQGOLB', description: 'Зарубежная карта для оплаты подписок на нейронки.' },
   { name: 'Мишка VPN', url: 'https://mishka.cc/invite/869f4c75252e', description: 'Мой VPN на всех устройствах. Пользуюсь уже два года.' },
   { name: 'Tilda', url: 'https://tilda.ru/?r=7536403', description: 'Самый удобный конструктор сайтов без кода (почти).' },
