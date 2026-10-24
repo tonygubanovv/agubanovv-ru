@@ -111,11 +111,20 @@ import MenuLinks from './MenuLinks.astro';
   .menu-open-icon, .menu-close-icon { display: flex; }
   .menu-close-icon, .mobile-nav[open] .menu-open-icon { display: none; }
   .mobile-nav[open] .menu-close-icon { display: flex; }
+  .mobile-nav::details-content { transition: content-visibility 240ms allow-discrete; }
   .mobile-menu-panel { position: absolute; top: 100%; inset-inline: 0; max-height: calc(100dvh - var(--header-h)); overflow-y: auto; overscroll-behavior: contain; padding: var(--space-3) var(--gutter) var(--space-5); background: var(--background); border-bottom: 1px solid var(--border); box-shadow: 0 var(--space-4) var(--space-6) rgb(0 0 0 / 20%); }
+  @supports selector(details::details-content) {
+    .mobile-menu-panel { opacity: 0; transform: translateY(calc(-1 * var(--space-2))); transition: opacity 240ms ease, transform 240ms ease; }
+    .mobile-nav[open] .mobile-menu-panel { opacity: 1; transform: translateY(0); }
+    @starting-style { .mobile-nav[open] .mobile-menu-panel { opacity: 0; transform: translateY(calc(-1 * var(--space-2))); } }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-nav::details-content, .mobile-menu-panel { transition: none; }
+  }
   :global(body:has(.cookie-notice:not([hidden]))) .mobile-menu-panel { max-height: calc(100dvh - var(--header-h) - var(--cookie-notice-height, var(--space-7)) - env(safe-area-inset-bottom)); }
   .mobile-menu-contacts { display: grid; gap: var(--space-2); border-top: 1px solid var(--border); padding-top: var(--space-4); margin-top: var(--space-3); }
   .menu-label { color: var(--muted); font-size: var(--text-1); }
-  .menu-contact-row { display: grid; grid-template-columns: var(--space-5) minmax(0, 1fr); align-items: center; gap: var(--space-2); padding-inline: var(--space-3); }
+  .menu-contact-row { display: grid; grid-template-columns: var(--space-5) minmax(0, 1fr); align-items: center; gap: var(--space-2); padding-inline: var(--space-3); border-inline: 1px solid transparent; }
   .menu-contact-row > :global(.icon) { justify-self: center; color: var(--muted); }
   .menu-contact-row > a { display: flex; align-items: center; min-height: var(--tap); font-size: var(--text-2); font-weight: 500; overflow-wrap: anywhere; color: var(--foreground); }
   .menu-contact-row > a:focus-visible, .menu-contact-row > a:active { color: var(--accent); }
