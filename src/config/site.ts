@@ -11,40 +11,40 @@ export const blogTagSlugs: Record<(typeof blogTags)[number], string> = {
 
 /** Real destinations shared by desktop and mobile navigation. */
 export const mainMenu = [
-  { label: 'Навыки', path: 'skills/', description: 'Направления работы и инструменты', icon: 'tag' },
   { label: 'Блог', path: 'blog/', description: 'Статьи, кейсы и эксперименты', icon: 'article' },
   { label: 'Рекомендую', path: 'recommend/', description: 'Сервисы, которыми пользуюсь сам', icon: 'star' },
+  { label: 'Навыки', path: 'skills/', description: 'Направления работы и инструменты', icon: 'tag' },
 ] as const;
 
 /** Skills shown as plain text labels on the /skills/ page. */
 export const skillGroups = [
   {
     title: 'Интернет-реклама',
-    skills: ['Яндекс Директ', 'Telegram Ads', 'VK Ads', 'Посевы в Telegram', 'Лидогенерация', 'Оптимизация рекламы'],
+    skills: ['Яндекс Директ', 'Telegram Ads', 'VK Ads', 'Посевы в Telegram', 'TGStat', 'Лидогенерация', 'Тестирование объявлений', 'Оптимизация рекламных кампаний'],
   },
   {
     title: 'Сайты и SEO',
-    skills: ['SEO', 'Техническое SEO', 'Контент-маркетинг', 'Структура сайта', 'Постановка ТЗ', 'Развитие сайта', 'Tilda', 'GitHub'],
+    skills: ['SEO', 'Техническое SEO', 'GEO', 'Яндекс Вебмастер', 'Google Search Console', 'IndexNow', 'Контент и структура сайта', 'Постановка ТЗ', 'Tilda', 'GitHub Pages'],
   },
   {
     title: 'Веб- и сквозная аналитика',
-    skills: ['Яндекс Метрика', 'Google Analytics 4', 'Roistat', 'Веб-аналитика', 'Сквозная аналитика', 'UTM-метки'],
+    skills: ['Яндекс Метрика', 'Google Analytics 4', 'Roistat', 'Вебвизор', 'Сегменты в Метрике', 'Сквозная аналитика', 'Анализ источников и конверсий', 'UTM-метки'],
   },
   {
     title: 'CRM и автоматизация',
-    skills: ['amoCRM', 'Salesbot', 'Telegram-боты', 'Сегментация базы', 'Контроль качества лидов', 'Mango Office'],
+    skills: ['amoCRM', 'Salesbot amoCRM', 'Telegram-боты', 'Передача параметров в CRM', 'Сегментация клиентской базы', 'Контроль входящих лидов', 'Анализ качества лидов', 'Mango Office'],
   },
   {
     title: 'Email-маркетинг',
-    skills: ['Sendsay', 'Email-рассылки', 'Сегментация рассылок', 'Аналитика рассылок'],
+    skills: ['Sendsay', 'Email-рассылки', 'Email-аутрич', 'Сегментация базы', 'Доставляемость писем', 'Ошибки SMTP', 'Аналитика рассылок'],
   },
   {
     title: 'Управление репутацией',
-    skills: ['Яндекс Карты', '2ГИС', 'Google Карты', 'Работа с отзывами'],
+    skills: ['Яндекс Карты', '2ГИС', 'Google Карты', 'Работа с отзывами', 'Карточки организаций'],
   },
   {
     title: 'Рабочие процессы',
-    skills: ['B2B-маркетинг', 'Управление бэклогом', 'Приоритизация задач', 'Релиз-ноутсы', 'Работа с разработчиками', 'Взаимодействие с продажами'],
+    skills: ['B2B-маркетинг', 'Маркетинг ИБ-продуктов', 'Управление бэклогом', 'Приоритизация задач', 'Релиз-ноутсы', 'Контроль релизов', 'Работа с разработчиками', 'Взаимодействие с продажами', 'Подготовка презентаций', 'ИИ-инструменты'],
   },
 ] as const;
 
