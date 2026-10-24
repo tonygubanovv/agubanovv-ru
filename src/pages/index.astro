@@ -52,7 +52,7 @@ const posts = (await blogEntries()).slice(0, 3);
     </div>
   </section>
   <section class="container section-space">
-    <SectionHeader number="02 /" title="Мои статьи" href={url('blog/')} label="Весь блог" />
+    <SectionHeader number="02 /" title="Мои статьи" href={url('blog/')} label="Все статьи" />
     {posts.length ? <div class="card-grid">{posts.map(entry => <ContentCard entry={entry} heading="h3" />)}</div> : <EmptyState kind="blog" heading="h3" />}
   </section>
   {contactLinks().length > 0 && <section class="container contact-section"><div><Kicker>Есть вопросы?</Kicker><h2>Напишите мне<span class="brand-dot">.</span></h2></div><div class="contact-links">{contactLinks().map(link => link.key === 'email' ? <a class="contact-email" href={link.url}>{link.label}</a> : <a class="button primary" href={link.url}>Написать в {link.label} <Icon /></a>)}</div></section>}
