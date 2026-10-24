@@ -27,7 +27,7 @@ const jsonLd = {
   dateModified: `${data.updated ?? data.date}T12:00:00+03:00`,
   ...(site.author ? { author: { '@type': 'Person', '@id': absoluteUrl('#author'), name: site.author, url: absoluteUrl('#about') } } : {}),
   ...(social ? { image: new URL(social.src, import.meta.env.SITE).href } : {}),
-  mainEntityOfPage: absoluteUrl(path), inLanguage: 'ru-RU',
+  mainEntityOfPage: absoluteUrl(path), inLanguage: site.locale.language,
 };
 ---
 <BaseLayout path={path} crumb={data.title} breadcrumbs={false} article image={social?.src} imageAlt={data.cover?.alt} jsonLd={jsonLd}>

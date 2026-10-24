@@ -6,6 +6,7 @@ import Footer from '../components/Footer.astro';
 import Analytics from '../components/Analytics.astro';
 import { pageSeo } from '../utils/seo';
 import { breadcrumbGraph, trail } from '../utils/crumbs';
+import { site } from '../config/site';
 import '../styles/global.css';
 interface Props { path?: string; crumb?: string; noindex?: boolean; breadcrumbs?: boolean; article?: boolean; image?: string; imageAlt?: string; jsonLd?: Record<string, unknown> }
 const { crumb, path = '', noindex = false, breadcrumbs: showCrumbs = true, jsonLd, ...rest } = Astro.props;
@@ -14,10 +15,9 @@ const crumbs = noindex ? [] : trail(Astro.url.pathname, crumb);
 const graphs = [jsonLd, ...(crumbs.length > 1 ? [breadcrumbGraph(crumbs)] : [])].filter((graph): graph is Record<string, unknown> => Boolean(graph));
 ---
 <!doctype html>
-<html lang="ru">
+<html lang={site.locale.language}>
   <head><SEOHead {...rest} {...metadata} path={path} noindex={noindex} jsonLd={graphs.length ? graphs : undefined} /></head>
   <body>
-    <a href="#main" class="skip-link">К содержимому</a>
     <Header />
     <main id="main" tabindex="-1">{showCrumbs && !noindex && <Breadcrumbs current={crumb} />}<slot /></main>
     <Footer />

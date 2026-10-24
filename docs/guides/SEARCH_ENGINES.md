@@ -58,3 +58,7 @@ search: {
 ## Индексация открыта — 22.10.2026
 
 Временное закрытие снято по запросу владельца: `indexingEnabled` включён, `robots.txt` возвратил `Disallow` для страниц документов, `sitemap.xml` снова наполнен. Первой страницей, закрытой владельцем через новый список, стала `/blog/telegram-ads-ib-vendor/`. Исключение уже найденных страниц происходит при следующем обходе поисковика, а не в момент публикации: в Яндексе адрес уйдёт после проверки, в Google его можно ускорить отчётом «Удалить страницу» в Search Console.
+
+## Язык и аудитория — 24.10.2026
+
+Единый источник — site.locale в src/config/site.ts: language ru-RU, Open Graph ru_RU, страна аудитории RU / Россия. Обычные страницы и перенаправления имеют html lang=ru-RU; WebSite и публикации — inLanguage, WebSite дополнительно указывает audience.geographicArea Country Россия. Это аудитория сайта, а не точный адрес автора. Не добавлять вымышленные координаты, адреса, geo.position или hreflang для несуществующих переводов. Google игнорирует географические meta-теги; домен .ru и русский контент уже являются сигналами. Регион в Яндекс.Вебмастере проверяется отдельно, запись в коде не подтверждает его присвоение. Первоисточники: https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites и https://yandex.ru/support/webmaster/ru/site-geography/site-region .

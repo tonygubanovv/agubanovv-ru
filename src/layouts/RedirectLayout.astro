@@ -1,6 +1,7 @@
 ---
 import { movedPaths } from '../utils/routes';
 import { absoluteUrl, url } from '../utils/urls';
+import { site } from '../config/site';
 
 // Registered from movedPaths by Astro: one template for every previous address.
 const current = Astro.url.pathname.replace(/\/$/, '');
@@ -10,7 +11,7 @@ const [, to] = redirect;
 const target = url(to);
 ---
 <!doctype html>
-<html lang="ru">
+<html lang={site.locale.language}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

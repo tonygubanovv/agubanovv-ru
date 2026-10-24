@@ -1,6 +1,6 @@
 /** Checks the actual static output for the approved custom domain. */
 import { readFile, access, readdir } from 'node:fs/promises';
-import { site } from '../src/config/site.ts';
+import { site, mainMenu } from '../src/config/site.ts';
 import { closedPaths, legalPaths, movedPaths } from '../src/utils/routes.ts';
 import { checkAnalytics } from './check-analytics.mjs';
 import { parse } from 'parse5';
@@ -198,7 +198,13 @@ for (const page of await walk(dist)) {
   const isDocumentPage = legalPaths.includes(pagePath) || path.endsWith('404.html');
   const isNoindex = /<meta\b[^>]*name="robots"[^>]*content="noindex/i.test(html);
   if ((html.match(/<h1\b/gi) ?? []).length !== 1) errors.push(`Expected exactly one H1: ${path}`);
-  if (!/<html\b[^>]*lang="ru"/i.test(html)) errors.push(`Missing Russian page language: ${path}`);
+  if (!nodes.some(node => node.tagName === 'html' && node.attrs.some(attr => attr.name === 'lang' && attr.value === site.locale.language))) errors.push(`Missing Russian regional page language: ${path}`);
+  if (!nodes.some(node => node.tagName === 'meta' && node.attrs.some(attr => attr.name === 'property' && attr.value === 'og:locale') && node.attrs.some(attr => attr.name === 'content' && attr.value === site.locale.openGraph))) errors.push(`Missing Russian Open Graph locale: ${path}`);
+  for (const nav of nodes.filter(node => node.tagName === 'nav' && node.attrs.some(attr => attr.name === 'aria-label' && ['Основная навигация', 'Мобильная навигация'].includes(attr.value)))) {
+    const menuLinks = elements(nav).filter(node => node.tagName === 'a').map(node => node.attrs.find(attr => attr.name === 'href')?.value);
+    for (const item of mainMenu) if (!menuLinks.includes(`${expectedBase}${item.path}`)) errors.push(`Missing static navigation link: ${path} -> ${item.path}`);
+    if (menuLinks.some(href => href?.startsWith(`${expectedBase}blog/tags/`))) errors.push(`Blog topics must stay out of the header menu: ${path}`);
+  }
   if (!/<meta\b[^>]*name="description"[^>]*content="[^"]+"/i.test(html)) errors.push(`Missing description: ${path}`);
   if (/href=["']#["']/i.test(html)) errors.push(`Placeholder link: ${path}`);
   const analyticsEnabled = site.analytics.privacyApproved && Number.isSafeInteger(site.analytics.yandexId) && Number(site.analytics.yandexId) > 0;
@@ -243,6 +249,7 @@ for (const page of await walk(dist)) {
     if (!nodes.some(node => node.tagName === 'a' && node.attrs.some(attr => attr.name === 'rel' && attr.value === 'author'))) errors.push(`Article author has no visible profile link: ${path}`);
   }
   if (path === 'index.html' && !structured.some(graph => graph['@type'] === 'Person' && graph.name === site.author)) errors.push('Home page must identify the real author');
+  if (path === 'index.html' && !structured.some(graph => graph['@type'] === 'WebSite' && graph.inLanguage === site.locale.language && graph.audience?.geographicArea?.identifier === site.locale.countryCode)) errors.push('WebSite must declare Russian language and the Russian audience');
   for (const script of graphs) {
     const json = JSON.parse(script.replace(/^<script[^>]*>/i, '').replace(/<\/script>$/i, '').replace(/\\u003c/g, '<'));
     if (json['@type'] !== 'BreadcrumbList') continue;

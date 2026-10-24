@@ -9,6 +9,12 @@ export const blogTagSlugs: Record<(typeof blogTags)[number], string> = {
   'Кейсы': 'cases',
 };
 
+/** Real destinations shared by desktop and mobile navigation. */
+export const mainMenu = [
+  { label: 'Блог', path: 'blog/', description: 'Статьи, кейсы и эксперименты', icon: 'article' },
+  { label: 'Рекомендую', path: 'recommend/', description: 'Сервисы, которыми пользуюсь сам', icon: 'star' },
+] as const;
+
 /** Share destinations use ordinary links; no third-party widgets are loaded. */
 export const shareServices = [
   { label: 'Telegram', icon: 'telegram', endpoint: 'https://t.me/share/url', urlParam: 'url', titleParam: 'text' },
@@ -45,6 +51,7 @@ export const site = {
   name: 'Антон Губанов',
   author: 'Антон Губанов',
   role: 'Digital-маркетолог',
+  locale: { language: 'ru-RU', openGraph: 'ru_RU', countryCode: 'RU', countryName: 'Россия' },
   hero: {
     title: 'Антон Губанов.',
     accent: 'Digital-маркетолог.',
@@ -57,10 +64,7 @@ export const site = {
       'А здесь делюсь опытом, мыслями и тем, что удалось проверить на практике. Пишу про маркетинг, технологии и инструменты, с которыми работаю. Собираю свои статьи, кейсы и наблюдения — чтобы было куда вернуться самому и чем поделиться с другими.',
     ],
   },
-  navigation: [
-    { label: 'Блог', path: 'blog/' },
-    { label: 'Рекомендую', path: 'recommend/' },
-  ],
+  navigation: mainMenu.map(({ label, path }) => ({ label, path })),
   // Индексация сайтом владеет этот блок. indexingEnabled: false закрывает весь сайт сразу.
   // closed — отдельные страницы: впиши адрес как в браузере, и он закроется от поисковика
   // (страница получит noindex и исчезнет из карты сайта). Для посетителя она останется открытой.

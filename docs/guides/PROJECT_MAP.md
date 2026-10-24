@@ -11,6 +11,8 @@
 | Обложку и иллюстрации статьи | ту же папку `content/blog/название-статьи/` |
 | Портрет | `content/images/anton-gubanov.png` |
 | Имя, контакты, первый экран, «Обо мне», меню, рекомендации | `src/config/site.ts` |
+| Язык и страна аудитории | `site.locale` в `src/config/site.ts`: русский (Россия), RU |
+| Пункты меню и SVG-иконки | `mainMenu` в `src/config/site.ts`; общая разметка и hover — `src/components/MenuLinks.astro`, SVG — `src/components/Icon.astro`, раскрытие — `Header.astro` |
 | Закрыть страницу от поиска | `site.search` в `src/config/site.ts` — только по решению владельца |
 | Старые адреса и перенаправления | `movedPaths` в `src/utils/routes.ts` |
 | Содержимое юридического документа | `src/pages/legal/` — документы содержат подстановки из общих настроек |

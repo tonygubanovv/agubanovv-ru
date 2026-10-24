@@ -1,9 +1,9 @@
 ---
-import { site, links } from '../config/site';
+import { site, links, mainMenu } from '../config/site';
 import { url } from '../utils/urls';
 import EmailContact from './EmailContact.astro';
 import Icon from './Icon.astro';
-const current = Astro.url.pathname;
+import MenuLinks from './MenuLinks.astro';
 ---
 <header class="site-header">
   <div class="container header-inner">
@@ -12,7 +12,7 @@ const current = Astro.url.pathname;
     </a>
     <div class="header-actions">
     <nav class="desktop-nav" aria-label="Основная навигация">
-      {site.navigation.map(item => <a href={url(item.path)} aria-current={!item.path.startsWith('#') && current.startsWith(url(item.path)) ? 'page' : undefined}>{item.label}</a>)}
+      <MenuLinks items={mainMenu} compact />
     </nav>
     <div class="header-contacts">
       <EmailContact tooltipId="header-email-tooltip" />
@@ -20,8 +20,15 @@ const current = Astro.url.pathname;
     </div>
     <div class="header-controls">
       <details class="mobile-nav">
-        <summary aria-label="Открыть меню"><span class="menu-lines" aria-hidden="true"></span></summary>
-        <nav aria-label="Мобильная навигация">{site.navigation.map(item => <a href={url(item.path)}>{item.label}</a>)}<div class="mobile-contacts"><EmailContact tooltipId="mobile-email-tooltip" />{links.telegram && <a class="mobile-telegram" href={links.telegram}>Telegram <Icon name="telegram" size={22} /></a>}</div></nav>
+        <summary aria-label="Меню сайта"><span class="menu-open-icon"><Icon name="menu" /></span><span class="menu-close-icon"><Icon name="close" /></span></summary>
+        <nav class="mobile-menu-panel" aria-label="Мобильная навигация">
+          <MenuLinks items={mainMenu} />
+          <div class="mobile-menu-contacts">
+            <p class="menu-label">Связаться</p>
+            {links.email && <div class="menu-contact-row"><Icon name="mail" size={20} /><a href={`mailto:${links.email}`}>{links.email}</a></div>}
+            {links.telegram && <div class="menu-contact-row"><Icon name="telegram-plane" size={28} /><a href={links.telegram} target="_blank" rel="noopener noreferrer">Telegram</a></div>}
+          </div>
+        </nav>
       </details>
     </div>
     </div>
@@ -36,6 +43,13 @@ const current = Astro.url.pathname;
       menu.querySelector('summary')?.focus();
     }
   });
+  document.addEventListener('pointerdown', event => {
+    if (menu?.open && event.target instanceof Node && !menu.contains(event.target)) menu.open = false;
+  });
+  menu?.addEventListener('focusout', event => {
+    if (event.relatedTarget instanceof Node && !menu.contains(event.relatedTarget)) menu.open = false;
+  });
+  window.matchMedia('(max-width: 1000px)').addEventListener('change', () => { if (menu) menu.open = false; });
   const header = document.querySelector<HTMLElement>('.site-header');
   let lastY = window.scrollY;
   const hideDistance = 120;
@@ -51,11 +65,8 @@ const current = Astro.url.pathname;
     if (delta !== 0) {
       const focused = document.activeElement;
       const keyboardFocus = focused instanceof HTMLElement && focused.matches(':focus-visible');
-      if (menu?.open) {
-        menu.open = false;
-        // Keep keyboard focus on the toggle; pointer focus must not pin the header open.
-        if (keyboardFocus && menu.contains(focused)) menu.querySelector('summary')?.focus();
-      }
+      // Focusing a link can scroll the page automatically. Keep keyboard navigation inside the panel open.
+      if (menu?.open && !(keyboardFocus && menu.contains(focused))) menu.open = false;
       if (!keyboardFocus && focused instanceof HTMLElement && header?.contains(focused)) focused.blur();
     }
     if (y <= topVisibleZone || header?.contains(document.activeElement)) {
@@ -88,3 +99,27 @@ const current = Astro.url.pathname;
   header?.addEventListener('focusin', revealHeader);
   menu?.addEventListener('toggle', () => { if (menu.open) revealHeader(); });
 </script>
+
+<style>
+  .mobile-nav { position: static; }
+  .mobile-nav summary { display: grid; place-items: center; width: var(--tap); height: var(--tap); list-style: none; border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--foreground); }
+  .mobile-nav summary::-webkit-details-marker { display: none; }
+  .mobile-nav[open] summary, .mobile-nav summary:active { color: var(--accent); background: var(--card-background); }
+  @media (hover: hover) and (pointer: fine) {
+    .mobile-nav summary:hover { color: var(--accent); background: var(--card-background); }
+  }
+  .menu-open-icon, .menu-close-icon { display: flex; }
+  .menu-close-icon, .mobile-nav[open] .menu-open-icon { display: none; }
+  .mobile-nav[open] .menu-close-icon { display: flex; }
+  .mobile-menu-panel { position: absolute; top: 100%; inset-inline: 0; max-height: calc(100dvh - var(--header-h)); overflow-y: auto; overscroll-behavior: contain; padding: var(--space-3) var(--gutter) var(--space-5); background: var(--background); border-bottom: 1px solid var(--border); box-shadow: 0 var(--space-4) var(--space-6) rgb(0 0 0 / 20%); }
+  :global(body:has(.cookie-notice:not([hidden]))) .mobile-menu-panel { max-height: calc(100dvh - var(--header-h) - var(--cookie-notice-height, var(--space-7)) - env(safe-area-inset-bottom)); }
+  .mobile-menu-contacts { display: grid; gap: var(--space-2); border-top: 1px solid var(--border); padding-top: var(--space-4); margin-top: var(--space-3); }
+  .menu-label { color: var(--muted); font-size: var(--text-1); }
+  .menu-contact-row { display: grid; grid-template-columns: var(--space-5) minmax(0, 1fr); align-items: center; gap: var(--space-2); padding-inline: var(--space-3); }
+  .menu-contact-row > :global(.icon) { justify-self: center; color: var(--muted); }
+  .menu-contact-row > a { display: flex; align-items: center; min-height: var(--tap); font-size: var(--text-2); font-weight: 500; overflow-wrap: anywhere; color: var(--foreground); }
+  .menu-contact-row > a:focus-visible, .menu-contact-row > a:active { color: var(--accent); }
+  @media (hover: hover) and (pointer: fine) {
+    .menu-contact-row > a:hover { color: var(--accent); }
+  }
+</style>
