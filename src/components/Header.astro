@@ -112,20 +112,7 @@ import MenuLinks from './MenuLinks.astro';
   .menu-close-icon, .mobile-nav[open] .menu-open-icon { display: none; }
   .mobile-nav[open] .menu-close-icon { display: flex; }
   .mobile-nav::details-content { transition: content-visibility 240ms allow-discrete; }
-  .mobile-menu-panel { position: absolute; top: 100%; inset-inline: 0; max-height: calc(100dvh - var(--header-h)); overflow-y: auto; overscroll-behavior: contain; padding: var(--space-3) var(--gutter) var(--space-5); background: var(--surface); border-bottom: 1px solid var(--border); box-shadow: 0 var(--space-4) var(--space-6) rgb(0 0 0 / 20%); }
-  /* The panel uses the same quiet glass as the header, but needs its own backdrop. */
-  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    /* An ancestor backdrop-filter isolates the panel from the page behind it. */
-    :global(.site-header:has(.mobile-nav[open])) { -webkit-backdrop-filter: none; backdrop-filter: none; }
-    .mobile-menu-panel {
-      background: color-mix(in srgb, var(--background) 86%, transparent);
-      -webkit-backdrop-filter: blur(16px) saturate(110%);
-      backdrop-filter: blur(16px) saturate(110%);
-    }
-  }
-  @media (prefers-reduced-transparency: reduce) {
-    .mobile-menu-panel { background: var(--surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
-  }
+  .mobile-menu-panel { position: absolute; top: 100%; inset-inline: 0; max-height: calc(100dvh - var(--header-h)); overflow-y: auto; overscroll-behavior: contain; padding: var(--space-3) var(--gutter) var(--space-5); background: var(--background); border-bottom: 1px solid var(--border); box-shadow: 0 var(--space-4) var(--space-6) rgb(0 0 0 / 20%); }
   @supports selector(details::details-content) {
     .mobile-menu-panel { opacity: 0; transform: translateY(calc(-1 * var(--space-2))); transition: opacity 240ms ease, transform 240ms ease; }
     .mobile-nav[open] .mobile-menu-panel { opacity: 1; transform: translateY(0); }
